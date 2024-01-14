@@ -1,5 +1,5 @@
-from src.hello_world import hello_world
+from src.helper import helper
 
-def test_hello_world():
-    result = hello_world()
-    assert result == "Hello World!"
+def test_helper():
+    result = helper()
+    assert result == "I am helper!"
