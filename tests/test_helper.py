@@ -5,6 +5,15 @@ import logging
 
 class TestMyTradingApp(unittest.TestCase):
 
+    def setUp(self):
+        self.app = MyTradingApp()
+
+    def test_has_placeOrder_method(self):
+        self.assertTrue(hasattr(self.app, 'placeOrder'), "placeOrder method is missing")
+
+    def test_has_orderStatus_method(self):
+        self.assertTrue(hasattr(self.app, 'orderStatus'), "orderStatus method is missing")
+    
     @patch('ibapi.client.EClient.__init__')
     def test_initialization(self, mock_init):
         logging.info("testing initialization")
