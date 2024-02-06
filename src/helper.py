@@ -3,37 +3,30 @@ from ibapi.client import EClient
 from ibapi.connection import Connection
 import logging
 import time
+import json
 
 class MyTradingApp(EWrapper, EClient):
     def __init__(self):
         logging.info("Starting app")
         EClient.__init__(self, self)
 
-    def connect_to_tws(self):
-        try:
-            logging.info("Connection to TWS")
-            self.connect("127.0.0.1", 7496, 0)
 
+    def connect_to_tws(self, host, port):
+        try:
+            logging.info("Connection to TWS(%s,%d)", host, port)
+            self.connect(host, port, 0)
+            time.sleep(5)
+            if not self.isConnected():
+                raise ConnectionError("helper: Failed to connect to TWS.")
         except Exception as e:
             logging.error(" Error connecting to TWS: %s", e)
+            return False, str(e)
 
         # Add logic to handle connection (e.g., start a separate thread to run the message loop)
+        return True, "Connected successfully"
 
     # Implement necessary methods from EWrapper
     # ...
 
-def main():
-    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    logger = logging.getLogger('ibapi')
-    logger.setLevel(logging.WARNING)
-    app = MyTradingApp()
-    app.connect_to_tws()
-
-    time.sleep(10)
-    logging.info("Disconnect!")
-    app.disconnect()
-
-if __name__ == "__main__":
-    main()
 
 
