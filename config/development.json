@@ -1,5 +1,10 @@
 {
     "server_ip": "localhost",
     "server_port": 8496,
-    "tws_port": 4001
+    "tws_port": 4001,
+    "logging": {
+        "level": "DEBUG",
+        "filename": "development.log",
+        "format": "%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s"
+    }
 }
