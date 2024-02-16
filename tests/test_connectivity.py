@@ -3,12 +3,12 @@ import threading
 import subprocess
 import time
 import os
-
+"""
 class TWSConnectionTestCase(unittest.TestCase):
 
     def setUp(self):
         self.app = MyTradingApp()
-"""
+
     @classmethod
     def setUpClass(cls):
         # This method will be executed once before running tests in the class

@@ -4,19 +4,14 @@ import json
 class MockRequestHandler:
     def get(self, url, params):
         class MockResponse:
-            def __init__(self, status_code=200, text=None, json_data=None):
+            def __init__(self, status_code=200, text=None):
                 self.status_code = status_code
-                self.text = text if text is not None else json.dumps(json_data)
-                self.json_data = json_data
-            def json(self):
-                return self.json_data
+                self.text = text
             
-            text = 'REFERENCE_CODE'
-        # Simulate initiating the query
-        if "initiate" in url:
-            # Assuming the API returns a job ID for the initiated query
-            return MockResponse(json_data={"job_id": "123456"})
+        if "SendRequest" in url:
+            return MockResponse(text='<FlexQueryResponse><Status>Success</Status><ReferenceCode>123456</ReferenceCode></FlexQueryResponse>')
+        elif "GetStatement" in url:
+            return MockResponse(text='<FlexQueryResponse><Status>Success</Status><Data>REPORT_DATA</Data></FlexQueryResponse>')
         else:
-            return MockResponse(status_code=404, json_data={"error": "Not found"})
-        # Simulate a successful request
+            return MockResponse(status_code=404, text='<Error>Not found</Error>')
 
