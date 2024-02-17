@@ -1,5 +1,6 @@
 import sqlite3
 import unittest
+from src.db.data_access import insert_dividend, create_connection
 
 class TestDatabase(unittest.TestCase):
     def setUp(self):
@@ -23,9 +24,10 @@ class TestDatabase(unittest.TestCase):
 
     def test_insert_dividend(self):
         # Test inserting a dividend record
-        self.cur.execute('INSERT INTO dividends (symbol, amount, ex_date, pay_date) VALUES (?, ?, ?, ?)',
-                         ('AAPL', 0.82, '2021-08-06', '2021-08-13'))
-        self.conn.commit()
+        insert_dividend(self.conn, 'AAPL', 0.82, '2021-08-06', '2021-08-13')
+        #self.cur.execute('INSERT INTO dividends (symbol, amount, ex_date, pay_date) VALUES (?, ?, ?, ?)',
+        #                 ('AAPL', 0.82, '2021-08-06', '2021-08-13'))
+        #self.conn.commit()
        
         # Retrieve the inserted record and assert its content
         self.cur.execute('SELECT * FROM dividends WHERE symbol = "AAPL"')
