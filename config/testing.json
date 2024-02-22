@@ -1,5 +1,10 @@
 {
     "server_ip": "127.0.0.1",
     "server_port": 8496,
-    "tws_port": 7496
+    "tws_port": 7496,
+    "logging": {
+        "level": "DEBUG",
+        "filename": "testing.log",
+        "format": "%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s"
+    }
 }

@@ -1,11 +1,12 @@
 # Assuming MyTradingApp is in the helper module
+import unittest
+"""
 from src.helper import MyTradingApp
 from src.app import create_app
-import unittest
 from unittest.mock import patch
 import logging
 
-"""
+
 class TestTradingAppConnection(unittest.TestCase):
     def setUp(self):
         self.app = create_app()

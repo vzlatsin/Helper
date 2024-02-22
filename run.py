@@ -24,7 +24,7 @@ config = load_config()
 logging.basicConfig(filename=config['logging']['filename'],
                     level=getattr(logging, config['logging']['level'].upper()),
                     format=config['logging']['format'])
-
+# print(config['db_path'])
 logging.debug("Logging is configured.")
 
 

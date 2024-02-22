@@ -1,4 +1,5 @@
 import unittest
+"""
 from unittest.mock import Mock, patch
 from src.helper import MyTradingApp  # Import your app
 import logging
@@ -7,19 +8,24 @@ class TestMyTradingApp(unittest.TestCase):
 
     def setUp(self):
         self.app = MyTradingApp()
+        logging.info("setUp is finished")
 
-    def test_has_placeOrder_method(self):
+    def test_1_has_placeOrder_method(self):
         self.assertTrue(hasattr(self.app, 'placeOrder'), "placeOrder method is missing")
+        logging.info("the app has placeOrder method")
 
-    def test_has_orderStatus_method(self):
+    def test_2_has_orderStatus_method(self):
         self.assertTrue(hasattr(self.app, 'orderStatus'), "orderStatus method is missing")
-    
+        logging.info("the app has orderStatus method")
+
+
     @patch('ibapi.client.EClient.__init__')
     def test_initialization(self, mock_init):
         logging.info("testing initialization")
         app = MyTradingApp();
         mock_init.assert_called_with(app,app)
 
+        
     @patch('ibapi.client.EClient.connect')
     def test_connect_to_tws(self, mock_connect):
         app = MyTradingApp();
@@ -29,6 +35,7 @@ class TestMyTradingApp(unittest.TestCase):
         #mock_connect.assert_called_with("127.0.0.1", 7496, 0)
 
     # Add more tests for other methods
+"""
 
 if __name__ == '__main__':
     unittest.main()

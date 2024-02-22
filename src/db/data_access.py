@@ -1,5 +1,6 @@
 import sqlite3
 from sqlite3 import Error
+from datetime import datetime, timedelta
 
 def create_connection(db_file):
     """ create a database connection to a SQLite database """
@@ -27,6 +28,33 @@ def insert_dividend(conn, symbol, amount, ex_date, pay_date):
     cur.execute(sql, (symbol, amount, ex_date, pay_date))
     conn.commit()
     return cur.lastrowid
+
+
+
+def count_dividend_records(conn):
+    """
+    Count the number of dividend records in the database.
+    :param conn: the Connection object
+    :return: the count of dividend records
+    """
+    cur = conn.cursor()
+    cur.execute("SELECT COUNT(*) FROM dividends")
+    count = cur.fetchone()[0]
+    return count
+
+def get_latest_dividend_date(conn):
+    """
+    Query the latest dividend date from the database.
+    :param conn: SQLite connection object
+    :return: The latest date as a datetime object or None if no data is found.
+    """
+    cur = conn.cursor()
+    cur.execute("SELECT MAX(pay_date) FROM dividends")
+    result = cur.fetchone()
+    if result[0]:
+        return datetime.strptime(result[0], '%Y-%m-%d')
+    else:
+        return None
 
 # Specify the path to your SQLite database file
 database = "path/to/your/database.db"
