@@ -1,27 +1,45 @@
-Enhanced Project Overview: Dividend Information Retrieval Web Application
+Financial Data Automation Web Application
+This application automates the retrieval, processing, and storage of financial information from Interactive Brokers using Python, Flask, and SQLite. Initially focused on dividends, it's designed to evolve into a comprehensive tool for automating various financial tasks, including tax return preparation.
 
-This Python-based web application leverages the Flask framework and SQLite database to automate the retrieval and storage of dividend information from Interactive Brokers. Designed for efficiency and ease of use, it features a user-friendly web interface for manual interactions and automated processes for data handling.
+Broad Objectives
+Versatile Financial Data Handling: From dividends to broader financial transactions, aimed at simplifying personal finance management.
+Tax Preparation Assistance: Streamlines the collection and organization of information necessary for tax returns, reducing manual effort and increasing accuracy.
+Expandable Framework: Structured to facilitate the addition of new modules for different financial tasks over time.
+Core Features
+Interactive Web Interface: Facilitates manual data operations and viewing of financial reports through a user-friendly web interface.
+Automated Data Integration: Leverages automated processes for fetching, parsing, and storing financial data in a structured database.
+Customizable Reporting: Supports generating tailored reports, crucial for tax preparation and financial analysis.
+Project Structure and Key Components
+/src Directory: The backbone of the application, containing all the logic and functionality.
 
-Comprehensive Features:
-Interactive Web Interface: Users can initiate Flex Queries and request dividend data processing through dedicated web forms.
-Automated Data Retrieval and Storage: Automates the fetching, parsing, and storing of dividend information into an SQLite database, ensuring data is up-to-date and accessible.
-Database Management: Utilizes custom database scripts for seamless data integration, supporting operations such as record insertion, data retrieval, and integrity checks.
-Detailed Components:
-Flask Application (app.py): The backbone of the web interface, facilitating user interactions, logging, and integration with backend services.
-Flex Query Handler (flex_query.py): Interfaces with Interactive Brokers' Flex Query service for data retrieval, employing robust error handling and retry logic.
-Database Access Layer (data_access.py): Encapsulates all database interactions, including connection management and data manipulation, ensuring a clean separation of concerns.
-Database Operations:
-Connection Establishment: Dynamically connects to the SQLite database, as specified in the application's configuration, ensuring a flexible and reliable data storage solution.
-Data Management: Supports sophisticated data operations, such as inserting new dividend records, counting existing records, and querying the latest dividend dates, to facilitate intelligent data processing and retrieval.
-Latest Dividend Date Retrieval: Employs logic to determine the most recent dividend entry, guiding the application in fetching only relevant new data to maintain efficiency and reduce redundancy.
-Running the Application:
-Environment Configuration: Set MY_APP_ENV to select the operating environment. Adjust settings in development.json or testing.json for database paths, server details, and logging configurations.
+app.py: Flask application setup and web route definitions. Central to web interface modifications.
+/db: Database scripts for schema initialization (init_db.py) and data manipulation (data_access.py). Extend here for new data types.
+flex_query.py: Interacts with brokerage services for data retrieval. Update for new data sources or changes in API.
+Utility Scripts (helper.py, report_parser.py): Assist with various tasks like connectivity and data parsing.
+Configuration and Testing: Configuration files (/config) for environment-specific settings, and a testing suite (/tests) to ensure reliability.
 
-Launch: Execute python run.py from the project root to start the Flask server. Navigate to the application at the designated URL and port.
+Getting Started
+Setup
+Clone this repository.
+Install Dependencies: pip install -r requirements.txt
+Initialize Database: python src/db/init_db.py
+Running the Application
+python run.py starts the server. Access it via http://localhost:5000 to explore its features.
 
-Utilizing the Web Interface:
-Home and Data Retrieval Forms: Access forms for running Flex Queries and processing dividend data through intuitive web pages, enhancing user interaction and data management capabilities.
-Dividend Data Management: Leverage automated processes to fetch, parse, and store up-to-date dividend information in the database, streamlining financial data analysis and accessibility.
-Development, Testing, and Maintenance:
-Comprehensive Testing Framework: Utilize run_tests.py for executing a suite of tests, ensuring robustness and reliability of web and database functionalities.
-Advanced Logging: Detailed logs facilitate monitoring and troubleshooting, with distinct log files for development and testing environments, enhancing maintainability.
+Expanding Functionality
+To introduce new functionalities, such as additional financial data processing or tax report generation:
+
+Web Interface: Adapt app.py and /templates for new workflows or data inputs.
+Data Processing: Extend flex_query.py for additional data retrieval; adjust data_access.py for new database operations.
+Schema Adjustments: Modify init_db.py for any database schema updates to accommodate new data types.
+Development Notes
+Testing New Features: Incorporate tests in /tests to cover new functionalities, maintaining application integrity.
+Logging: Utilize development.log or testing.log for debugging and monitoring application behavior.
+Contributing and Support
+While currently focused on personal finance management, contributions or suggestions for expanding its capabilities are welcome. For collaboration or questions, please open an issue in the repository.
+
+Future Directions
+Tax Reporting Module: A planned extension to simplify tax return preparation, automatically organizing relevant financial data.
+Investment Analysis Tools: To offer insights into portfolio performance and tax implications.
+License and Contact
+For personal use; please contact for broader usage rights or contributions.
