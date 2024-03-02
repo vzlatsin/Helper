@@ -6,7 +6,7 @@ from .helper import MyTradingApp
 from .report_paser import parse_cash_transaction
 import logging
 from src.flex_query import initiate_flex_query_report, download_flex_query_report, get_query_id, get_last_dividend_date
-from src.db.data_access import create_connection, get_latest_dividend_date, count_dividend_records
+from src.db.data_access import create_connection, get_latest_dividend_date, count_dividend_records, insert_dividend
 
 def create_app(config):
     app = Flask(__name__, template_folder='../templates')
@@ -56,6 +56,9 @@ def create_app(config):
 
         transactions = parse_cash_transaction(report_data)
         for t in transactions:
+            # Example transaction dictionary structure: {'symbol': 'AAPL', 'amount': 0.82, 'ex_date': '2021-08-06', 'pay_date': '2021-08-13'}
+            insert_dividend(conn, t[0], t[1], t[2], t[3])
+
             logging.info(f"Parsed transaction: {t}")
 
         conn.close()
