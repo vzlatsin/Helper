@@ -2,7 +2,7 @@
 import unittest
 
 import sqlite3
-from src.db.data_access import insert_dividend, create_connection, fetch_dividends_from_db
+from src.db.data_access import insert_dividend, create_connection, fetch_dividends_from_db, fetch_dividends_by_quarter
 
 class TestDatabase(unittest.TestCase):
     def setUp(self):
@@ -46,6 +46,25 @@ class TestDatabase(unittest.TestCase):
         # Additional verification to ensure exactly two records are present
         self.assertEqual(len(dividends), 2, "There should be exactly two dividend records.")
 
+    def test_fetch_dividends_by_quarter(self):
+        # Insert dividend records spanning multiple quarters
+        insert_dividend(self.conn, 'AAPL', 0.5, '2021-01-15', '20210131')
+        insert_dividend(self.conn, 'AAPL', 0.5, '2021-04-15', '20210430')
+        insert_dividend(self.conn, 'MSFT', 1.0, '2021-07-15', '20210731')
+        insert_dividend(self.conn, 'GOOG', 1.5, '2021-10-15', '20211031')
+
+        # Fetch aggregated dividends by quarter
+        dividends_by_quarter = fetch_dividends_by_quarter(self.conn)
+        
+        # Define the expected results
+        expected_results = [
+            ('2021 Q1', 0.5),
+            ('2021 Q2', 0.5),
+            ('2021 Q3', 1.0),
+            ('2021 Q4', 1.5)
+        ]
+
+        self.assertEqual(dividends_by_quarter, expected_results, "The aggregated dividends by quarter do not match the expected values.")
 
 if __name__ == '__main__':
     unittest.main()

@@ -110,6 +110,44 @@ def fetch_dividends_from_db(conn):
    
     return dividends
 
+def fetch_dividends_by_quarter(conn):
+    """
+    Fetch dividends data from the database and aggregate it by quarter,
+    with pay_date in the 'YYYYMMDD' format.
+    
+    :param conn: An open SQLite database connection object.
+    :return: A list of tuples, each containing the quarter and the sum of dividends for that quarter.
+    """
+    dividends_by_quarter = []
+    try:
+        cursor = conn.cursor()
+        query = """
+        SELECT
+            SUBSTR(pay_date, 1, 4) || ' Q' || CASE
+                WHEN CAST(SUBSTR(pay_date, 5, 2) AS INTEGER) BETWEEN 1 AND 3 THEN '1'
+                WHEN CAST(SUBSTR(pay_date, 5, 2) AS INTEGER) BETWEEN 4 AND 6 THEN '2'
+                WHEN CAST(SUBSTR(pay_date, 5, 2) AS INTEGER) BETWEEN 7 AND 9 THEN '3'
+                ELSE '4'
+            END AS Quarter,
+            SUM(amount) AS TotalDividends
+        FROM dividends
+        GROUP BY Quarter
+        ORDER BY Quarter;
+        """
+        cursor.execute(query)
+        rows = cursor.fetchall()
+
+        for row in rows:
+            # Each row is a tuple (Quarter, TotalDividends)
+            dividends_by_quarter.append(row)
+
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+    
+    return dividends_by_quarter
+
+
+
 # Specify the path to your SQLite database file
 database = "path/to/your/database.db"
 

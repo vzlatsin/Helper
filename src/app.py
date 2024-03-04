@@ -9,7 +9,7 @@ from src.flex_query import initiate_flex_query_report, download_flex_query_repor
 from src.db.data_access import create_connection, get_latest_dividend_date, count_dividend_records, insert_dividend
 from .data_sync import compare_dividend_data
 from src.ib_data_fetcher import fetch_dividends_from_ib
-from .db.data_access import fetch_dividends_from_db, insert_dividend_if_not_exists
+from .db.data_access import fetch_dividends_from_db, insert_dividend_if_not_exists, fetch_dividends_by_quarter
 from src.file_operations import write_transactions_to_file
 
 def create_app(config):
@@ -20,6 +20,24 @@ def create_app(config):
     @app.route('/dividends-chart')
     def dividends_chart():
         return render_template('dividends_chart.html')
+    
+    @app.route('/api/dividends/by-quarter')
+    def api_dividends_by_quarter():
+        # Retrieve the database path from the app's configuration
+        db_path = app.config['db_path']
+        conn = create_connection(db_path)
+        if not conn:
+            return jsonify({"error": "Unable to connect to the database"}), 500
+
+        data = fetch_dividends_by_quarter(conn)
+        conn.close()
+        
+        # Convert data to a format that can be easily used in the frontend
+        quarters = [item[0] for item in data]
+        amounts = [item[1] for item in data]
+        
+        return jsonify(quarters=quarters, amounts=amounts)
+
 
     @app.route('/')
     def home():
