@@ -1,8 +1,8 @@
 
 import unittest
-"""
+
 import sqlite3
-from src.db.data_access import insert_dividend, create_connection
+from src.db.data_access import insert_dividend, create_connection, fetch_dividends_from_db
 
 class TestDatabase(unittest.TestCase):
     def setUp(self):
@@ -13,10 +13,11 @@ class TestDatabase(unittest.TestCase):
         # Create a table for testing
         self.cur.execute('''
             CREATE TABLE dividends (
-                symbol TEXT,
-                amount REAL,
-                ex_date TEXT,
-                pay_date TEXT
+                id INTEGER PRIMARY KEY,
+                symbol TEXT NOT NULL,
+                amount REAL NOT NULL,
+                ex_date TEXT NOT NULL,
+                pay_date TEXT NOT NULL
             )
         ''')
 
@@ -24,18 +25,27 @@ class TestDatabase(unittest.TestCase):
         # Close the connection after tests
         self.conn.close()
 
-    def test_insert_dividend(self):
-        # Test inserting a dividend record
+    def test_insert_and_fetch_dividend(self):
+        # Insert two dividend records
         insert_dividend(self.conn, 'AAPL', 0.82, '2021-08-06', '2021-08-13')
-        #self.cur.execute('INSERT INTO dividends (symbol, amount, ex_date, pay_date) VALUES (?, ?, ?, ?)',
-        #                 ('AAPL', 0.82, '2021-08-06', '2021-08-13'))
-        #self.conn.commit()
-       
-        # Retrieve the inserted record and assert its content
-        self.cur.execute('SELECT * FROM dividends WHERE symbol = "AAPL"')
-        record = self.cur.fetchone()
-        self.assertEqual(record, ('AAPL', 0.82, '2021-08-06', '2021-08-13'))
+        insert_dividend(self.conn, 'MSFT', 1.00, '2021-09-10', '2021-09-17')
 
-"""
+        # Fetch dividends from the database to verify both insertions
+        dividends = fetch_dividends_from_db(self.conn)
+        expected_dividends = [
+            {'symbol': 'AAPL', 'amount': 0.82, 'ex_date': '2021-08-06', 'pay_date': '2021-08-13'},
+            {'symbol': 'MSFT', 'amount': 1.00, 'ex_date': '2021-09-10', 'pay_date': '2021-09-17'}
+        ]
+
+        # Sort the lists by symbol to ensure the order matches for comparison
+        dividends.sort(key=lambda x: x['symbol'])
+        expected_dividends.sort(key=lambda x: x['symbol'])
+
+        self.assertEqual(dividends, expected_dividends, "The fetched dividend records do not match the expected values.")
+
+        # Additional verification to ensure exactly two records are present
+        self.assertEqual(len(dividends), 2, "There should be exactly two dividend records.")
+
+
 if __name__ == '__main__':
     unittest.main()

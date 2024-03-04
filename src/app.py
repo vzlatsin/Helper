@@ -3,10 +3,14 @@ from flask import Flask, request, jsonify, redirect, url_for, render_template
 import os
 import json
 from .helper import MyTradingApp
-from .report_paser import parse_cash_transaction
+from .report_parser import parse_cash_transaction
 import logging
 from src.flex_query import initiate_flex_query_report, download_flex_query_report, get_query_id, get_last_dividend_date
 from src.db.data_access import create_connection, get_latest_dividend_date, count_dividend_records, insert_dividend
+from .data_sync import compare_dividend_data
+from src.ib_data_fetcher import fetch_dividends_from_ib
+from .db.data_access import fetch_dividends_from_db, insert_dividend_if_not_exists
+from src.file_operations import write_transactions_to_file
 
 def create_app(config):
     app = Flask(__name__, template_folder='../templates')
@@ -26,6 +30,10 @@ def create_app(config):
     @app.route('/get-dividends-form')
     def show_dividends_form():
         return render_template('get_dividends_form.html')
+
+    @app.route('/compare-dividends-form')
+    def show_compare_dividends_form():
+        return render_template('compare_dividends_form.html')   
     
     @app.route('/get-dividends', methods=['POST'])
     def get_dividends():
@@ -43,6 +51,10 @@ def create_app(config):
 
         latest_dividend_date = get_last_dividend_date()
         app.logger.info(f"Latest dividend date: {latest_dividend_date}")
+
+        # Fetch dividend data from IB
+        transactions = fetch_dividends_from_ib(token, app.config)
+        """
         query= get_query_id(latest_dividend_date, config['flex_queries'])
         logging.info(f"Query ID selected: {query}")
         # Assuming your Flex Query process involves initiating and then downloading
@@ -55,9 +67,11 @@ def create_app(config):
         report_data = download_flex_query_report(reference_code, token, retry_attempts, retry_wait)
 
         transactions = parse_cash_transaction(report_data)
+        """
         for t in transactions:
             # Example transaction dictionary structure: {'symbol': 'AAPL', 'amount': 0.82, 'ex_date': '2021-08-06', 'pay_date': '2021-08-13'}
-            insert_dividend(conn, t[0], t[1], t[2], t[3])
+            #insert_dividend_if_not_exists(conn, t[0], t[1], t[2], t[3])
+            insert_dividend_if_not_exists(conn, t['symbol'], t['amount'], t['ex_date'], t['pay_date'])
 
             logging.info(f"Parsed transaction: {t}")
 
@@ -65,6 +79,29 @@ def create_app(config):
 
         return jsonify({"status": "success", "data": "Dividends processed successfully"})
         
+    @app.route('/compare-dividends', methods=['POST'])
+    def compare_dividends(): 
+        token = request.form.get('token')  # Assuming the token can be passed as a query parameter
+        db_path = app.config['db_path']
+        conn = create_connection(db_path)
+
+        # Fetch dividends from IB and the database
+        ib_dividends = fetch_dividends_from_ib(token, app.config)
+        write_transactions_to_file(ib_dividends, 'ib_dividends.txt')
+        db_dividends = fetch_dividends_from_db(conn)
+        write_transactions_to_file(db_dividends, 'db_dividends.txt')
+        
+
+        # Perform comparison (this function needs to be implemented based on your comparison logic)
+        discrepancies = compare_dividend_data(db_dividends, ib_dividends)
+
+        conn.close()
+
+        # Handle reporting of discrepancies (e.g., rendering a template, returning JSON)
+
+        return jsonify({"discrepancies": discrepancies})
+
+
     @app.route('/run-flex-query', methods=['POST'])
     def run_flex_query():
         # Extract parameters from the request

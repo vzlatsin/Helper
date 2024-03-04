@@ -7,7 +7,10 @@ def parse_cash_transaction(cash_transaction_xml):
    
     # Extract details from each CashTransaction element
     transactions = []
+    i = 0
     for transaction in root.findall('.//CashTransaction'):
+        i += 1
+        #logging.info(f"Processing record: {i}")
         symbol = transaction.attrib['symbol']
         amount = transaction.attrib['amount']
         dateTime = transaction.attrib['dateTime']

@@ -31,12 +31,14 @@ def main():
                                         pay_date text NOT NULL
                                     ); """
 
+
     # Create a database connection
     conn = create_connection(database)
 
     # Create tables
     if conn is not None:
         create_table(conn, sql_create_dividends_table)
+
         conn.close()
     else:
         print("Error! Cannot create the database connection.")
