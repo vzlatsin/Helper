@@ -17,6 +17,10 @@ def create_app(config):
     trading_app = MyTradingApp()
     app.config.update(config)
 
+    @app.route('/dividends-chart')
+    def dividends_chart():
+        return render_template('dividends_chart.html')
+
     @app.route('/')
     def home():
         app.logger.info("Welcome!")
