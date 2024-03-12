@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2 class="text-center mb-4">Fetch Financial Data</h2>
+            <form action="{{ url_for('fetch_financial_data') }}" method="post">
+                <div class="form-group">
+                    <label for="token">Token:</label>
+                    <input type="text" class="form-control" id="token" name="token" placeholder="Enter your token" required>
+                </div>
+                <fieldset class="form-group">
+                    <div class="row">
+                        <legend class="col-form-label col-sm-2 pt-0">Data Type:</legend>
+                        <div class="col-sm-10">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="dividends" name="data_type" value="dividends" checked>
+                                <label class="form-check-label" for="dividends">
+                                    Dividends
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="trades" name="data_type" value="trades">
+                                <label class="form-check-label" for="trades">
+                                    Trades
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Fetch Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

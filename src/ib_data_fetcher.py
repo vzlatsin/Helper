@@ -15,6 +15,9 @@ def fetch_dividends_from_ib(token, config):
     query = get_query_id(get_last_dividend_date(), config['flex_queries'])
     reference_code = initiate_flex_query_report(query, token)
     report_data = download_flex_query_report(reference_code, token, config['retry_attempts'], config['retry_wait'])
+    if report_data is None:
+        logging.error("No report data returned from fetch_dividends_from_ib.")
+        return []
     transactions_tuples = parse_cash_transaction(report_data)
 
     # Assuming transactions_tuples is a list of tuples like (symbol, amount, ex_date, pay_date)
