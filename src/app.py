@@ -1,5 +1,7 @@
 # app.py
 from flask import Flask, request, jsonify, redirect, url_for, render_template
+from flask_socketio import SocketIO, emit
+from flask_cors import CORS
 import os
 import json
 from datetime import datetime
@@ -14,10 +16,38 @@ from src.ib_data_fetcher import fetch_dividends_from_ib
 from .db.data_access import fetch_dividends_from_db, insert_dividend_if_not_exists, fetch_dividends_by_quarter
 from src.file_operations import write_transactions_to_file
 
-def create_app(config):
+socketio = SocketIO()
+
+def create_app(config): 
     app = Flask(__name__, template_folder='../templates')
+    CORS(app)
+    default_config = {'TESTING': True, 'DEBUG': True}
+    app.config.update(default_config)
+    if config:
+        app.config.update(config)
+
+    # Initialize SocketIO with your app
+    socketio.init_app(app)
     trading_app = MyTradingApp()
-    app.config.update(config)
+
+    @app.route('/socket_client')
+    def socket_client():
+        return render_template('socketio_client.html')
+
+    @socketio.on('echo', namespace='/test')
+    def handle_echo(message):
+        print('Received echo message:', message)  # Added print statement
+        emit('echo_response', message, namespace='/test')
+    
+    @socketio.on('connect', namespace='/test')
+    def handle_connect():
+        print('Client successfully connected to /test namespace.')  # Added print statement
+        emit('response', {'message': 'You are connected!'})
+
+        
+    #def handle_my_custom_event(json):
+     #   print('received json: ' + str(json))
+      #  emit('my response', {'response': 'my response'})
 
     @app.route('/dividends-chart')
     def dividends_chart():

@@ -5,7 +5,7 @@ import logging
 import json
 
 
-from src.app import create_app
+from src.app import create_app, socketio
 
 config_name = os.getenv('MY_APP_ENV', 'development')
 # Set an environment variable to specify the configuration
@@ -31,5 +31,4 @@ logging.debug("Logging is configured.")
 app = create_app(config)
 
 if __name__ == '__main__':
-    # Run Flask in debug
-    app.run(debug=True, host='0.0.0.0')
+    socketio.run(app, host='0.0.0.0', port=5000)  # Run with SocketIO
