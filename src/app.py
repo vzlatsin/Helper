@@ -191,6 +191,10 @@ def create_app(config):
         # This is a placeholder; adjust according to your needs
         return jsonify({"status": "success", "data": report_data})
 
+    @app.route('/tws-status')
+    def tws_status():
+        return render_template('status_page.html')
+    
     @app.route('/connect-tws')
     def connect_tws():
         print("Testing mode", app.config.get("TESTING"))

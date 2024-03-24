@@ -1,43 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SocketIO Client</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js" crossorigin="anonymous"></script>
-</head>
-<body>
-    <button id="sendMessageButton">Send Message</button> <!-- Add an ID to the button -->
-    <div id="status"></div> <!-- Add this div for displaying status -->
-    <div id="messages"></div> <!-- Add this div for displaying messages -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const socket = io('http://localhost:5000/test');
-            
-            socket.on('connect', function() {
-                addMessage('Connected to server');
-            });
+{#{% extends "layout.html" %}#}
 
-            // Get the button element by its ID
-            const sendMessageButton = document.getElementById('sendMessageButton');
+{#
+{% block content %}
 
-            // Attach click event listener to the button
-            sendMessageButton.addEventListener('click', function() {
-                addMessage('Sending message to server');
-                socket.emit('echo', 'Hello from client');
-            });
+<div class="container">
+    <button id="sendMessageButton">Send Message</button>
+    <div id="status"></div>
+    <div id="messages"></div>
+</div>
 
-            socket.on('echo_response', data => {
-                addMessage('Received echo response: ' + data);
-            });
+{% endblock %}
 
-            function addMessage(message) {
-                const messagesDiv = document.getElementById('messages');
-                const p = document.createElement('p');
-                p.textContent = message;
-                messagesDiv.appendChild(p);
-            }
+{% block scripts %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const socket = io('http://localhost:5000/test');
+        
+        socket.on('connect', function() {
+            addMessage('Connected to server');
         });
-    </script>
-</body>
-</html>
+
+        const sendMessageButton = document.getElementById('sendMessageButton');
+        sendMessageButton.addEventListener('click', function() {
+            addMessage('Sending message to server');
+            socket.emit('echo', 'Hello from client');
+        });
+
+        socket.on('echo_response', data => {
+            addMessage('Received echo response: ' + data);
+        });
+
+        function addMessage(message) {
+            const messagesDiv = document.getElementById('messages');
+            const p = document.createElement('p');
+            p.textContent = message;
+            messagesDiv.appendChild(p);
+        }
+    });
+</script>
+
+{% endblock %}
+#}

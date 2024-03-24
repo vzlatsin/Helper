@@ -1,0 +1,58 @@
+<!-- File: status_page.html -->
+
+<!-- TWS Connectivity Status Page -->
+
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2 class="text-center mb-4">TWS Connectivity Status</h2>
+            <div class="text-center">
+                <h4>TWS Connectivity: <span id="tws-connectivity-status"></span></h4>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+console.log('Script executed');
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded event fired'); 
+    // Function to update TWS connectivity status
+    function updateTWSStatus(status) {
+        var statusElement = document.getElementById('tws-connectivity-status');
+        statusElement.textContent = status;
+        // Set color based on status
+        if (status === 'Connected') {
+            statusElement.style.color = 'green';
+        } else if (status === 'Disconnected') {
+            statusElement.style.color = 'red';
+        } else {
+            statusElement.style.color = 'black'; // Default color
+        }
+        console.log('TWS status updated to:', status);
+    }
+
+    // Function to fetch TWS connectivity status
+    function fetchTWSStatus() {
+        console.log('Fetching TWS status...');
+        // Here you should make an AJAX request or WebSocket connection to fetch the status from your server
+        // For demonstration purposes, I'm setting a random status
+        var statuses = ['Connected', 'Disconnected'];
+        var randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+        console.log('TWS status:', randomStatus);
+        updateTWSStatus(randomStatus);
+    }
+
+    // Initial fetch when the page loads
+    fetchTWSStatus();
+
+    // Schedule periodic status checks every hour (3600000 milliseconds = 1 hour)
+    setInterval(fetchTWSStatus, 3600000);
+});
+</script>
+{% endblock %}
