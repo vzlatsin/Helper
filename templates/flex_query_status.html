@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flex Query Status</title>
+</head>
+<body>
+    <h1>Flex Query Status</h1>
+    {% if status == 'success' %}
+        <p>The Flex Query completed successfully.</p>
+    {% elif status == 'error' %}
+        <p>There was an error processing the Flex Query: {{ error_message }}</p>
+    {% else %}
+        <p>The Flex Query is still in progress. Please wait for further updates.</p>
+    {% endif %}
+</body>
+</html>

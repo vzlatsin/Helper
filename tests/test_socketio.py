@@ -1,3 +1,5 @@
+# tests/test_socketio.py
+
 from src.app import create_app, socketio
 import unittest
 

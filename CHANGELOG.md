@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - 2024-03-25
+
+- Asynchronous processing functionality to improve performance and user experience.
+- New endpoints and templates for initiating and monitoring asynchronous tasks.
+- New tests for testing asynchronous functionality introduced in `app_async.py`.
+
 ### Added
 - WebSocket functionality for real-time updates on financial data processing. This includes real-time status updates on TWS connectivity and the groundwork for future enhancements like live flex query processing.
 

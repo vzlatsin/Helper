@@ -1,0 +1,28 @@
+<!-- templates/async_test.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Async Route Test</title>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+            
+            socket.on('update', function(data) {
+                console.log(data.message); // Log the message to the console
+                // Additionally, append the message to the page
+                var statusMessages = document.getElementById('status-messages');
+                var messageElement = document.createElement('p');
+                messageElement.textContent = data.message;
+                statusMessages.appendChild(messageElement);
+            });
+        });
+    </script>
+</head>
+<body>
+    <h2>WebSocket Test</h2>
+    <div id="status-messages"></div>
+</body>
+</html>

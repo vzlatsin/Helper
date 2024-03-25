@@ -1,6 +1,6 @@
-# Project Updates
+# Project Updates/Status
 
-This document serves as a quick reference to the current state of the project, recent changes, ongoing challenges, and immediate goals. It's intended to facilitate efficient collaboration and assistance.
+This section provides an overview of recent changes, current challenges, immediate goals, and upcoming features for the project.
 
 ## Latest Version
 
@@ -17,7 +17,7 @@ This document serves as a quick reference to the current state of the project, r
 ## Current Challenges
 
 - Exploring the best ways to optimize WebSocket communication for low-latency updates.
-- Investigating intermittent connectivity issues that have been reported by some users when using the real-time update feature.
+- Investigating intermittent connectivity issues reported by some users when using the real-time update feature.
 
 ## Questions and Assistance Needed
 
@@ -29,6 +29,18 @@ This document serves as a quick reference to the current state of the project, r
 - Finalize and test the WebSocket implementation for real-time updates.
 - Start development on the tax reporting module with an aim to support pre-processing of flex queries.
 
+### Planned Features
+
+#### Real-Time Flex Query Processing Updates
+
+- **Goal:** Implement WebSocket-based real-time updates for the flex query process.
+- **Rationale:** To address user feedback regarding the lack of visibility into the process's progress, which can appear unresponsive during data retrieval and processing.
+- **Implementation Steps:**
+  1. **Server-Side Logic Enhancement:** Modify the backend to initiate a WebSocket connection when a flex query operation starts. Emit progress updates at key stages (e.g., connecting to IB, running the query, processing data, updating the database).
+  2. **Client-Side Handling:** Update the frontend to listen for WebSocket messages and display these updates to the user in a meaningful way, enhancing the perception of responsiveness and engagement.
+
+- **Expected Outcome:** Users will receive continuous feedback during the flex query operation, significantly improving the user interface's interactivity and responsiveness.
+
 ## Upcoming Features
 
 - **Tax Reporting Module:** An extension aimed at automating tax return preparation, scheduled for the next minor release.
@@ -38,4 +50,3 @@ This document serves as a quick reference to the current state of the project, r
 
 - Please prioritize work on the WebSocket stability and client-side processing efficiency.
 - Feedback on the current UI/UX of the real-time updates feature is highly appreciated.
-
