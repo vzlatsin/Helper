@@ -1,3 +1,4 @@
+<!-- templates/fetch_financial_data_async.html -->
 {% extends "layout.html" %}
 
 {% block content %}
@@ -44,16 +45,30 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+    var statusMessages = document.getElementById('status-messages');
+
+    function clearStatusMessages() {
+        statusMessages.innerHTML = '';
+    }
+
     document.querySelector('#fetch-data-form button').addEventListener('click', function(e) {
-        e.preventDefault(); // Prevent form from submitting traditionally
+        e.preventDefault();
+        clearStatusMessages(); // Clear previous messages on new request
+
         var token = document.getElementById('token').value;
         var data_type = document.querySelector('input[name="data_type"]:checked').value;
-        socket.emit('start_activity', {token: token, data_type: data_type});
-        document.getElementById('status-messages').innerHTML = '<p>Request submitted, awaiting updates...</p>';
+        socket.emit('fetch_dividends', {token: token, data_type: data_type});
+
+        statusMessages.innerHTML = '<p>Request submitted, awaiting updates...</p>';
     });
 
     socket.on('update', function(data) {
-        document.getElementById('status-messages').innerHTML += '<p>' + data.message + '</p>';
+        statusMessages.innerHTML += '<p>' + data.message + '</p>';
+    });
+
+    socket.on('connect_error', function(error) {
+        // Handle connection errors
+        statusMessages.innerHTML += '<p>Error connecting to the server. Please try again.</p>';
     });
 });
 </script>
