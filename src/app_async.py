@@ -3,7 +3,7 @@ from flask_socketio import SocketIO, emit
 import eventlet
 from src.helper import MyTradingApp  # Assuming these imports are used elsewhere
 from src.flex_query import initiate_flex_query_report, download_flex_query_report
-
+from src.compile_documentation import compile_documentation
 from src.db.data_access import create_connection, get_latest_dividend_date, count_dividend_records, insert_dividend
 from .data_sync import compare_dividend_data
 from src.ib_data_fetcher import fetch_dividends_from_ib
@@ -12,6 +12,10 @@ from src.file_operations import write_transactions_to_file
 from flask import request
 from flask import current_app
 from flask_cors import CORS
+
+import os
+import markdown
+
 
 def create_async_app(config):
     app = Flask(__name__, template_folder='../templates')
@@ -73,22 +77,70 @@ def create_async_app(config):
             else:
                 socketio.emit('update', {'message': 'Dividend processing complete'}, namespace='/')
     
-    '''
-    def process_data(token, data_type, config):
-        # Assuming this function is invoked as a background task
-        with app.app_context():  # Change current_app to app
-                socketio.emit('update', {'message': 'Starting to process data...'}, namespace='/')
-                eventlet.sleep(5)  # Simulate some processing time
-                socketio.emit('update', {'message': 'Data processing complete'}, namespace='/')
+    # Route to render the documentation compilation page
+    @app.route('/compile-documentation')
+    def render_compile_documentation_page():
+        return render_template('compile_documentation.html')
+
+    # Route to handle documentation compilation form submission
+    @socketio.on('compile_documentation')
+    def handle_compile_documentation(data):
+        title = data.get('title')
+        files = data.get('files')
+        if title and files:
+            socketio.start_background_task(target=compile_documentation_async, title=title, files=files)
+
+    # Function to compile documentation asynchronously
+    def compile_documentation_async(title, files):
+        with app.app_context():
+            socketio.emit('update', {'message': 'Starting documentation compilation...'}, namespace='/')
+            try:
+                # Compile documentation into a book
+                compile_documentation(title, files)
+            except Exception as e:
+                socketio.emit('update', {'message': f'Error compiling documentation: {str(e)}'}, namespace='/')
+            else:
+                socketio.emit('update', {'message': 'Documentation compilation complete'}, namespace='/')
 
 
-    @socketio.on('start_activity')
-    def handle_start_activity(data):
-        token = data['token']
-        data_type = data['data_type']
-        # Use 'socketio' to start the background task
-        socketio.start_background_task(process_data, token=token, data_type=data_type, config=app.config)
-'''
+
+    @app.route('/documentation-index')
+    def documentation_index():
+        # Get a list of documentation files in the 'docs/src' directory
+        docs_path = os.path.join(os.getcwd(), 'docs', 'scripts')
+        documentation_files = [f for f in os.listdir(docs_path) if os.path.isfile(os.path.join(docs_path, f))]
+
+        # Generate the documentation index HTML
+        index_html = '<h1>Documentation Index</h1>'
+        index_html += '<ul>'
+        for file_name in documentation_files:
+            index_html += f'<li><a href="/documentation/{file_name}">{file_name}</a></li>'
+        index_html += '</ul>'
+
+        return index_html
+
+
+    @app.route('/documentation/<filename>')
+    def serve_documentation(filename):
+        # Construct the path to the requested documentation file
+        docs_path = os.path.join(os.getcwd(), 'docs', 'scripts')
+        file_path = os.path.join(docs_path, filename)
+
+        # Check if the requested file exists
+        if os.path.isfile(file_path):
+            # Read the content of the file
+            with open(file_path, 'r') as file:
+                content = file.read()
+
+            # Convert markdown content to HTML
+            html_content = markdown.markdown(content)
+
+            return html_content
+        else:
+            # If the file does not exist, return a 404 error
+            return 'File not found', 404
+    
+    
     return app, socketio
 
 

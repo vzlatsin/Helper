@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation Compilation</title>
+    <!-- Add any necessary stylesheets or scripts here -->
+</head>
+<body>
+    <h1>Documentation Compilation</h1>
+    <p>This page allows you to compile documentation for your project.</p>
+    <form id="documentationForm">
+        <label for="documentationTitle">Documentation Title:</label><br>
+        <input type="text" id="documentationTitle" name="documentationTitle"><br><br>
+        <label for="documentationFiles">Select Documentation Files:</label><br>
+        <input type="file" id="documentationFiles" name="documentationFiles" multiple accept=".md"><br><br>
+        <button type="submit">Compile Documentation</button>
+    </form>
+    <!-- Add any necessary scripts or additional HTML elements here -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
+    <script>
+        // Connect to SocketIO server
+        var socket = io();
+
+        // Add an event listener to the form for form submission
+        document.getElementById('documentationForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission behavior
+
+            // Get form data
+            var formData = new FormData(this);
+
+            // Emit a SocketIO event with the form data
+            socket.emit('compile_documentation', {
+                formData: formData
+            });
+        });
+    </script>
+</body>
+</html>
