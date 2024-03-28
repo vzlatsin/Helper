@@ -15,6 +15,7 @@ from flask_cors import CORS
 
 import os
 import markdown
+import re
 
 
 def create_async_app(config):
@@ -102,24 +103,44 @@ def create_async_app(config):
             else:
                 socketio.emit('update', {'message': 'Documentation compilation complete'}, namespace='/')
 
+    def extract_headings_from_md(file_path):
+        """
+        Extracts headings from a markdown file located at file_path.
+        
+        :param file_path: Path to the markdown file.
+        :return: A list of tuples containing (level, heading title).
+        """
+        try:
+            with open(file_path, 'r', encoding='utf-8') as md_file:
+                md_content = md_file.read()
+        except IOError:
+            print(f"Error opening or reading file: {file_path}")
+            return []
+
+        heading_re = re.compile(r'^(#+)\s*(.+)', re.MULTILINE)
+        return [(len(m.group(1)), m.group(2)) for m in heading_re.finditer(md_content)]
+
+    def generate_toc_for_directory(directory_path):
+        toc = []
+        for filename in sorted(os.listdir(directory_path)):
+            if filename.endswith('.md'):
+                file_path = os.path.join(directory_path, filename)
+                headings = extract_headings_from_md(file_path)
+                # Only include level 1 and level 2 headings to simplify the TOC
+                headings = [h for h in headings if h[0] <= 2]
+                # Append a tuple of filename (without extension) and the headings list
+                toc.append((filename.replace('.md', ''), headings))
+        return toc
+
 
 
     @app.route('/documentation-index')
     def documentation_index():
-        # Get a list of documentation files in the 'docs/src' directory
         docs_path = os.path.join(os.getcwd(), 'docs', 'scripts')
-        documentation_files = [f for f in os.listdir(docs_path) if os.path.isfile(os.path.join(docs_path, f))]
+        toc = generate_toc_for_directory(docs_path)
+        return render_template('documentation_index.html', toc=toc)
 
-        # Generate the documentation index HTML
-        index_html = '<h1>Documentation Index</h1>'
-        index_html += '<ul>'
-        for file_name in documentation_files:
-            index_html += f'<li><a href="/documentation/{file_name}">{file_name}</a></li>'
-        index_html += '</ul>'
-
-        return index_html
-
-
+    
     @app.route('/documentation/<filename>')
     def serve_documentation(filename):
         # Construct the path to the requested documentation file

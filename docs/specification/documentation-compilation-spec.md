@@ -1,7 +1,7 @@
 # Documentation Compilation Feature Specification - Iterative Approach
 
 ## Phase 1: Initial Integration and Manual Trigger
-- **Objective**: Integrate a preliminary script into the web application that manually concatenates Markdown files from `docs/` and `docs/src/`.
+- **Objective**: Integrate a preliminary script into the web application that manually concatenates Markdown files from `docs/` and `docs/scripts/`.
 - **Testing**: Ensure the script can be triggered and executes within the web application environment, concatenating files into a single Markdown document.
 
 ## Phase 2: File Discovery and Dynamic Concatenation

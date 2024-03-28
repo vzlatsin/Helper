@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Documentation Index and TOC</title>
+</head>
+<body>
+    <h1>Documentation Files and Table of Contents</h1>
+    {% for doc in toc %}
+        <h2>{{ doc[0] }}</h2> <!-- Displaying the filename -->
+        <ul>
+            {% for heading in doc[1] %} <!-- Iterating over headings -->
+                <!-- Adjusting indentation based on heading level; assuming the heading tuple is (level, title) -->
+                {% set margin_left = heading[0] * 20 %}
+                <li style="margin-left: {{ margin_left }}px;">
+                    {{ heading[1] }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+</body>
+</html>
+
