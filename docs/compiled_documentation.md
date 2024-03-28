@@ -1,5 +1,42 @@
 # test
 
+# Table of Contents
+
+- [app_async](#app_async)
+- [Async Application Documentation](#async-application-documentation)
+  - [Overview](#overview)
+  - [Setup](#setup)
+  - [Key Components](#key-components)
+  - [Routes](#routes)
+  - [Event Handlers](#event-handlers)
+  - [Background Processing](#background-processing)
+  - [Error Handling](#error-handling)
+  - [Future Enhancements](#future-enhancements)
+- [data-access](#data-access)
+- [Data Access Documentation](#data-access-documentation)
+  - [Functions Overview](#functions-overview)
+  - [Example Usage](#example-usage)
+  - [Tips for New Developers](#tips-for-new-developers)
+  - [Future Improvements](#future-improvements)
+- [flex-query](#flex-query)
+- [Flex Query Documentation](#flex-query-documentation)
+  - [Functions Overview](#functions-overview)
+  - [Example Usage](#example-usage)
+  - [Error Handling](#error-handling)
+  - [Future Enhancements](#future-enhancements)
+- [run](#run)
+- [Running the Application](#running-the-application)
+  - [Overview](#overview)
+  - [Prerequisites](#prerequisites)
+  - [Configuration](#configuration)
+  - [Logging](#logging)
+  - [Usage](#usage)
+  - [Environment Variables](#environment-variables)
+  - [Command-Line Arguments](#command-line-arguments)
+  - [Code Snippets](#code-snippets)
+  - [Troubleshooting](#troubleshooting)
+
+
 # Async Application Documentation
 
 ## Overview

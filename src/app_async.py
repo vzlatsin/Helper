@@ -103,11 +103,22 @@ def create_async_app(config):
             return jsonify({"error": str(e)}), 500
 
     def compile_docs_from_directory(directory_path, output_path, title):
-        markdown_files = glob.glob(f"{directory_path}/*.md")
-        compiled_content = f"# {title}\n\n"
+        # First, generate the TOC
+        toc = generate_toc_for_directory(directory_path)
+        toc_content = "# Table of Contents\n\n"
+        for entry in toc:
+            filename, headings = entry
+            toc_content += f"- [{filename}](#{filename.replace(' ', '-').lower()})\n"
+            for level, heading in headings:
+                indent = "  " * (level - 1)
+                toc_content += f"{indent}- [{heading}](#{heading.replace(' ', '-').lower()})\n"
 
+        # Then, compile the document content
+        compiled_content = f"# {title}\n\n{toc_content}\n\n"
+        markdown_files = glob.glob(f"{directory_path}/*.md")
         for file_path in sorted(markdown_files):
             with open(file_path, 'r', encoding='utf-8') as file:
+                # You may want to insert anchors corresponding to the TOC here
                 compiled_content += file.read() + "\n\n"
         
         # Save the compiled content to the specified output path
