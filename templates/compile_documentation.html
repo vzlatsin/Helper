@@ -4,34 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Documentation Compilation</title>
-    <!-- Add any necessary stylesheets or scripts here -->
+    <!-- Add any necessary stylesheets here -->
 </head>
 <body>
     <h1>Documentation Compilation</h1>
     <p>This page allows you to compile documentation for your project.</p>
-    <form id="documentationForm">
+    
+    <form id="documentationForm" action="/compile-documentation" method="post">
         <label for="documentationTitle">Documentation Title:</label><br>
-        <input type="text" id="documentationTitle" name="documentationTitle"><br><br>
-        <label for="documentationFiles">Select Documentation Files:</label><br>
-        <input type="file" id="documentationFiles" name="documentationFiles" multiple accept=".md"><br><br>
-        <button type="submit">Compile Documentation</button>
-    </form>
-    <!-- Add any necessary scripts or additional HTML elements here -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
-    <script>
-        // Connect to SocketIO server
-        var socket = io();
+        <input type="text" id="documentationTitle" name="documentationTitle" required><br><br>
+        
+        <label for="docsPath">Documentation Directory Path:</label><br>
+        <input type="text" id="docsPath" name="docsPath" value="docs/scripts/" required><br><br>
 
-        // Add an event listener to the form for form submission
+        <!-- New input field for the output path -->
+        <label for="outputPath">Output Path/File for Compiled Documentation:</label><br>
+        <input type="text" id="outputPath" name="outputPath" required><br><br>
+    
+        <button type="submit">Compile Documentation</button>
+        
+    </form>
+    
+
+    <script>
         document.getElementById('documentationForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent the default form submission behavior
 
-            // Get form data
             var formData = new FormData(this);
-
-            // Emit a SocketIO event with the form data
-            socket.emit('compile_documentation', {
-                formData: formData
+            fetch('/compile-documentation', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data); // Handle success
+                alert("Documentation compiled successfully!");
+            })
+            .catch(error => {
+                console.error('Error:', error); // Handle errors
+                alert("Error compiling documentation.");
             });
         });
     </script>

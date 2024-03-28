@@ -1,11 +1,12 @@
 import os
 from glob import glob
 
-def compile_documentation():
+def compile_documentation_test():
     # Define the directory paths for source and output files
-    source_directory = 'docs/src'
+    source_directory = 'docs/scripts'
     output_file = 'docs/compiled_documentation.md'
 
+    print(f"Documentation should be compiled to: {output_file}")
     # List all Markdown files in the source directory
     markdown_files = glob(os.path.join(source_directory, '*.md'))
 

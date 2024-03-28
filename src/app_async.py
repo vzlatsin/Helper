@@ -3,7 +3,7 @@ from flask_socketio import SocketIO, emit
 import eventlet
 from src.helper import MyTradingApp  # Assuming these imports are used elsewhere
 from src.flex_query import initiate_flex_query_report, download_flex_query_report
-from src.compile_documentation import compile_documentation
+#from src.compile_documentation import compile_documentation
 from src.db.data_access import create_connection, get_latest_dividend_date, count_dividend_records, insert_dividend
 from .data_sync import compare_dividend_data
 from src.ib_data_fetcher import fetch_dividends_from_ib
@@ -16,6 +16,9 @@ from flask_cors import CORS
 import os
 import markdown
 import re
+from werkzeug.utils import secure_filename
+import logging
+import glob
 
 
 def create_async_app(config):
@@ -83,13 +86,60 @@ def create_async_app(config):
     def render_compile_documentation_page():
         return render_template('compile_documentation.html')
 
-    # Route to handle documentation compilation form submission
-    @socketio.on('compile_documentation')
-    def handle_compile_documentation(data):
-        title = data.get('title')
-        files = data.get('files')
-        if title and files:
-            socketio.start_background_task(target=compile_documentation_async, title=title, files=files)
+    @app.route('/compile-documentation', methods=['POST'])
+    def handle_compile_documentation():
+        title = request.form.get('documentationTitle')
+        docs_path = request.form.get('docsPath')
+        output_path = request.form.get('outputPath')
+
+        # Sanitize and validate the docs_path and output_path here as needed
+
+        try:
+            compiled_doc_path = compile_docs_from_directory(docs_path, output_path, title)
+            # Respond with success and possibly the path or a link to the compiled document
+            return jsonify({"message": "Documentation compiled successfully!", "path": compiled_doc_path})
+        except Exception as e:
+            # Log the error and respond accordingly
+            return jsonify({"error": str(e)}), 500
+
+    def compile_docs_from_directory(directory_path, output_path, title):
+        markdown_files = glob.glob(f"{directory_path}/*.md")
+        compiled_content = f"# {title}\n\n"
+
+        for file_path in sorted(markdown_files):
+            with open(file_path, 'r', encoding='utf-8') as file:
+                compiled_content += file.read() + "\n\n"
+        
+        # Save the compiled content to the specified output path
+        with open(output_path, 'w', encoding='utf-8') as compiled_file:
+            compiled_file.write(compiled_content)
+        
+        return output_path
+
+
+    def compile_documentation(file_paths, title):
+        compiled_content = ""
+        output_path = os.path.join('compiled_docs', f"{title}.md")
+        
+        if not os.path.exists('compiled_docs'):
+            os.makedirs('compiled_docs')
+            logging.info(f"Created directory for compiled documentation.")
+
+        try:
+            for file_path in file_paths:
+                with open(file_path, 'r', encoding='utf-8') as md_file:
+                    logging.info(f"Reading file {file_path}")
+                    compiled_content += md_file.read() + "\n\n"
+            
+            with open(output_path, 'w', encoding='utf-8') as compiled_file:
+                logging.info(f"Writing compiled content to {output_path}")
+                compiled_file.write(compiled_content)
+            
+            return output_path
+        except Exception as e:
+            logging.error(f"Failed to compile documentation: {e}")
+            raise
+
 
     # Function to compile documentation asynchronously
     def compile_documentation_async(title, files):
