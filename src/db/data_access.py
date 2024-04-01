@@ -52,6 +52,7 @@ def insert_dividend_if_not_exists(conn, symbol, amount, ex_date, pay_date):
         cur.execute("INSERT INTO dividends (symbol, amount, ex_date, pay_date) VALUES (?, ?, ?, ?)",
                     (symbol, amount, ex_date, pay_date))
         conn.commit()
+        logging.info(f'Inserted new record into DB: {symbol}, date: {ex_date}, amount: {amount}')
     else:
         logging.info(f'Record exists in DB: {symbol} date: {ex_date} amount: {amount}')
 
@@ -81,7 +82,13 @@ def get_latest_dividend_date(conn):
         return datetime.strptime(result[0], '%Y-%m-%d')
     else:
         return None
-    
+
+def get_dividend_date_range(conn):
+    cur = conn.cursor()
+    cur.execute("SELECT MIN(ex_date), MAX(ex_date) FROM dividends")
+    min_date, max_date = cur.fetchone()
+    return min_date, max_date
+
 import sqlite3
 
 def fetch_dividends_from_db(conn):

@@ -7,7 +7,7 @@ from src.flex_query import initiate_flex_query_report, download_flex_query_repor
 from src.db.data_access import create_connection, get_latest_dividend_date, count_dividend_records, insert_dividend
 from .data_sync import compare_dividend_data
 from src.ib_data_fetcher import fetch_dividends_from_ib
-from .db.data_access import fetch_dividends_from_db, insert_dividend_if_not_exists, fetch_dividends_by_quarter
+from .db.data_access import fetch_dividends_from_db, insert_dividend_if_not_exists, fetch_dividends_by_quarter, get_dividend_date_range
 from src.file_operations import write_transactions_to_file
 from flask import request
 from flask import current_app
@@ -73,14 +73,44 @@ def create_async_app(config):
             socketio.emit('update', {'message': 'Starting to process dividends...'}, namespace='/')
             try:
                 # Synchronously fetch dividend data from IB
-                dividends = fetch_dividends_from_ib(token, config)
+                # dividends = fetch_dividends_from_ib(token, config)
                 # Process dividends (e.g., database operations)
+                result = process_dividends(token, config)
                 # Make sure this processing doesn't block; consider breaking up work or using eventlet for network/db operations
             except Exception as e:
                 socketio.emit('update', {'message': f'Error processing dividends: {str(e)}'}, namespace='/')
             else:
                 socketio.emit('update', {'message': 'Dividend processing complete'}, namespace='/')
     
+    def process_dividends(token, app_config):
+        app.logger.info(f"Processing dividends: Token: {token}")
+        db_path = app_config['db_path']
+        try:
+            conn = create_connection(db_path)
+            if conn is None:
+                raise Exception("Failed to connect to the database.")
+            # Before insertion
+            initial_count = count_dividend_records(conn)
+            date_range_start, date_range_end = get_dividend_date_range(conn)
+            socketio.emit('update', {'message': f'Before insertion - Count: {initial_count}, Date range: {date_range_start} to {date_range_end}'}, namespace='/')
+
+            transactions = fetch_dividends_from_ib(token, app_config)
+            for t in transactions:
+                try:
+                    insert_dividend_if_not_exists(conn, t['symbol'], t['amount'], t['ex_date'], t['pay_date'])
+                except Exception as e:
+                    app.logger.error(f"Failed to insert dividend for {t['symbol']}: {e}")
+            
+            # After insertion
+            final_count = count_dividend_records(conn)
+            _, last_date = get_dividend_date_range(conn)
+            socketio.emit('update', {'message': f'After insertion - Count: {final_count}, Last dividend date: {last_date}'}, namespace='/')
+        except Exception as e:
+            app.logger.error(f"Error processing dividends: {e}")
+        finally:
+            if conn:
+                conn.close()
+
     # Route to render the documentation compilation page
     @app.route('/compile-documentation')
     def render_compile_documentation_page():

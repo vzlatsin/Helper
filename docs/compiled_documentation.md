@@ -1,4 +1,4 @@
-# test
+# The book
 
 # Table of Contents
 
@@ -67,6 +67,20 @@ The script initializes a Flask app with CORS enabled, configures it with default
 
 Details on processing dividends in the background, ensuring non-blocking operations while providing real-time updates to the client.
 
+### Event-Driven Architecture and Real-Time Data Handling
+
+The `app_async` module utilizes an event-driven architecture to manage real-time data updates and background processing tasks efficiently. This approach leverages Flask-SocketIO to facilitate real-time web communication, ensuring that the application remains dynamic and responsive to user interactions.
+
+#### Handling Dividend Data in Real-Time
+
+- **Event: `fetch_dividends`**
+  - **Trigger:** Initiated by the user's request to fetch new dividend information.
+  - **Process:** Upon triggering, the event enqueues a background task to retrieve dividend data using the `flex-query` module. Once the data is fetched and processed, it is stored in the database via the `data-access` module.
+  - **Real-Time Updates:** The module then pushes updates to the client through a SocketIO event, allowing the user interface to display the latest dividend information without requiring a page refresh.
+
+This architecture supports a highly interactive user experience by ensuring that data displayed to the user is as up-to-date as possible. By detailing specific events and their handling, developers can gain insights into integrating additional real-time data functionalities into the application.
+
+
 ## Error Handling
 
 Explanation of error handling within async tasks and routes, ensuring robust application behavior.
@@ -102,6 +116,10 @@ Highlights the importance of SQLite installation and SQL syntax familiarity.
 ## Future Improvements
 
 Discusses transitioning to asynchronous database operations and advanced data analysis queries.
+
+### Interactions and Data Flow
+The `data-access` module interfaces directly with the database, handling CRUD operations for financial data. It receives data from the `flex-query` module in JSON format, which it then validates and stores. Additionally, it serves processed data upon request to the `app_async` module for real-time display to users. 
+
 
 
 # Flex Query Documentation

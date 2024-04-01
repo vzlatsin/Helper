@@ -23,3 +23,7 @@ Highlights the importance of SQLite installation and SQL syntax familiarity.
 ## Future Improvements
 
 Discusses transitioning to asynchronous database operations and advanced data analysis queries.
+
+### Interactions and Data Flow
+The `data-access` module interfaces directly with the database, handling CRUD operations for financial data. It receives data from the `flex-query` module in JSON format, which it then validates and stores. Additionally, it serves processed data upon request to the `app_async` module for real-time display to users. 
+
