@@ -42,6 +42,10 @@ def create_async_app(config):
     # Ensure that any use of trading_app is compatible with asynchronous operations.
     trading_app = MyTradingApp()
 
+    @app.route('/')
+    def home():
+        return render_template('index.html')
+    
     @app.route('/async-route')
     async def async_route():
         # Emit a message directly from the route to all connected clients
