@@ -6,8 +6,8 @@ from src.flex_query import initiate_flex_query_report, download_flex_query_repor
 #from src.compile_documentation import compile_documentation
 from src.db.data_access import create_connection, get_latest_dividend_date, count_dividend_records, insert_dividend
 from .data_sync import compare_dividend_data
-from src.ib_data_fetcher import fetch_dividends_from_ib
-from .db.data_access import fetch_dividends_from_db, insert_dividend_if_not_exists, fetch_dividends_by_quarter, get_dividend_date_range
+from src.ib_data_fetcher import fetch_dividends_from_ib, fetch_trades_from_ib
+from .db.data_access import fetch_dividends_from_db, fetch_all_trades, insert_dividend_if_not_exists, insert_trade_if_not_exists, fetch_dividends_by_quarter, get_dividend_date_range
 from src.file_operations import write_transactions_to_file
 from flask import request
 from flask import current_app
@@ -91,6 +91,7 @@ def create_async_app(config):
                 raise Exception("Failed to connect to the database.")
             # Before insertion
             initial_count = count_dividend_records(conn)
+            print(f"Get dividend range...")
             date_range_start, date_range_end = get_dividend_date_range(conn)
             socketio.emit('update', {'message': f'Before insertion - Count: {initial_count}, Date range: {date_range_start} to {date_range_end}'}, namespace='/')
 
@@ -107,6 +108,84 @@ def create_async_app(config):
             socketio.emit('update', {'message': f'After insertion - Count: {final_count}, Last dividend date: {last_date}'}, namespace='/')
         except Exception as e:
             app.logger.error(f"Error processing dividends: {e}")
+        finally:
+            if conn:
+                conn.close()
+
+    @socketio.on('fetch_trades')
+    def handle_fetch_trades(data):
+        token = data.get('token')
+        # Optionally, you can use different parameters to distinguish between trade and dividend data fetching
+        socketio.start_background_task(target=process_trades_async, token=token, config=app.config)
+
+    def process_trades_async(token, config):
+        with app.app_context():
+            conn = None  # Ensuring conn is defined regardless of the try block's outcome
+            print(f"Starting trade processing...")
+            socketio.emit('update', {'message': 'Starting to process trades...'}, namespace='/')
+            try:
+                # Emit the Flex Query ID being used to fetch trade data
+                trade_query_id = config['flex_queries']['trades']
+                print(f"Fetching trades...")
+                socketio.emit('update', {'message': f'Fetching Trades with Query ID: {trade_query_id}'}, namespace='/')
+                    # Fetch trade data from IB
+                trades = fetch_trades_from_ib(token, config)
+                if not trades:
+                    socketio.emit('update', {'message': 'No trade data found to process.'}, namespace='/')
+                    return
+
+                print(f"Creating connection...")
+                conn = create_connection(config['db_path'])
+                if conn is None:
+                    raise Exception("Failed to connect to the database.")
+                
+                # Process each trade
+                for trade in trades:
+                    trade_data = {
+                        'symbol': trade['symbol'], 
+                        'dateTime': trade.get('dateTime', None),  # Using .get for optional fields provides a default value of None if the key doesn't exist
+                        'putCall': trade.get('putCall', None), 
+                        'transactionType': trade['transactionType'], 
+                        'quantity': trade['quantity'], 
+                        'tradePrice': trade.get('tradePrice', None),
+                        'closePrice': trade.get('closePrice', None),
+                        'cost': trade.get('cost', None),
+                        'origTradePrice': trade.get('origTradePrice', None),
+                        'origTradeDate': trade.get('origTradeDate', None),
+                        'buySell': trade.get('buySell', None),
+                        'orderTime': trade.get('orderTime', None),
+                        'openDateTime': trade.get('openDateTime', None),
+                        'assetCategory': trade.get('assetCategory', None),
+                        'strike': trade.get('strike', None),
+                        'expiry': trade.get('expiry', None),
+                        'tradeDate': trade.get('tradeDate', None)
+                    }
+
+                    insert_trade_if_not_exists(conn, trade_data)
+                
+                socketio.emit('update', {'message': 'Trade processing complete'}, namespace='/')
+            except Exception as e:
+                socketio.emit('update', {'message': f'Error processing trades: {str(e)}'}, namespace='/')
+            finally:
+                if conn:
+                    conn.close()
+
+    
+    def process_trades(token, app_config):
+        app.logger.info("Processing trades...")
+        db_path = app_config['db_path']
+        try:
+            conn = create_connection(app_config['db_path'])
+            if conn is None:
+                raise Exception("Failed to connect to the database.")
+            
+            trades = fetch_trades_from_ib(token, app_config)
+            for trade in trades:
+                insert_trade_if_not_exists(conn, **trade)
+            
+            app.logger.info("Trade processing complete.")
+        except Exception as e:
+            app.logger.error(f"Error processing trades: {e}")
         finally:
             if conn:
                 conn.close()

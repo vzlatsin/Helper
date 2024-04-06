@@ -57,12 +57,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
         var token = document.getElementById('token').value;
         var data_type = document.querySelector('input[name="data_type"]:checked').value;
-        socket.emit('fetch_dividends', {token: token, data_type: data_type});
+        
+        // Emit the appropriate event based on the selected data type
+        if(data_type === 'dividends') {
+            socket.emit('fetch_dividends', {token: token});
+        } else if(data_type === 'trades') {
+            socket.emit('fetch_trades', {token: token});
+        }
 
         statusMessages.innerHTML = '<p>Request submitted, awaiting updates...</p>';
     });
 
     socket.on('update', function(data) {
+        console.log('Received message:', data.message);
         statusMessages.innerHTML += '<p>' + data.message + '</p>';
     });
 

@@ -80,6 +80,14 @@ The `app_async` module utilizes an event-driven architecture to manage real-time
 
 This architecture supports a highly interactive user experience by ensuring that data displayed to the user is as up-to-date as possible. By detailing specific events and their handling, developers can gain insights into integrating additional real-time data functionalities into the application.
 
+### Handling Trade Data in Real-Time
+
+- **Event: `fetch_trades`**
+  - **Trigger**: User request to fetch trade information.
+  - **Process**: Activates a background task to retrieve trade data using the `ib_data_fetcher` module, then processes and stores this data in the database, avoiding duplicates.
+  - **Real-Time Updates**: Utilizes SocketIO to provide immediate updates to the client, showcasing the latest trade information seamlessly.
+
+This module's structure allows for the efficient handling of both dividend and trade data in a non-blocking manner, significantly enhancing the application's responsiveness and user experience.
 
 ## Error Handling
 
@@ -100,6 +108,8 @@ This module manages database operations for financial data, including inserting 
 - **create_connection(db_file)**: Establishes a database connection.
 - **insert_dividend(conn, symbol, amount, ex_date, pay_date)**: Inserts a new dividend record.
 - **insert_dividend_if_not_exists(conn, symbol, amount, ex_date, pay_date)**: Ensures no duplicate records are inserted.
+- **insert_trade_if_not_exists(conn, symbol, transaction_type, trade_id, order_time, trade_date, buy_sell, quantity, price, amount, commission, net_cash, tax)**: Inserts a new trade record into the database if an identical record does not already exist. This function is essential for maintaining the integrity of the trades data stored within the application.
+
 - **count_dividend_records(conn)**: Counts total dividend records.
 - **get_latest_dividend_date(conn)**: Retrieves the latest dividend date.
 - **fetch_dividends_from_db(conn)**: Fetches all dividend records.
@@ -128,10 +138,14 @@ This module is responsible for fetching financial data through Flex Query API ca
 
 ## Functions Overview
 
-- **parse_xml_response(response_text)**: Parses XML response strings.
-- **RequestHandler.get(url, params)**: Manages GET requests with given URL and parameters.
-- **initiate_flex_query_report(query_id, token, request_handler=None)**: Initiates Flex Query report process.
-- **download_flex_query_report(reference_code, token, retry_attempts, retry_wait, request_handler=None)**: Downloads the Flex Query report with retry logic.
+- **`parse_xml_response(response_text)`**: Parses XML response strings into a structured format.
+- **`RequestHandler.get(url, params)`**: Manages GET requests with given URL and parameters, facilitating communication with external APIs.
+- **`initiate_flex_query_report(query_id, token, request_handler=None)`**: Initiates the process for requesting a Flex Query report from Interactive Brokers, using a specified query ID and authentication token.
+- **`download_flex_query_report(reference_code, token, retry_attempts, retry_wait, request_handler=None)`**: Downloads the Flex Query report based on a reference code obtained from initiating the report. Includes retry logic to handle temporary issues.
+- **`get_dividend_query_id(latest_date, flex_queries_config)`**: Determines the most appropriate Flex Query ID for fetching dividend data based on the latest date of dividend data in the database.
+- **`get_trade_query_id(flex_queries_config, criteria=None)`**: Selects the appropriate Flex Query ID for fetching trade data, adaptable based on specified criteria or configurations.
+
+
 
 ## Example Usage
 

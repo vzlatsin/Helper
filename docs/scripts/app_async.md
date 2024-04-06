@@ -41,6 +41,14 @@ The `app_async` module utilizes an event-driven architecture to manage real-time
 
 This architecture supports a highly interactive user experience by ensuring that data displayed to the user is as up-to-date as possible. By detailing specific events and their handling, developers can gain insights into integrating additional real-time data functionalities into the application.
 
+### Handling Trade Data in Real-Time
+
+- **Event: `fetch_trades`**
+  - **Trigger**: User request to fetch trade information.
+  - **Process**: Activates a background task to retrieve trade data using the `ib_data_fetcher` module, then processes and stores this data in the database, avoiding duplicates.
+  - **Real-Time Updates**: Utilizes SocketIO to provide immediate updates to the client, showcasing the latest trade information seamlessly.
+
+This module's structure allows for the efficient handling of both dividend and trade data in a non-blocking manner, significantly enhancing the application's responsiveness and user experience.
 
 ## Error Handling
 

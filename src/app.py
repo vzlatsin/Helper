@@ -9,7 +9,7 @@ from datetime import datetime
 from .helper import MyTradingApp
 from .report_parser import parse_cash_transaction
 import logging
-from src.flex_query import initiate_flex_query_report, download_flex_query_report, get_query_id, get_last_dividend_date
+from src.flex_query import initiate_flex_query_report, download_flex_query_report
 from src.db.data_access import create_connection, get_latest_dividend_date, count_dividend_records, insert_dividend
 from .data_sync import compare_dividend_data
 from src.ib_data_fetcher import fetch_dividends_from_ib

@@ -153,6 +153,60 @@ def fetch_dividends_by_quarter(conn):
     
     return dividends_by_quarter
 
+def insert_trade_if_not_exists(conn, trade_data):
+    """
+    Insert a new trade into the trades table if it does not already exist, based on symbol, dateTime, and tradeDate.
+
+    :param conn: Database connection object.
+    :param trade_data: Dictionary containing trade details including all columns from the trades table.
+    """
+    try:
+        # Extract identifying details from trade_data dictionary to check for existing trade
+        symbol = trade_data['symbol']
+        dateTime = trade_data.get('dateTime', None)
+        tradeDate = trade_data['tradeDate']
+
+        # Construct the query to check for existing trade
+        check_query = """SELECT COUNT(*) FROM trades 
+                         WHERE symbol = ? AND dateTime = ? AND tradeDate = ?"""
+        cur = conn.cursor()
+        cur.execute(check_query, (symbol, dateTime, tradeDate))
+        exists = cur.fetchone()[0] > 0  # True if count is more than 0
+
+        # If the trade does not exist, insert it
+        if not exists:
+            insert_query = '''INSERT INTO trades(symbol, dateTime, putCall, transactionType, quantity, tradePrice, 
+                                                 closePrice, cost, origTradePrice, origTradeDate, buySell, orderTime, 
+                                                 openDateTime, assetCategory, strike, expiry, tradeDate)
+                              VALUES(:symbol, :dateTime, :putCall, :transactionType, :quantity, :tradePrice, 
+                                     :closePrice, :cost, :origTradePrice, :origTradeDate, :buySell, :orderTime, 
+                                     :openDateTime, :assetCategory, :strike, :expiry, :tradeDate)'''
+            cur.execute(insert_query, trade_data)
+            conn.commit()
+            print("Trade inserted successfully.")
+        else:
+            print("Trade already exists.")
+
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+    except Exception as e:
+        print(f"Exception in insert_trade_if_not_exists: {e}")
+
+
+
+def fetch_all_trades(conn):
+    """
+    Fetch all trade records from the trades table.
+    :param conn: Database connection object.
+    :return: A list of tuples containing all trade records.
+    """
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM trades")
+    trades = cur.fetchall()
+    return trades
+
+
+
 
 
 # Specify the path to your SQLite database file

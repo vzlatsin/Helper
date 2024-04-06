@@ -4,12 +4,50 @@ import logging
 import time
 
 import xml.etree.ElementTree as ET
+from xml.dom import minidom
 from datetime import datetime, timedelta
 
 def parse_xml_response(response_text):
     # Parse the XML response
     root = ET.fromstring(response_text)
+
+    # Convert the ElementTree Element to a pretty-printed XML string for easier reading
+    rough_string = ET.tostring(root, 'utf-8')
+    reparsed = minidom.parseString(rough_string)
+    pretty_xml_as_string = reparsed.toprettyxml(indent="  ")
+
+    # Print the pretty-printed XML
+    # print(pretty_xml_as_string)
+
     return root
+
+def find_trades_response(root):
+    logging.info("Entering find_trades_response...")
+    
+    # Log the count of FlexQueryResponse elements found
+    flex_query_responses = list(root.iter('FlexQueryResponse'))
+    logging.info(f"Total FlexQueryResponse elements found: {len(flex_query_responses)}")
+    
+    for elem in flex_query_responses:
+        # Log the attributes of each FlexQueryResponse element
+        logging.debug(f"FlexQueryResponse attributes: {elem.attrib}")
+        
+        if 'queryName' in elem.attrib:
+            logging.info(f"Found FlexQueryResponse with attributes: {elem.attrib}")
+            
+            if elem.attrib['queryName'] == 'Trades':
+                logging.info("FlexQueryResponse for 'Trades' found. Returning element.")
+                return elem
+            else:
+                # Log if the queryName attribute doesn't match 'Trades'
+                logging.debug(f"FlexQueryResponse found with queryName not equal to 'Trades': {elem.attrib['queryName']}")
+        else:
+            # Log if the FlexQueryResponse element doesn't have a queryName attribute
+            logging.debug("Found FlexQueryResponse without a queryName attribute.")
+    
+    logging.info("No FlexQueryResponse for 'Trades' found. Returning None.")
+    return None
+
 
 class RequestHandler:
     def get(self, url, params):
@@ -29,7 +67,8 @@ def initiate_flex_query_report(query_id, token, request_handler=None):
     url = "https://ndcdyn.interactivebrokers.com/Universal/servlet/FlexStatementService.SendRequest"
     params = {"t": token, "q": query_id, "v": "3"}
     response = request_handler.get(url, params=params)
-    logging.info('Initiating Flex Query with query ID: {query_id} and {token}')
+    print(f"initiate_flex_query_report: Query ID: {query_id}, {token}")
+    logging.info('initiate_flex_query_report: Initiating Flex Query with query ID: {query_id} and {token}')
     if response.status_code == 200:
         try:
             root = parse_xml_response(response.text)
@@ -61,11 +100,20 @@ def download_flex_query_report(reference_code, token, retry_attempts=10, retry_w
     params = {"t": token, "q": reference_code, "v": "3"}
     for attempt in range(retry_attempts):
         response = request_handler.get(url, params=params)
-        logging.info(f'Downloading Flex Query report with reference code: {reference_code} and token: {token}')
+        logging.info(f"Downloading Flex Query report with reference code: {reference_code} and token: {token}")
         if response.status_code == 200:
             root = parse_xml_response(response.text)
+
+            #print("Diagnostic XML Output:")
+            #for elem in root.iter():
+                #print(ET.tostring(elem, encoding='unicode'))
+
+            trades_response = find_trades_response(root)
+            
+            cash_transactions = root.find('.//CashTransactions')
+
             # Check for expected elements in the response
-            if root.find('.//FlexQueryResponse') is not None or root.find('.//CashTransactions') is not None:
+            if root is not None and (trades_response is not None or cash_transactions is not None):
                 logging.info('Successfully downloaded the report.')
                 return ET.tostring(root, encoding='unicode')
             else:
@@ -82,10 +130,10 @@ def download_flex_query_report(reference_code, token, retry_attempts=10, retry_w
 def get_last_dividend_date():
     pass
 
-def get_query_id(latest_date, flex_queries_config):
+def get_dividend_query_id(latest_date, flex_queries_config):
     """
     Select the appropriate Flex Query ID based on the difference from the latest date.
-    :param latest_date: The latest dividend date from the database
+    :param latest_date: The latest date from the database
     :return: Flex Query ID as a string
     """
     if latest_date is None:
@@ -102,3 +150,21 @@ def get_query_id(latest_date, flex_queries_config):
         return flex_queries_config['180_days']
     else:
         return flex_queries_config['365_days']
+    
+def get_trade_query_id(flex_queries_config, criteria=None):
+    """
+    Select the appropriate Flex Query ID for fetching trades.
+    
+    This is a placeholder function. The actual implementation might depend on specific criteria,
+    similar to how `get_dividend_query_id` uses the latest date to determine the query ID.
+    
+    :param flex_queries_config: The configuration dictionary containing Flex Query IDs.
+    :param criteria: Optional. Criteria used to select the Flex Query ID for trades.
+    :return: Flex Query ID as a string.
+    """
+    # Example placeholder logic:
+    # If you have different Flex Query IDs for trades based on certain criteria,
+    # implement the logic here to select the appropriate ID from `flex_queries_config`.
+    # For simplicity, this example assumes a single Flex Query ID for all trades.
+    
+    return flex_queries_config['trades']

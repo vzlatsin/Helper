@@ -31,13 +31,41 @@ def main():
                                         pay_date text NOT NULL
                                     ); """
 
+    # SQL statement for creating the trades table
+    sql_create_trades_table = """CREATE TABLE IF NOT EXISTS trades (
+                                id INTEGER PRIMARY KEY,
+                                symbol TEXT NOT NULL,
+                                dateTime TEXT,
+                                putCall TEXT,
+                                transactionType TEXT,
+                                quantity REAL NOT NULL,
+                                tradePrice REAL,
+                                closePrice REAL,
+                                cost REAL,
+                                origTradePrice REAL,
+                                origTradeDate TEXT,
+                                buySell TEXT,
+                                orderTime TEXT,
+                                openDateTime TEXT,
+                                assetCategory TEXT,
+                                strike REAL,
+                                expiry TEXT,
+                                tradeDate TEXT
+                            );"""
 
+    
     # Create a database connection
     conn = create_connection(database)
 
     # Create tables
     if conn is not None:
+        # Create dividends table
         create_table(conn, sql_create_dividends_table)
+        print("Dividends table created successfully.")
+        
+        # Create trades table
+        create_table(conn, sql_create_trades_table)
+        print("Trades table created successfully.")
 
         conn.close()
     else:
