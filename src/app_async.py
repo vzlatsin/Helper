@@ -1,4 +1,6 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, render_template_string
+from markupsafe import Markup
+
 from flask_socketio import SocketIO, emit
 import eventlet
 from src.helper import MyTradingApp  # Assuming these imports are used elsewhere
@@ -216,22 +218,55 @@ def create_async_app(config):
             return jsonify({"error": str(e)}), 500
 
     def compile_docs_from_directory(directory_path, output_path, title):
-        # First, generate the TOC
-        toc = generate_toc_for_directory(directory_path)
-        toc_content = "# Table of Contents\n\n"
-        for entry in toc:
-            filename, headings = entry
-            toc_content += f"- [{filename}](#{filename.replace(' ', '-').lower()})\n"
-            for level, heading in headings:
-                indent = "  " * (level - 1)
-                toc_content += f"{indent}- [{heading}](#{heading.replace(' ', '-').lower()})\n"
+        # Generate the TOC, including the OVERVIEW.md at the beginning
+        logging.info(f"Generating TOC....")
+        try:
+            # Initialize toc_entries with actual entries instead of using ...
+            # If you have more sections to add, include them as tuples similar to the provided ones
+            toc_entries = [
+                ("OVERVIEW.md", [
+                    ("1", "Project Structure Overview"), 
+                    ("2", "Environment Setup")
+                    # Add additional sections as needed here, in the form of ("level", "Title"),
+                ])
+            ]
+            toc = generate_toc_for_directory(directory_path)
+            toc_entries.extend(toc)  # Incorporate other documentation files into the TOC
+            
+            toc_content = "# Table of Contents\n\n"
+            for filename, headings in toc_entries:
+                logging.info(f"TOC next entry {filename}")
+                anchor_name = filename.replace(' ', '-').lower().replace('.md', '')
+                toc_content += f"- [{filename.replace('.md', '')}](#{anchor_name})\n"
+                for level, heading in headings:
+                    level = int(level)  # Convert level to integer if it's not already
+                    indent = "  " * (level - 1)
+                    toc_content += f"{indent}- [{heading}](#{anchor_name}-{heading.replace(' ', '-').lower()})\n"
 
-        # Then, compile the document content
-        compiled_content = f"# {title}\n\n{toc_content}\n\n"
+            # Then, compile the document content
+            compiled_content = f"# {title}\n\n{toc_content}\n\n"    
+
+            
+            # Key Change: Ensure OVERVIEW.md content is included after the TOC
+            # Adjust the overview_path to match the actual location of OVERVIEW.md
+            overview_path = os.path.join(directory_path, '../OVERVIEW.md')
+            if os.path.exists(overview_path):
+                with open(overview_path, 'r', encoding='utf-8') as overview_file:
+                    logging.info("Adding OVERVIEW.md content....")
+                    compiled_content += overview_file.read() + "\n\n"
+        except Exception as e:
+            logging.error(f"An unexpected error occurred: {e}")
+            raise
+
+        logging.info(f"Compiling documents ....")
         markdown_files = glob.glob(f"{directory_path}/*.md")
         for file_path in sorted(markdown_files):
+            if "OVERVIEW.md" in file_path:
+                continue  # Skip OVERVIEW.md since it's already included
             with open(file_path, 'r', encoding='utf-8') as file:
-                # You may want to insert anchors corresponding to the TOC here
+                # Consider adding anchors for each file and heading for TOC links
+                file_basename = os.path.basename(file_path).replace(' ', '-').lower().replace('.md', '')
+                compiled_content += f"<a id='{file_basename}'></a>\n"
                 compiled_content += file.read() + "\n\n"
         
         # Save the compiled content to the specified output path
@@ -296,6 +331,7 @@ def create_async_app(config):
 
     def generate_toc_for_directory(directory_path):
         toc = []
+        logging.info(f"Generating TOC for directory {directory_path}....")
         for filename in sorted(os.listdir(directory_path)):
             if filename.endswith('.md'):
                 file_path = os.path.join(directory_path, filename)
@@ -335,8 +371,48 @@ def create_async_app(config):
             # If the file does not exist, return a 404 error
             return 'File not found', 404
     
-    
+    @app.route('/view-book', methods=['GET', 'POST'])
+    def view_book():
+        # Initialize a variable to hold the content that will be rendered
+        book_content_html_safe = ""
+        # Check if the request method is POST
+        if request.method == 'POST':
+            # Extract filePath from the form data
+            file_path = request.form['filePath']
+            # Ensure the file exists before attempting to open
+            if os.path.exists(file_path):
+                with open(file_path, 'r', encoding='utf-8') as file:
+                    book_content_md = file.read()
+                book_content_html = markdown.markdown(book_content_md)
+                book_content_html_safe = Markup(book_content_html)
+            else:
+                # If the file doesn't exist, prepare an error message
+                book_content_html_safe = Markup("<p>File not found.</p>")
+        
+        # The HTML template remains largely the same
+        html_template = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Book</title>
+</head>
+<body>
+    <h1>The Book</h1>
+    {{ content }}
+    <form action="/view-book" method="post">
+        <label for="filePath">File Path:</label>
+        <input type="text" id="filePath" name="filePath">
+        <br>
+        <input type="submit" value="View Document">
+    </form>
+</body>
+</html>"""
+
+        return render_template_string(html_template, content=book_content_html_safe)
+
     return app, socketio
+
+
 
 
 

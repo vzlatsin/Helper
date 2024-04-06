@@ -1,42 +1,83 @@
-# The book
+# The book 4th of April
 
 # Table of Contents
 
+- [OVERVIEW](#overview)
+- [Project Structure Overview](#overview-project-structure-overview)
+  - [Environment Setup](#overview-environment-setup)
 - [app_async](#app_async)
-- [Async Application Documentation](#async-application-documentation)
-  - [Overview](#overview)
-  - [Setup](#setup)
-  - [Key Components](#key-components)
-  - [Routes](#routes)
-  - [Event Handlers](#event-handlers)
-  - [Background Processing](#background-processing)
-  - [Error Handling](#error-handling)
-  - [Future Enhancements](#future-enhancements)
+- [Async Application Documentation](#app_async-async-application-documentation)
+  - [Overview](#app_async-overview)
+  - [Setup](#app_async-setup)
+  - [Key Components](#app_async-key-components)
+  - [Routes](#app_async-routes)
+  - [Event Handlers](#app_async-event-handlers)
+  - [Background Processing](#app_async-background-processing)
+  - [Error Handling](#app_async-error-handling)
+  - [Future Enhancements](#app_async-future-enhancements)
 - [data-access](#data-access)
-- [Data Access Documentation](#data-access-documentation)
-  - [Functions Overview](#functions-overview)
-  - [Example Usage](#example-usage)
-  - [Tips for New Developers](#tips-for-new-developers)
-  - [Future Improvements](#future-improvements)
+- [Data Access Documentation](#data-access-data-access-documentation)
+  - [Functions Overview](#data-access-functions-overview)
+  - [Example Usage](#data-access-example-usage)
+  - [Tips for New Developers](#data-access-tips-for-new-developers)
+  - [Future Improvements](#data-access-future-improvements)
 - [flex-query](#flex-query)
-- [Flex Query Documentation](#flex-query-documentation)
-  - [Functions Overview](#functions-overview)
-  - [Example Usage](#example-usage)
-  - [Error Handling](#error-handling)
-  - [Future Enhancements](#future-enhancements)
+- [Flex Query Documentation](#flex-query-flex-query-documentation)
+  - [Functions Overview](#flex-query-functions-overview)
+  - [Example Usage](#flex-query-example-usage)
+  - [Error Handling](#flex-query-error-handling)
+  - [Future Enhancements](#flex-query-future-enhancements)
 - [run](#run)
-- [Running the Application](#running-the-application)
-  - [Overview](#overview)
-  - [Prerequisites](#prerequisites)
-  - [Configuration](#configuration)
-  - [Logging](#logging)
-  - [Usage](#usage)
-  - [Environment Variables](#environment-variables)
-  - [Command-Line Arguments](#command-line-arguments)
-  - [Code Snippets](#code-snippets)
-  - [Troubleshooting](#troubleshooting)
+- [Running the Application](#run-running-the-application)
+  - [Overview](#run-overview)
+  - [Prerequisites](#run-prerequisites)
+  - [Configuration](#run-configuration)
+  - [Logging](#run-logging)
+  - [Usage](#run-usage)
+  - [Environment Variables](#run-environment-variables)
+  - [Command-Line Arguments](#run-command-line-arguments)
+  - [Code Snippets](#run-code-snippets)
+  - [Troubleshooting](#run-troubleshooting)
 
 
+
+
+### 1. **Project Structure Overview**
+Provide a detailed overview of your project's directory structure, including the purpose of key directories (e.g., `templates`, `static`, `src`). Example:
+- `templates/`: Contains HTML files for rendering views.
+- `static/`: Stores static files like CSS, JavaScript, and images.
+- `src/`: Holds Python modules for various functionalities like data access, utility functions, etc.
+
+### 2. **Environment Setup**
+Detail the steps required to set up the development environment, including necessary software, frameworks (e.g., Flask, Express), and libraries (e.g., Flask-SocketIO, eventlet). Include version numbers where applicable to ensure compatibility.
+
+### 3. **Running the Application**
+Include instructions on how to start the application locally. Mention any commands needed, the default URL to access the app (e.g., `http://localhost:5000`), and how to stop the server.
+
+### 4. **URL Routing Conventions**
+Explain your approach to defining routes, especially the naming conventions for URL paths. Highlight the difference between accessing static files directly (if applicable) and serving pages through routes.
+
+### 5. **Template Rendering Guide**
+Describe how templates are rendered and served. Include a note on where templates should be located (`templates` folder) and how they're referenced in the server-side code.
+
+### 6. **Linking to Pages from HTML**
+Clarify the correct way to create links in HTML templates, emphasizing the use of URL paths defined by routes instead of direct file references. Provide examples of both correct and incorrect linking methods.
+
+### 7. **Static Files Usage**
+Detail how static files (CSS, JavaScript, images) are organized and how they should be referenced within HTML templates and CSS files.
+
+### 8. **Common Errors and Troubleshooting**
+Include a section on common errors (like the 404 error when clicking a link) with explanations and troubleshooting steps. This could serve as a quick reference to diagnose and fix issues.
+
+### 9. **Version Control and Deployment**
+Offer guidance on how to prepare the application for version control (e.g., using git) and deployment, including any steps to ensure sensitive information is not pushed to public repositories.
+
+### 10. **Contact Information for Further Assistance**
+Provide contact details or specify channels (e.g., email, issue tracker) for seeking further assistance or reporting issues with the documentation or application.
+
+
+
+<a id='app_async'></a>
 # Async Application Documentation
 
 ## Overview
@@ -99,6 +140,7 @@ Potential enhancements for expanding async capabilities and improving real-time 
 
 
 
+<a id='data-access'></a>
 # Data Access Documentation
 
 This module manages database operations for financial data, including inserting new records and querying data.
@@ -132,6 +174,7 @@ The `data-access` module interfaces directly with the database, handling CRUD op
 
 
 
+<a id='flex-query'></a>
 # Flex Query Documentation
 
 This module is responsible for fetching financial data through Flex Query API calls, including initiating and downloading Flex Query reports.
@@ -160,6 +203,7 @@ Describes error logging during request failures or XML parsing issues for easier
 Suggestions for implementing asynchronous request handling and enhancing error recovery mechanisms.
 
 
+<a id='run'></a>
 # Running the Application
 
 ## Overview

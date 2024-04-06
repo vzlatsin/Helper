@@ -1,7 +1,7 @@
 import os
 from glob import glob
 
-def compile_documentation_test():
+def compile_documentation():
     # Define the directory paths for source and output files
     source_directory = 'docs/scripts'
     output_file = 'docs/compiled_documentation.md'
