@@ -183,9 +183,9 @@ def insert_trade_if_not_exists(conn, trade_data):
                                      :openDateTime, :assetCategory, :strike, :expiry, :tradeDate)'''
             cur.execute(insert_query, trade_data)
             conn.commit()
-            print("Trade inserted successfully.")
+            logging.info("Trade inserted successfully.")
         else:
-            print("Trade already exists.")
+            logging.info("Trade already exists.")
 
     except sqlite3.Error as e:
         print(f"Database error: {e}")

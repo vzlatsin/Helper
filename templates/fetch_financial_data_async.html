@@ -60,9 +60,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Emit the appropriate event based on the selected data type
         if(data_type === 'dividends') {
-            socket.emit('fetch_dividends', {token: token});
+            socket.emit('fetch-dividends', {token: token});
         } else if(data_type === 'trades') {
-            socket.emit('fetch_trades', {token: token});
+            socket.emit('fetch-trades', {token: token});
         }
 
         statusMessages.innerHTML = '<p>Request submitted, awaiting updates...</p>';

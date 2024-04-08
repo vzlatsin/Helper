@@ -120,19 +120,21 @@ def create_async_app(config):
 
     @socketio.on('fetch-trades')
     def handle_fetch_trades(data):
+        logging.info("handle_fetch_trades....")
         token = data.get('token')
         # Optionally, you can use different parameters to distinguish between trade and dividend data fetching
         socketio.start_background_task(target=process_trades_async, token=token, config=app.config)
 
     def process_trades_async(token, config):
+        logging.info("process_trades_async....")
         with app.app_context():
             conn = None  # Ensuring conn is defined regardless of the try block's outcome
-            print(f"Starting trade processing...")
+            logging.info("Starting trade processing...")
             socketio.emit('update', {'message': 'Starting to process trades...'}, namespace='/')
             try:
                 # Emit the Flex Query ID being used to fetch trade data
                 trade_query_id = config['flex_queries']['trades']
-                print(f"Fetching trades...")
+                logging.info("Fetching trades...")
                 socketio.emit('update', {'message': f'Fetching Trades with Query ID: {trade_query_id}'}, namespace='/')
                     # Fetch trade data from IB
                 trades = fetch_trades_from_ib(token, config)
@@ -140,7 +142,7 @@ def create_async_app(config):
                     socketio.emit('update', {'message': 'No trade data found to process.'}, namespace='/')
                     return
 
-                print(f"Creating connection...")
+                logging.info("Creating connection...")
                 conn = create_connection(config['db_path'])
                 if conn is None:
                     raise Exception("Failed to connect to the database.")

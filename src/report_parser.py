@@ -69,6 +69,11 @@ def parse_trade_transaction(trade_transaction_xml):
                 'expiry': trade.attrib.get('expiry', ''),
                 'tradeDate': trade.attrib.get('tradeDate', ''),
             }
+            
+            # If the trade is for NEM stock, log its details
+            if trade_info['symbol'].upper() == 'NEM':
+                logging.info(f"NEM trade found: {trade_info}")
+
             trades.append(trade_info)
         except Exception as e:
             logging.error(f"Error processing trade transaction: {e}")
