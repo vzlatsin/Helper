@@ -1,4 +1,8 @@
+# Project Overview
 
+## Overview
+
+This document describes project that is currently being developed for home use.
 
 ### 1. **Project Structure Overview**
 Provide a detailed overview of your project's directory structure, including the purpose of key directories (e.g., `templates`, `static`, `src`). Example:

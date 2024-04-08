@@ -20,6 +20,20 @@
     </header>
     <main>
         <section>
+            <h2>Fetch Trades for a Stock</h2>
+            <form action="/get-trades-for-stock" method="post">
+                <label for="stockSymbol">Enter the stock symbol:</label><br>
+                <input type="text" id="stockSymbol" name="stockSymbol" required>
+                <br>
+                <label for="fileName">File Name:</label><br>
+                <input type="text" id="fileName" name="fileName" required>
+                <br>
+                <input type="submit" value="Fetch Trades">
+            </form>
+            
+        </section>
+        
+        <section>
             <h2>Documentation Index</h2>
             <ul id="documentationList">
                 <!-- Existing documentation titles and links -->
@@ -37,5 +51,36 @@
             </ul>
         </section>
     </main>
+    <!-- WebSocket script starts here -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script type="text/javascript">
+        console.log('Attempting to connect to WebSocket server...');
+    
+        // Attempt to establish a WebSocket connection
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+    
+        // Log a message once the connection is established
+        socket.on('connect', function() {
+            console.log('WebSocket connection established.');
+        });
+    
+        // Listen for the "processing_finished" event and log when it's received
+        socket.on('processing_finished', function(data) {
+            console.log('Received "processing_finished" event:', data);
+            alert(data.message + ". Check the file: " + data.file);
+        });
+    
+        // Add an error handler to log errors
+        socket.io.on("error", function(error) {
+            console.log("WebSocket Error: ", error);
+        });
+    
+        // Log disconnections
+        socket.on('disconnect', function() {
+            console.log('WebSocket disconnected.');
+        });
+    </script>
+    
+    <!-- WebSocket script ends here -->
 </body>
 </html>

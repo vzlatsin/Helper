@@ -206,6 +206,41 @@ def fetch_all_trades(conn):
     return trades
 
 
+def get_trades_by_symbol(conn, symbol):
+    """
+    Query trades by symbol.
+    
+    :param conn: the Connection object
+    :param symbol: string, the symbol to query trades for
+    :return: a list of dictionaries containing trade data
+    """
+    cur = conn.cursor()
+    query = """
+    SELECT id, symbol, dateTime, putCall, transactionType, quantity, 
+           tradePrice, closePrice, cost, origTradePrice, origTradeDate, 
+           buySell, orderTime, openDateTime, assetCategory, strike, 
+           expiry, tradeDate
+    FROM trades
+    WHERE symbol = ?
+    """
+    cur.execute(query, (symbol,))
+    
+    rows = cur.fetchall()
+    
+    # Converting row data to a list of dictionaries for easier processing
+    trades = [
+        {"id": row[0], "symbol": row[1], "dateTime": row[2], "putCall": row[3], 
+         "transactionType": row[4], "quantity": row[5], "tradePrice": row[6], 
+         "closePrice": row[7], "cost": row[8], "origTradePrice": row[9], 
+         "origTradeDate": row[10], "buySell": row[11], "orderTime": row[12], 
+         "openDateTime": row[13], "assetCategory": row[14], "strike": row[15], 
+         "expiry": row[16], "tradeDate": row[17]}
+        for row in rows
+    ]
+    
+    return trades
+
+
 
 
 

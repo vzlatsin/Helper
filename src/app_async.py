@@ -9,7 +9,7 @@ from src.flex_query import initiate_flex_query_report, download_flex_query_repor
 from src.db.data_access import create_connection, get_latest_dividend_date, count_dividend_records, insert_dividend
 from .data_sync import compare_dividend_data
 from src.ib_data_fetcher import fetch_dividends_from_ib, fetch_trades_from_ib
-from .db.data_access import fetch_dividends_from_db, fetch_all_trades, insert_dividend_if_not_exists, insert_trade_if_not_exists, fetch_dividends_by_quarter, get_dividend_date_range
+from .db.data_access import fetch_dividends_from_db, fetch_all_trades, insert_dividend_if_not_exists, insert_trade_if_not_exists, fetch_dividends_by_quarter, get_dividend_date_range, get_trades_by_symbol
 from src.file_operations import write_transactions_to_file
 from flask import request
 from flask import current_app
@@ -118,7 +118,7 @@ def create_async_app(config):
             if conn:
                 conn.close()
 
-    @socketio.on('fetch_trades')
+    @socketio.on('fetch-trades')
     def handle_fetch_trades(data):
         token = data.get('token')
         # Optionally, you can use different parameters to distinguish between trade and dividend data fetching
@@ -196,6 +196,41 @@ def create_async_app(config):
             if conn:
                 conn.close()
 
+    @app.route('/get-trades-for-stock', methods=['POST'])
+    def handle_fetch_trades():
+        stock_symbol = request.form.get('stockSymbol')
+        file_name = request.form.get('fileName')
+        
+        socketio.start_background_task(process_trades_for_stock_async, stock_symbol=stock_symbol, file_name=file_name, app_config=app.config)
+
+        return render_template_string("<p>Fetching trades for the stock symbol in the background. Results will be saved to " + file_name + ".</p>")
+
+
+
+    def process_trades_for_stock_async(stock_symbol, file_name, app_config):
+        db_path = app_config['db_path']
+
+        if not stock_symbol:
+            print("Stock symbol not provided.")
+            return
+        
+        try:
+            conn = create_connection(db_path)
+            trades = get_trades_by_symbol(conn, stock_symbol)
+            conn.close()
+            
+            # Write the trades to the specified text file
+            with open(file_name, 'w') as file:
+                for trade in trades:
+                    file.write(str(trade) + "\n")
+            
+            # Notify via WebSocket (Flask-SocketIO) that processing is finished
+            socketio.emit('processing_finished', {'message': 'Trades processing finished', 'file': file_name})
+        except Exception as e:
+            print({"error": str(e)})
+
+
+
     # Route to render the documentation compilation page
     @app.route('/compile-documentation')
     def render_compile_documentation_page():
@@ -240,8 +275,9 @@ def create_async_app(config):
                 toc_content += f"- [{filename.replace('.md', '')}](#{anchor_name})\n"
                 for level, heading in headings:
                     level = int(level)  # Convert level to integer if it's not already
-                    indent = "  " * (level - 1)
-                    toc_content += f"{indent}- [{heading}](#{anchor_name}-{heading.replace(' ', '-').lower()})\n"
+                    indent = "  " * level
+                    toc_content += f"{indent}- {heading}\n"
+
 
             # Then, compile the document content
             compiled_content = f"# {title}\n\n{toc_content}\n\n"    
@@ -253,6 +289,7 @@ def create_async_app(config):
             if os.path.exists(overview_path):
                 with open(overview_path, 'r', encoding='utf-8') as overview_file:
                     logging.info("Adding OVERVIEW.md content....")
+                    compiled_content += f"<a id='overview'></a>\n"
                     compiled_content += overview_file.read() + "\n\n"
         except Exception as e:
             logging.error(f"An unexpected error occurred: {e}")
