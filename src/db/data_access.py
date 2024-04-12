@@ -221,9 +221,10 @@ def get_trades_by_symbol(conn, symbol):
            buySell, orderTime, openDateTime, assetCategory, strike, 
            expiry, tradeDate
     FROM trades
-    WHERE symbol = ?
+    WHERE symbol like ?
+    ORDER BY tradeDate ASC
     """
-    cur.execute(query, (symbol,))
+    cur.execute(query, (f"{symbol}%",))
     
     rows = cur.fetchall()
     

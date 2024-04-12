@@ -90,5 +90,5 @@ def fetch_trades_from_ib(token, config):
         }
         trade_dicts.append(trade_dict)
     
-    logging.debug("Fetched and processed trades: %s", trade_dicts)
+    #logging.debug("Fetched and processed trades: %s", trade_dicts)
     return trade_dicts

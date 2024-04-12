@@ -17,7 +17,7 @@ def parse_xml_response(response_text):
     pretty_xml_as_string = reparsed.toprettyxml(indent="  ")
 
     # Print the pretty-printed XML
-    # print(pretty_xml_as_string)
+    print(pretty_xml_as_string)
 
     return root
 

@@ -40,6 +40,7 @@ def parse_trade_transaction(trade_transaction_xml):
     :param trade_transaction_xml: XML string with trade transaction data.
     :return: A list of dictionaries, each representing a trade, including detailed fields.
     """
+    logging.info(f"XML to be processed: {trade_transaction_xml}")
     # Parse the XML string into an Element
     root = ET.fromstring(trade_transaction_xml)
 
@@ -69,9 +70,9 @@ def parse_trade_transaction(trade_transaction_xml):
                 'expiry': trade.attrib.get('expiry', ''),
                 'tradeDate': trade.attrib.get('tradeDate', ''),
             }
-            
-            # If the trade is for NEM stock, log its details
-            if trade_info['symbol'].upper() == 'NEM':
+
+            # If the trade is for NEM stock (or starts with "NEM"), log its details
+            if trade_info['symbol'].strip().upper().startswith('NEM'):
                 logging.info(f"NEM trade found: {trade_info}")
 
             trades.append(trade_info)

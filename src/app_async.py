@@ -11,6 +11,7 @@ from .data_sync import compare_dividend_data
 from src.ib_data_fetcher import fetch_dividends_from_ib, fetch_trades_from_ib
 from .db.data_access import fetch_dividends_from_db, fetch_all_trades, insert_dividend_if_not_exists, insert_trade_if_not_exists, fetch_dividends_by_quarter, get_dividend_date_range, get_trades_by_symbol
 from src.file_operations import write_transactions_to_file
+from src.trade_processing import generate_description_for_trade, filter_and_organize_trades
 from flask import request
 from flask import current_app
 from flask_cors import CORS
@@ -220,11 +221,20 @@ def create_async_app(config):
             conn = create_connection(db_path)
             trades = get_trades_by_symbol(conn, stock_symbol)
             conn.close()
+
+            # Update this part to filter and organize trades for description generation
+            grouped_trades = filter_and_organize_trades(trades)
             
-            # Write the trades to the specified text file
             with open(file_name, 'w') as file:
-                for trade in trades:
-                    file.write(str(trade) + "\n")
+                for key, group in grouped_trades.items():
+                    # Print all related (non-ExchTrade) entries for context
+                    for related_trade in group['related']:
+                        file.write(str(related_trade) + "\n")
+                    # If an ExchTrade entry exists, print it and its description
+                    if group['exchTrade']:
+                        file.write(str(group['exchTrade']) + "\n")
+                        description = generate_description_for_trade(group['exchTrade'])
+                        file.write(description + "\n\n")
             
             # Notify via WebSocket (Flask-SocketIO) that processing is finished
             socketio.emit('processing_finished', {'message': 'Trades processing finished', 'file': file_name})
