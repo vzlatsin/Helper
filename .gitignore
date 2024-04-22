@@ -7,3 +7,4 @@ ib_dividends.txt
 NEM.txt
 client_secret*.json
 credentials/
+openai-test.py
