@@ -5,3 +5,5 @@ db_dividends.txt
 ib_dividends.txt
 /venv
 NEM.txt
+client_secret*.json
+credentials/
