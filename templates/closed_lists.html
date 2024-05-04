@@ -1,0 +1,47 @@
+<!-- closed_lists.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Closed Lists</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Closed Lists</h1>
+        <div class="mb-3">
+            <form id="addTaskForm">
+                <label for="taskName">Task Name:</label>
+                <input type="text" id="taskName" class="form-control" required>
+                <label for="taskPriority">Priority:</label>
+                <select id="taskPriority" class="form-control">
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                </select>
+                <label for="taskDeadline">Deadline:</label>
+                <input type="date" id="taskDeadline" class="form-control">
+                <button type="submit" class="btn btn-primary mt-3">Add Task</button>
+            </form>
+        </div>
+
+        <div class="task-list">
+            <h2>Today's Tasks</h2>
+            <ul id="taskList" class="list-group">
+                <!-- Dynamically populated list of tasks -->
+            </ul>
+            <button id="lockListBtn" class="btn btn-warning mt-3">Lock List</button>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        // JavaScript for handling task addition, locking, and notifications goes here
+    </script>
+</body>
+</html>

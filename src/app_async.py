@@ -49,6 +49,10 @@ def create_async_app(config):
     def home():
         return render_template('index.html')
     
+    @app.route('/closed-lists')
+    def closed_lists():
+        return render_template('closed_lists.html')
+    
     @app.route('/async-route')
     async def async_route():
         # Emit a message directly from the route to all connected clients
