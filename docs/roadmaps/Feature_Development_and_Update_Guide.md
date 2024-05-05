@@ -26,7 +26,15 @@ This document provides guidelines for adding or updating features in the "Home A
 ## Project Structure
 
 ### Overview
-- **Architecture Diagram**: Include a high-level architecture diagram of the web app.
+
+
+The web application is structured to handle various tasks efficiently through distinct components, each serving a specific function. At the core, there's a user interface (UI) that users interact with. This UI is designed to be intuitive and provides forms and dashboards for users to input data and view information. Behind the scenes, there’s a server or an API that processes all the requests from the UI. It acts as the central command, managing interactions between the user interface, the database, and external services.
+
+The database is a crucial component, storing all the necessary data such as trade details, dividend information, and user settings. It is set up to interact seamlessly with the server, ensuring that data is retrieved, stored, and updated efficiently as users interact with the application.
+
+For fetching financial data, the application integrates with external services like Interactive Brokers through a feature known as Flex Query. This integration helps in pulling detailed financial reports directly into the app. Additionally, the application can connect to Gmail to automatically read and process emails, which is particularly useful for receiving notifications and updates directly through email.
+
+
 - **Directory Structure**: Detailed explanation of the file and directory layout of the project.
 
 ### Codebase
