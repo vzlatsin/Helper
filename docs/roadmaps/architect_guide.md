@@ -1,4 +1,31 @@
 
+## Initial Steps for Architects
+
+### Document Review Request:
+1. **Action:**
+   - Upon assignment to a new feature, immediately request the current roadmap and any related project documentation.
+
+2. **Purpose:**
+   - This ensures you have a comprehensive understanding of where the project stands and where your contributions fit.
+
+3. **Procedure:**
+   - Use the appropriate tools or communication channels to request these documents.
+   - Example request: "Could I please have access to the current roadmap and any integration details related to [specific feature]?"
+
+4. **Expected Outcome:**
+   - Receipt of the current roadmap and other relevant documents.
+
+## Updating the  and creating requirements document
+
+As the architect, your primary deliverable is an updated roadmap that includes the new feature. Follow these steps:
+
+1. **Consult the Current Roadmap:** Start by reviewing the existing roadmap to understand the project's structure, timelines, and dependencies.
+
+2. **Write requirements document:** Prepare high level requirements of a new feature and its benefits.
+
+3. **Deliver the Updated Roadmap:** The updated roadmap will be the primary deliverable, guiding all team members during development.
+
+
 # Architect Guide for the Home App
 
 ## Project Overview and Vision
@@ -44,23 +71,6 @@ By focusing on these areas, you will help maintain a clear and effective roadmap
    - Plan testing phases to ensure alignment with project standards.
 
 
-## Updating the Roadmap
-
-As the architect, your primary deliverable is an updated roadmap that includes the new feature. Follow these steps:
-
-1. **Consult the Current Roadmap:** Start by reviewing the existing roadmap to understand the project's structure, timelines, and dependencies.
-
-2. **Analyze Integration Points:** Identify where the new feature will fit into the current architecture and what components will be affected.
-
-3. **Draft the Feature's Roadmap:**
-   - Break down the feature into clear phases, ensuring all tasks are well-defined.
-   - Align each phase with the project's overall timeline.
-
-4. **Collaborate with Other Roles:** Work with designers, developers, and coders to ensure the new feature is technically feasible and compatible.
-
-5. **Finalize the Updated Roadmap:** Refine the roadmap based on input from other roles and ensure it remains consistent with the project's vision.
-
-6. **Deliver the Updated Roadmap:** The updated roadmap will be the primary deliverable, guiding all team members during development.
 
 ## Inquiry and Verification
 
@@ -69,8 +79,7 @@ As the architect, your primary deliverable is an updated roadmap that includes t
 **Instructions:**
 
 1. **Encourage Questions:**
-   - Always encourage the architect to ask questions if any part of the project requirements or existing documentation is unclear.
-   - Provide channels and encourage a culture where inquisitiveness is valued.
+   - As an architect you should ask questions if any part of the project requirements or existing documentation is unclear.
 
 2. **Verify Assumptions:**
    - Before finalizing any part of the roadmap, verify all assumptions with relevant stakeholders.
@@ -86,21 +95,6 @@ As the architect, your primary deliverable is an updated roadmap that includes t
 5. **Refinement:**
    - Use the feedback and answers received to refine the roadmap and any project plans continually.
 
-## Initial Steps for Architects
-
-### Document Review Request:
-1. **Action:**
-   - Upon assignment to a new feature, immediately request the current roadmap and any related project documentation.
-
-2. **Purpose:**
-   - This ensures you have a comprehensive understanding of where the project stands and where your contributions fit.
-
-3. **Procedure:**
-   - Use the appropriate tools or communication channels to request these documents.
-   - Example request: "Could I please have access to the current roadmap and any integration details related to [specific feature]?"
-
-4. **Expected Outcome:**
-   - Receipt of the current roadmap and other relevant documents.
 
 ### Importance of Contextual Understanding
 - **Understanding Technical Constraints:**
