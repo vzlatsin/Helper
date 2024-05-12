@@ -15,7 +15,7 @@
 4. **Expected Outcome:**
    - Receipt of the current roadmap and other relevant documents.
 
-## Updating the  and creating requirements document
+## Updating the and creating requirements document
 
 As the architect, your primary deliverable is an updated roadmap that includes the new feature. Follow these steps:
 
