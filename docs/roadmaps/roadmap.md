@@ -14,10 +14,16 @@ The "Home App" is a personal financial management and time management tool desig
    - **Profit/Loss Calculations**: Track profits and losses for financial clarity.
    - **Tax Preparation Assistance**: Streamline tax return preparation.
 
-2. **Time Management**:
-   - **Closed Lists**: Implement daily task lists that cannot be modified once the day begins.
-   - **Backlog Management**: Track and manage accumulated tasks systematically.
-   - **Scheduling for Tomorrow**: Plan and schedule tasks for the next day.
+
+2. **Time Management Features:**
+   - **Closed Lists:**
+     - **Milestone 1:** Design and implement a basic daily closed list feature (1-2 weeks).
+     - **Milestone 2:** Add the review functionality for completed daily lists (1 week).
+   - **Backlog Management:**
+     - **Milestone 1:** Create a backlog feature for unfinished tasks (1-2 weeks).
+     - **Milestone 2:** Develop prioritization and categorization mechanisms for the backlog (1 week).
+     - **Milestone 3:** Integrate backlog tasks into daily closed lists (1 week).
+
 
 3. **Spec Book Compilation**:
    - **Objective**: Create a unified spec book that integrates the roadmap, general specs, and detailed specs for the project.
@@ -30,21 +36,4 @@ The "Home App" is a personal financial management and time management tool desig
      - **Review**: Ensure the compiled document aligns with project goals.
      - **Update Mechanism**: Establish a process for future updates.
 
-### Milestones
 
-1. **Feature Development**:
-   - **Financial Management**:
-     - Enhance existing financial features based on needs.
-   - **Time Management**:
-     - Develop closed list, backlog management, and scheduling features.
-   - **Spec Book Compilation**:
-     - Develop a script to compile the roadmap, general specs, and detailed specs.
-
-2. **Testing and Feedback**:
-   - Test both financial and time management features.
-   - Test the spec book compilation.
-   - Gather feedback and refine accordingly.
-
-3. **Launch and Monitor**:
-   - Launch the updated app with all features.
-   - Monitor usage and effectiveness in achieving long-term goals.

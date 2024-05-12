@@ -50,6 +50,42 @@
                 </li>
             </ul>
         </section>
+
+        <!-- Time Management Section -->
+        <section>
+            <h2>Time Management</h2>
+            <p>Manage your daily tasks and backlog efficiently using Closed Lists and Backlog features.</p>
+
+            <!-- Closed Lists -->
+            <div id="closed-lists">
+                <h3>Daily Closed Lists</h3>
+                <form action="/add-closed-list-task" method="post">
+                    <label for="task">Add Task to Daily List:</label><br>
+                    <input type="text" id="task" name="task" required><br>
+                    <input type="submit" value="Add Task">
+                </form>
+                <ul id="daily-task-list">
+                    <!-- Placeholder for the current day's tasks -->
+                </ul>
+                <button id="archive-tasks">Archive Completed Tasks</button>
+            </div>
+
+            <!-- Backlog -->
+            <div id="backlog">
+                <h3>Backlog</h3>
+                <form action="/add-backlog-task" method="post">
+                    <label for="backlog-task">Add Task to Backlog:</label><br>
+                    <input type="text" id="backlog-task" name="backlog-task" required><br>
+                    <input type="submit" value="Add Task">
+                </form>
+                <ul id="backlog-task-list">
+                    <!-- Placeholder for backlog tasks -->
+                </ul>
+                <button id="move-to-closed-list">Move to Daily List</button>
+            </div>
+        </section>
+
+
     </main>
     <!-- WebSocket script starts here -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
