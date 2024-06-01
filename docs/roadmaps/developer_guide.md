@@ -42,3 +42,32 @@
    - **Details:** Ensure clarity, consistency, and accuracy. Adjust where necessary.
    - **Outcome Expected:** Complete, high-quality documentation that the coder can easily follow.
 
+To ensure the developer guide encourages proactive inquiry and information gathering, we can add a section that specifically outlines the types of questions developers should ask before starting their tasks. This will foster a more thorough understanding of the requirements and expectations. Here's a suggested addition to the guide:
+
+### Section: Questions Developers Should Ask Before Starting Development
+
+**Introduction:**
+Before beginning development, it's crucial to gather all necessary details to ensure your implementation aligns with the project's standards and requirements. Here are key questions to ask:
+
+1. **Database Schema and Integration:**
+   - What is the current database schema, and how should new tables or fields integrate with it?
+   - Are there specific constraints or indexes that should be considered?
+
+2. **Error Handling:**
+   - What are the common error scenarios for the features I'm implementing?
+   - How should errors be logged, and what user feedback is expected?
+
+3. **Data Validation:**
+   - What validation is required for the data inputs in my features?
+   - Are there specific formats or validations that need to be enforced?
+
+4. **Response Specifications:**
+   - What should the structure of responses (success/error) look like?
+   - Are there specific status codes or data formats required?
+
+
+
+**Encouragement to Collaborate:**
+Developers are encouraged to collaborate closely with project managers, architects, and other team members to clarify these points. Ensuring clarity in these areas before coding begins leads to more efficient development and reduces the need for extensive revisions.
+
+

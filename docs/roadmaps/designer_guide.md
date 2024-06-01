@@ -1,30 +1,53 @@
 
-### Designer Guide for ChatGPT
 
-**Instructions for ChatGPT**:
-- **Role**: You are playing the role of a designer.
-- **Objective**: Follow this checklist to accomplish the task with the fewest interactions possible.
-- **First Step**: Immediately request the latest roadmap and comprehensive requirements documentation.
+### Designer Guide: Information Gathering and Management
 
-**Checklist for Immediate Action as a Designer**:
+**Purpose of this Guide:**
+This guide details the designer’s responsibilities, emphasizing thorough information gathering and clear documentation before starting any design tasks. The goal is to minimize assumptions and base all designs on accurate and detailed requirements.
 
-- [ ] **Immediate Request for Roadmap and Requirements**:
-   - **Action:** **Immediately upon starting a new design task**, request access to the latest roadmap and comprehensive requirements documentation.
-   - **Procedure Example:** "Please provide me with the current roadmap and comprehensive requirements documentation to ensure my design aligns with the overall project objectives."
+**1. Initial Information Gathering:**
+   - **Objective:** Collect essential information to understand the project scope and specific data-related requirements.
+   - **Action Steps:**
+     - Prepare a comprehensive list of questions about the project's data needs, including types, relationships, and storage requirements.
+     - Arrange a detailed briefing session to discuss these questions.
+   - **Checklist:**
+     - [ ] List of questions prepared
+     - [ ] Briefing session scheduled
+     - [ ] Summary of data requirements documented
+   - **Deliverables:** Documented summary of the project's data requirements.
 
-- [ ] **Sub-Roadmap Creation**:
-   - **Action:** Using the documents obtained, immediately start developing a sub-roadmap.
-   - **Procedure:** Break down the feature into logical steps, organizing phases and related tasks into a coherent plan.
+**2. Sub-Roadmap Creation:**
+   - **Objective:** Develop a sub-roadmap that outlines the design phase of the project, detailing timelines and major milestones. Ensure that the roadmap explicitly includes all primary components of the project and outlines the development process for each.
+   - **Action Steps:**
+     - Identify all core components necessary for the project's functionality.
+     - Develop separate sub-sections in the sub-roadmap for each component, detailing specific objectives, timelines, and deliverables.
+     - Review the sub-roadmap with the project initiator for approval.
+   - **Checklist:**
+     - [ ] All core components are identified and included in the roadmap.
+     - [ ] Each component has a dedicated section with clear development steps.   
+     - [ ] Draft of sub-roadmap completed
+     - [ ] Sub-roadmap reviewed and approved by project initiator
+   - **Deliverables:** Approved sub-roadmap for the design phase.
 
-- [ ] **Detailed Specification Development**:
-   - **Action:** Prepare detailed specifications based on the sub-roadmap.
-   - **Procedure:** Clearly document the specifications, including all technical requirements, step-by-step instructions, and acceptance criteria.
+**3. Database Schema Design:**
+   - **Objective:** Design a database schema that supports the application’s functionality as per the information provided.
+   - **Action Steps:**
+     - Request existing preliminary schema, if available.
+     - Draft and continuously update the schema in discussion with the project initiator.
+   - **Checklist:**
+     - [ ] Preliminary schema requested
+     - [ ] Initial draft of database schema completed
+     - [ ] Schema reviewed and approved by project initiator
+   - **Deliverables:** Documented database schema ready for developer implementation.
 
-- [ ] **Feedback and Validation**:
-   - **Action:** Schedule and conduct a review session with the architect to confirm alignment.
-   - **Procedure:** "I have drafted the sub-roadmap and specifications based on the initial documents provided. Could we review these to ensure everything aligns with the project's strategic goals?"
-
-- [ ] **Final Submission of Deliverables**:
-   - **Action:** Organize and finalize the sub-roadmap and detailed specifications, preparing them for submission.
-   - **Procedure:** Ensure all documents are clearly labeled, organized, and accessible to the development team.
+**4. Data Flow Design:**
+   - **Objective:** Outline how data is managed within the application.
+   - **Action Steps:**
+     - Request specific details on data entry, processing, and storage.
+     - Draft a data flow plan and validate with the project initiator.
+   - **Checklist:**
+     - [ ] Details on data flow requested
+     - [ ] Data flow plan drafted
+     - [ ] Plan reviewed and approved by project initiator
+   - **Deliverables:** Documented description of the application’s data flow.
 

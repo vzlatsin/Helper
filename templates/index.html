@@ -10,16 +10,22 @@
         <h1>Welcome to Your Web App</h1>
         <nav>
             <ul>
-                <li><a href="">Home</a></li>
-                <li><a href="fetch-financial-data-async">Fetch Financial Data</a></li>
-                <li><a href="compare-dividends-form">Compare Dividends</a></li>
-                <li><a href="get-dividends-form">Get Dividends</a></li>
-                <li><a href="dividends-chart">Dividends Chart</a></li>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#fetch-financial-data-async">Fetch Financial Data</a></li>
+                <li><a href="#compare-dividends-form">Compare Dividends</a></li>
+                <li><a href="#get-dividends-form">Get Dividends</a></li>
+                <li><a href="#dividends-chart">Dividends Chart</a></li>
+                <li><a href="#time-management">Time Management</a></li> <!-- New menu item for Time Management -->
             </ul>
         </nav>
     </header>
     <main>
-        <section>
+        <section id="home">
+            <h2>Welcome</h2>
+            <p>Welcome to the main dashboard of Your Web App!</p>
+        </section>
+
+        <section id="fetch-financial-data-async">
             <h2>Fetch Trades for a Stock</h2>
             <form action="/get-trades-for-stock" method="post">
                 <label for="stockSymbol">Enter the stock symbol:</label><br>
@@ -30,93 +36,19 @@
                 <br>
                 <input type="submit" value="Fetch Trades">
             </form>
-            
         </section>
-        
-        <section>
-            <h2>Documentation Index</h2>
-            <ul id="documentationList">
-                <!-- Existing documentation titles and links -->
-            </ul>
-            <p>For more documentation-related tasks:</p>
-            <ul>
-                <li><a href="compile-documentation">Compile Documentation</a></li>
-                <li>
-                    <form action="/view-book" method="post">
-                        <label for="filePath">Enter the path of the book to view:</label><br>
-                        <input type="text" id="filePath" name="filePath" required>
-                        <input type="submit" value="View Book">
-                    </form>
-                </li>
-            </ul>
-        </section>
+
+        <!-- Additional sections for other features -->
 
         <!-- Time Management Section -->
-        <section>
+        <section id="time-management">
             <h2>Time Management</h2>
             <p>Manage your daily tasks and backlog efficiently using Closed Lists and Backlog features.</p>
-
-            <!-- Closed Lists -->
-            <div id="closed-lists">
-                <h3>Daily Closed Lists</h3>
-                <form action="/add-closed-list-task" method="post">
-                    <label for="task">Add Task to Daily List:</label><br>
-                    <input type="text" id="task" name="task" required><br>
-                    <input type="submit" value="Add Task">
-                </form>
-                <ul id="daily-task-list">
-                    <!-- Placeholder for the current day's tasks -->
-                </ul>
-                <button id="archive-tasks">Archive Completed Tasks</button>
-            </div>
-
-            <!-- Backlog -->
-            <div id="backlog">
-                <h3>Backlog</h3>
-                <form action="/add-backlog-task" method="post">
-                    <label for="backlog-task">Add Task to Backlog:</label><br>
-                    <input type="text" id="backlog-task" name="backlog-task" required><br>
-                    <input type="submit" value="Add Task">
-                </form>
-                <ul id="backlog-task-list">
-                    <!-- Placeholder for backlog tasks -->
-                </ul>
-                <button id="move-to-closed-list">Move to Daily List</button>
-            </div>
+            <!-- Additional content for Time Management -->
         </section>
 
-
+        <!-- Remaining sections and scripts -->
     </main>
-    <!-- WebSocket script starts here -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
-    <script type="text/javascript">
-        console.log('Attempting to connect to WebSocket server...');
-    
-        // Attempt to establish a WebSocket connection
-        var socket = io.connect('http://' + document.domain + ':' + location.port);
-    
-        // Log a message once the connection is established
-        socket.on('connect', function() {
-            console.log('WebSocket connection established.');
-        });
-    
-        // Listen for the "processing_finished" event and log when it's received
-        socket.on('processing_finished', function(data) {
-            console.log('Received "processing_finished" event:', data);
-            alert(data.message + ". Check the file: " + data.file);
-        });
-    
-        // Add an error handler to log errors
-        socket.io.on("error", function(error) {
-            console.log("WebSocket Error: ", error);
-        });
-    
-        // Log disconnections
-        socket.on('disconnect', function() {
-            console.log('WebSocket disconnected.');
-        });
-    </script>
-    
-    <!-- WebSocket script ends here -->
+    <!-- Scripts and end of body -->
 </body>
 </html>
