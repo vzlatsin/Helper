@@ -1,63 +1,183 @@
-
 ### Architect Guide
 
-**Instructions**
-- **Role**: You are playing the role of an architect.
-- **Objective**: Follow this checklist to update the roadmap and define high-level requirements, including user stories, efficiently.
+**Purpose**  
+To ensure the creation of detailed and clear deliverables that guide the subsequent roles (designer, developer, coder) effectively.
 
-**Checklist for Immediate Action as an Architect**:
+**Responsibilities**  
+1. **Gather Requirements**: Collect project goals and stakeholder requirements.
+2. **Create Deliverables**: Produce detailed requirements, user stories, feature descriptions, data requirements, and roadmaps.
+3. **Ensure Clarity and Completeness**: Make sure all deliverables are comprehensive and easily understandable.
 
-- [ ] **Immediate Request for Roadmap and Documentation**:
-   - **Action:** **Immediately upon assignment to a new feature**, request the current roadmap and relevant project documentation.
-   - **Purpose:** Understand the project's status and the context of the new feature.
-   - **Procedure:** Use appropriate channels to request these documents.
+**Inputs**:
+1. **Project Goals**: High-level objectives and desired outcomes.
+2. **Stakeholder Requirements**: Detailed needs and expectations from stakeholders.
+3. **Existing Documentation**: Relevant documents from previous projects or phases.
+4. **Data Sources**: Information on available data and databases.
 
-- [ ] **Review Roadmap and Requirements**:
-   - **Action:** Analyze the updated roadmap and high-level requirements.
-   - **Purpose:** Identify dependencies, technical constraints, and goals.
+**Outputs**:
+1. **Requirements Document**:
+   - Detailed and clear requirements.
+   - **Location**: `docs/[feature_name]/architect/requirements.md`
+2. **User Stories**:
+   - Practical examples and use cases with acceptance criteria.
+   - **Location**: `docs/[feature_name]/architect/user_stories.md`
+3. **Feature Description**:
+   - Comprehensive overview of the feature, including functionality and goals.
+   - **Location**: `docs/[feature_name]/architect/feature_description.md`
+4. **Data Requirements**:
+   - Clearly defined data dependencies and requirements.
+   - **Location**: `docs/[feature_name]/architect/data_requirements.md`
+5. **Roadmap**:
+   - High-level overview of project phases and milestones.
+   - **Location**: `docs/roadmap.md`
 
-- [ ] **Gather User Stories**:
-   - **Action:** Collaborate with the web app user directly to gather user stories, either through conversation or external sources like books.
-   - **Purpose:** Ensure the feature's requirements align with user needs and expectations.
+**Process**  
+1. **Gather Inputs**:
+   - **Sources**: Project goals, stakeholder requirements, existing documentation, and data.
 
-- [ ] **Define High-Level Requirements**:
-   - **Action:** Document the high-level requirements and potential benefits of the feature based on user stories and roadmap.
-   - **Purpose:** Provide clear direction for the designer and developer.
+2. **Create Outputs**:
+   - **Requirements Document**:
+     - Detailed and clear.
+     - Format: Use a standardized template.
+   - **User Stories**:
+     - Include practical examples and use cases.
+     - Format: User story template with clear acceptance criteria.
+   - **Feature Description**:
+     - Comprehensive overview covering all design aspects.
+   - **Data Requirements**:
+     - Clearly defined data dependencies.
+   - **Roadmap**:
+     - High-level overview of project phases and milestones.
+     - Located in `docs/roadmap.md`.
 
-- [ ] **Update the Roadmap**:
-   - **Action:** Add the new feature to the roadmap with milestones, goals, and an expected timeline.
-   - **Purpose:** Ensure all roles understand the dependencies and expectations.
+**Documentation Standards**:
+1. **Requirements Document**:
+   - **Format**: Use a standardized template with sections for objectives, scope, detailed requirements, and constraints.
+   - **Template**:
+     ```markdown
+     ## Requirements Document for [Feature Name]
+     ### Objectives
+     - Objective 1
+     - Objective 2
+     ### Scope
+     - In-scope: Item 1, Item 2
+     - Out-of-scope: Item 1, Item 2
+     ### Detailed Requirements
+     - Requirement 1: Description
+     - Requirement 2: Description
+     ### Constraints
+     - Constraint 1
+     - Constraint 2
+     ```
 
-# Architect Guide for the Home App
+2. **User Stories**:
+   - **Format**: Use a standardized template with fields for title, description, acceptance criteria, and priority.
+   - **Template**:
+     ```markdown
+     ## User Story for [Feature Name]
+     ### Title
+     - User Story Title
+     ### Description
+     - As a [user], I want to [action], so that [benefit].
+     ### Acceptance Criteria
+     - Criteria 1
+     - Criteria 2
+     ### Priority
+     - High/Medium/Low
+     ```
 
-## Project Overview and Vision
-The Home App is designed to manage personal finances and time effectively. It calculates dividends, profits, and losses, helps with tax preparation, and aligns daily activities with long-term goals.
+3. **Feature Description**:
+   - **Format**: Use a clear hierarchical structure with section headings.
+   - **Template**:
+     ```markdown
+     ## Feature Description for [Feature Name]
+     ### Overview
+     - Brief overview of the feature.
+     ### Functionality
+     - Detailed functionality description.
+     ### Goals
+     - Goals and objectives of the feature.
+     ```
 
-## Role Definition and Expectations
-As an architect, your main job is to keep the project roadmap up-to-date. This includes ensuring it matches the project's goals and provides clear guidance for designers who are creating sub-roadmaps and detailed specifications.
+4. **Data Requirements**:
+   - **Format**: Use tables and bullet points to list data dependencies and requirements.
+   - **Template**:
+     ```markdown
+     ## Data Requirements for [Feature Name]
+     ### Data Dependencies
+     - Dependency 1
+     - Dependency 2
+     ### Data Requirements
+     - Requirement 1: Description
+     - Requirement 2: Description
+     ```
 
-## Current Roadmap Status
-You will be given the latest version of the roadmap, which includes both completed work and features that need to be developed. It's important to understand what has been done and what still needs work.
+5. **Roadmap**:
+   - **Format**: Use a Gantt chart or timeline with clear milestones.
+   - **Template**:
+     ```markdown
+     ## Roadmap for [Project Name]
+     ### Phases
+     - Phase 1: Description and milestones
+     - Phase 2: Description and milestones
+     ### Milestones
+     - Milestone 1: Description and due date
+     - Milestone 2: Description and due date
+     ```
 
-## Submit to Auditor for Review
-Once the high-level requirements and roadmap are completed, follow these steps:
+**Consistency Checks**:
+1. **Terminology**:
+   - Ensure that the same terms are used consistently across all documents.
+   - Create a glossary of terms if necessary.
+   - Example:
+     ```markdown
+     ## Glossary
+     - **Feature**: A specific functionality to be developed.
+     - **User Story**: A description of a software feature from an end-user perspective.
+     ```
 
-1. **Submit Deliverables**: Submit the high-level requirements and roadmap to the auditor for review.
-2. **Prepare Activity Log Entry**: Document the submission in the activity log. Include the following details:
-   - **Date**: The date of submission.
-   - **Role**: Architect
-   - **Activity Description**: Submitted high-level requirements and roadmap for feature [Feature Name] to the auditor.
-   - **Details**: A brief description of the submitted documents.
-   - **Status**: Completed
-   - **Comments**: Any additional comments or notes.
+2. **Formatting**:
+   - Verify that all documents follow the same formatting guidelines (e.g., headings, bullet points, numbering).
+   - Use standardized templates for all documents.
+   - Example:
+     ```markdown
+     ## Formatting Guidelines
+     - Use `#` for main headings.
+     - Use `##` for subheadings.
+     - Use `-` for bullet points.
+     - Use `1.` for numbered lists.
+     ```
 
-### Example Activity Log Entry
+3. **Style**:
+   - Ensure a consistent writing style (e.g., tone, tense) across all documents.
+   - Follow a style guide to maintain uniformity.
+   - Example:
+     ```markdown
+     ## Style Guide
+     - Use active voice.
+     - Write in the present tense.
+     - Use clear and concise language.
+     ```
 
-```markdown
-## 2024-05-31
-- **Architect**: Submitted high-level requirements and roadmap for feature Y to the auditor.
-  - **Details**: Created initial high-level requirements document outlining goals, benefits, and key features for feature Y. Developed a roadmap for feature development.
-  - **Status**: Completed
-  - **Comments**: Ready for auditor's review.
-```
+4. **Review Process**:
+   - Implement a review process to check for consistency before deliverables are passed to the designer.
+   - Have another team member or auditor review the documents.
+   - Example:
+     ```markdown
+     ## Review Checklist
+     - Check for consistent terminology.
+     - Verify formatting guidelines are followed.
+     - Ensure the writing style is uniform.
+     - Have documents reviewed by a peer or auditor.
+     ```
 
+**Review Checklist for Auditor**  
+1. **Clarity**: Ensure the deliverables are clear and understandable.
+2. **Completeness**: Check that all necessary components are included.
+3. **Relevance**: Confirm the deliverables are directly useful to the next role.
+4. **Consistency**: Ensure documentation is uniform in terminology, format, and style.
+5. **Feasibility**: Assess the realism of timelines, goals, and technical requirements.
+
+**Feedback and Iteration**  
+- Ensure deliverables include room for feedback and iteration.
+- Define procedures for handling incomplete or unclear inputs.
