@@ -150,4 +150,3 @@ To ensure the creation of detailed and clear designs that guide the subsequent r
 **Feedback and Iteration**  
 - Ensure deliverables include room for feedback and iteration.
 - Define procedures for handling incomplete or unclear inputs.
-

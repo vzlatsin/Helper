@@ -20,81 +20,206 @@ To ensure the creation of detailed and clear code instructions that guide the co
 
 **Outputs**:
 1. **Pseudocode**:
-   - Detailed logical representation of the code.
-   - **Location**: `docs/[feature_name]/developer/pseudocode_new_feature.md`
-2. **Script Instructions**:
-   - Detailed instructions for coding, covering all aspects of the implementation.
-   - **Location**: `docs/[feature_name]/developer/script_instructions.md`
-3. **HTML Structure Plan**:
-   - Plan for the HTML structure and any changes needed.
-   - **Location**: `docs/[feature_name]/developer/html_structure_plan.md`
-4. **Code Changes**:
-   - Specific details on the changes to be made in the codebase.
-   - **Location**: `docs/[feature_name]/developer/code_changes.md`
-5. **Data Flow and Interaction Guidelines**:
-   - Detailed guidelines on data flow and user interactions.
-   - **Location**: `docs/[feature_name]/developer/data_flow_interaction.md`
+   - **File Name**: `pseudocode_new_feature.md`
+   - **Location**: `docs/[feature_name]/developer/`
+   - **Content Example**:
+     ```markdown
+     # Pseudocode for [Feature Name]
 
-**Process**  
+     ## Backend Logic
+     - Function: add_task(task_name, start_time, end_time)
+       - Insert task details into the database
+       - Return success/failure response
+
+     ## Frontend Logic
+     - Display task list
+       - Fetch tasks from the backend
+       - Render tasks in the UI
+
+     ## Data Flow
+     - User interacts with the UI to add, edit, or delete tasks.
+     - Frontend sends requests to backend API.
+     - Backend processes requests and interacts with the database.
+     - Backend returns responses to the frontend.
+     - Frontend updates the UI based on the responses.
+     ```
+
+2. **Script Instructions**:
+   - **File Name**: `script_instructions.md`
+   - **Location**: `docs/[feature_name]/developer/`
+   - **Content Example**:
+     ```markdown
+     # Script Instructions for [Feature Name]
+
+     ## Backend Logic
+     ### Database Schema
+     1. **Create Time Management Table**:
+        - Table Name: `time_management`
+        - Fields:
+          - `task_id` (Primary Key, Integer, Auto-increment)
+          - `task_name` (String, Not Null)
+          - `start_time` (DateTime, Not Null)
+          - `end_time` (DateTime, Not Null)
+          - `status` (String, Default: 'Pending')
+
+     ### API Endpoints
+     1. **Add Task Endpoint**
+        - **Route**: `/api/add_task`
+        - **Method**: `POST`
+        - **Parameters**: `task_name`, `start_time`, `end_time`
+        - **Function**: `add_task(task_name, start_time, end_time)`
+        - **Description**: Insert task details into the database and return a success/failure response.
+
+     ## Frontend Logic
+     ### HTML Structure
+     1. **Task List Display**:
+        - Create a table to display tasks with columns for `task_name`, `start_time`, `end_time`, and `status`.
+        - Add buttons for editing and deleting tasks in each row.
+
+     ### JavaScript Functions
+     1. **Fetch Tasks**:
+        - Function: `fetchTasks()`
+        - Description: Send a GET request to `/api/get_tasks` and populate the task list table.
+
+     ## Error Handling
+     - Handle database connection errors
+     - Validate user inputs
+     - Provide user feedback for success/failure actions
+     ```
+
+3. **HTML Structure Plan**:
+   - **File Name**: `html_structure_plan.md`
+   - **Location**: `docs/[feature_name]/developer/`
+   - **Content Example**:
+     ```markdown
+     # HTML Structure Plan for [Feature Name]
+
+     ## Task List Display
+     - Create a table with the following columns:
+       - Task Name
+       - Start Time
+       - End Time
+       - Status
+       - Actions (Edit/Delete buttons)
+
+     ## Task Form
+     - Create a form with the following fields:
+       - Task Name (input text)
+       - Start Time (datetime picker)
+       - End Time (datetime picker)
+       - Status (dropdown)
+
+     ## Modifications
+     - Add the form to the existing HTML template for task management.
+     - Ensure the new elements are styled consistently with the existing UI.
+     ```
+
+4. **Code Changes**:
+   - **File Name**: `code_changes.md`
+   - **Location**: `docs/[feature_name]/developer/`
+   - **Content Example**:
+     ```markdown
+     # Code Changes for [Feature Name]
+
+     ## Backend
+     - Add the following function to `app_async.py`:
+       ```python
+       def add_task(task_name, start_time, end_time):
+           sql = "INSERT INTO time_management (task_name, start_time, end_time) VALUES (?, ?, ?)"
+           execute_sql(sql, (task_name, start_time, end_time))
+       ```
+
+     ## Frontend
+     - Add the following function to `scripts.js`:
+       ```javascript
+       function fetchTasks() {
+           fetch('/api/get_tasks')
+               .then(response => response.json())
+               .then(data => renderTaskList(data));
+       }
+       ```
+
+     ## Integration
+     - Update the routes in `routes.py` to include the new API endpoints.
+     ```
+
+5. **Data Flow and Interaction Guidelines**:
+   - **File Name**: `data_flow_interaction.md`
+   - **Location**: `docs/[feature_name]/developer/`
+   - **Content Example**:
+     ```markdown
+     # Data Flow and Interaction Guidelines for [Feature Name]
+
+     ## User Interactions
+     - User adds, edits, or deletes tasks via the UI.
+     - User actions trigger JavaScript functions to send API requests.
+
+     ## Backend Processing
+     - API requests are processed by backend functions.
+     - Database operations are performed, and responses are returned to the frontend.
+
+     ## Frontend Updates
+     - API responses are handled by JavaScript functions.
+     - The task list is updated in the UI based on the API responses.
+
+     ## Error Handling
+     - Standardize error responses with HTTP status codes.
+     - Provide user-friendly error messages.
+     ```
+
+### Process
 1. **Familiarize with Current Codebase**:
    - **Action**: Explore the project structure by reviewing the codebase on the project's GitHub repository.
+   - **GitHub Repository Location**: `https://github.com/vzlatsin/Helper`
    - **Focus Areas**: 
      - `app_async.py`: Main application logic.
      - `helper.py`: Utility functions.
-     - `templates` directory: HTML structures.
+     - `models.py`: Data models and database interactions.
+     - `routes.py`: API routes and endpoints.
+     - `templates/`: HTML templates and static files.
+   - **Outcome Expected**: Gain a thorough understanding of the codebase and its structure.
 
-2. **Confirm Understanding of Code Structure**:
-   - **Action**: Review the code structure and hierarchy to ensure you understand it.
-   - **Outcome Expected**: A clear understanding of where changes should be made.
+2. **Review Designer Deliverables**:
+   - **Action**: Carefully review the sub-roadmaps, specifications, and design validations.
+   - **Details**: Understand the requirements, design details, and feasibility checks.
+   - **Outcome Expected**: Ensure a clear understanding of what needs to be developed.
 
-3. **Access Latest Design Deliverables and Guidelines**:
-   - **Action**: Access the design deliverables, coding guidelines, and existing HTML structures.
-   - **Where to Find**: 
-     - `docs/[feature_name]/designer/specifications.md`
-     - HTML structures in `templates`
+3. **Draft Pseudocode**:
+   - **Action**: Create a logical representation of the new feature.
+   - **Details**: Break down the feature into smaller, manageable components.
+   - **Outcome Expected**: Provide a clear plan for coding.
 
-4. **Analyze Design and Identify Dependencies**:
-   - **Action**: Analyze design deliverables to identify dependencies and requirements.
-   - **Details**: Note data structures, flow requirements, and existing components.
-   - **Outcome Expected**: Clear understanding of the design and its interaction with existing features.
+4. **Develop Script Instructions**:
+   - **Action**: Write detailed instructions for the coder.
+   - **Details**: Include steps, methods, and functions needed for implementation.
+   - **Outcome Expected**: Ensure the coder can follow the instructions without confusion.
 
-5. **Create a New Folder for the Feature**:
-   - **Action**: Create a new folder in the `docs/developer` directory for the new feature's deliverables.
-   - **Outcome Expected**: Organized structure for documents and code changes related to the new feature.
+5. **Plan HTML Structure**:
+   - **Action**: Develop a plan for any necessary changes to the HTML structure.
+   - **Details**: Specify new sections, elements, and templates.
+   - **Outcome Expected**: Ensure the front-end layout supports the new feature.
 
 6. **Document Code Changes**:
-   - **Action**: Create detailed documents for each script that needs to be changed or added.
-   - **Files to Include**: 
-     - `pseudocode_new_feature.md`: Pseudocode and logic.
-     - `html_structure_plan.md`: HTML structure plan.
-     - `code_changes.md`: Specific script changes.
-     - `data_flow_interaction.md`: Data flow and interaction guidelines.
-   - **Outcome Expected**: Clear instructions for the coder to implement the new feature.
+   - **Action**: Detail specific changes to be made in the codebase.
+   - **Details**: Include file names, line numbers, and code snippets.
+   - **Outcome Expected**: Provide a clear guide for the coder to update the codebase.
 
-7. **Develop Pseudocode**:
-   - **Action**: Write pseudocode outlining the backend logic for the new feature.
-   - **Outcome Expected**: Provide a clear, structured plan for implementing the new functionality.
+7. **Create Data Flow and Interaction Guidelines**:
+   - **Action**: Document the flow of data and user interactions.
+   - **Details**: Outline backend and frontend interactions, data processing, and user actions.
+   - **Outcome Expected**: Ensure a seamless user experience and efficient data handling.
 
-8. **Plan HTML Structure**:
-   - **Action**: Extend the current HTML templates to incorporate sections for the new feature.
-   - **Outcome Expected**: Ensure seamless integration with existing HTML structures.
-
-9. **Create Data Flow and Interaction Guidelines**:
-   - **Action**: Document the flow of data between the backend and frontend.
-   - **Details**: Outline user interactions and their effect on the task lists.
-   - **Outcome Expected**: Provide a comprehensive guide for the coder to follow.
-
-10. **Final Review and Adjustments**:
-    - **Action**: Review all documents and make necessary adjustments before handing them off to the coder.
-    - **Outcome Expected**: Ensure completeness, consistency, and accuracy in documentation.
+8. **Final Review and Adjustments**:
+   - **Action**: Review all documents and make necessary adjustments.
+   - **Outcome Expected**: Ensure completeness, consistency, and accuracy before handing off to the coder.
 
 **Consistency Checks**:
 1. **Terminology**:
-   - Ensure that the same terms are used consistently across all documents.
+   - Ensure the same terms are used consistently across all documents.
    - Create a glossary of terms if necessary.
 
 2. **Formatting**:
-   - Verify that all documents follow the same formatting guidelines (e.g., headings, bullet points, numbering).
+   - Verify all documents follow the same formatting guidelines (e.g., headings, bullet points, numbering).
    - Use standardized templates for all documents.
 
 3. **Style**:
@@ -103,7 +228,9 @@ To ensure the creation of detailed and clear code instructions that guide the co
 
 4. **Review Process**:
    - Implement a review process to check for consistency before deliverables are passed to the coder.
-   - Have another team member or auditor review the documents.
+   - Have another
+
+ team member or auditor review the documents.
 
 **Review Checklist for Auditor**  
 1. **Clarity**: Ensure the deliverables are clear and understandable for the coder.
