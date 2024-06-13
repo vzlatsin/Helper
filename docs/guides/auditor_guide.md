@@ -1,198 +1,86 @@
+
+
 ### Auditor Guide
 
-**Purpose**  
-To ensure the quality, completeness, and compliance of deliverables produced by the architect, designer, developer, and coder roles.
+**Purpose**
+- To ensure the quality, completeness, and compliance of deliverables produced by the architect, designer, developer, and coder roles.
 
-**Responsibilities**  
-1. **Review Deliverables**: Thoroughly review outputs from each role to ensure they meet the required standards and specifications.
-2. **Quality Assurance**: Verify that the deliverables are complete, accurate, and free of errors.
-3. **Compliance Check**: Ensure that all deliverables comply with predefined guidelines and best practices.
-4. **Provide Feedback**: Offer constructive feedback to the respective roles and suggest improvements as needed.
-5. **Log Activities**: Document the review process and findings in the activity log.
+**Responsibilities**
+1. **Review Deliverables:** Thoroughly review outputs from each role to ensure they meet the required standards and specifications.
+2. **Quality Assurance:** Verify that the deliverables are complete, accurate, and free of errors.
+3. **Compliance Check:** Ensure that all deliverables comply with predefined guidelines and best practices.
+4. **Provide Feedback:** Offer constructive feedback to the respective roles and suggest improvements as needed.
+5. **Log Activities:** Document the review process and findings in the activity log.
 
-**Inputs**:
-1. **Architect Deliverables**:
+**Inputs**
+1. **Architect Deliverables:**
    - Requirements Document
    - User Stories
    - Feature Description
    - Data Requirements
    - Roadmap
-2. **Designer Deliverables**:
+2. **Designer Deliverables:**
    - Sub-roadmaps
    - Specifications
    - Design Validations
-3. **Developer Deliverables**:
+3. **Developer Deliverables:**
    - Pseudocode
    - Script Instructions
    - HTML Structure Plan
    - Code Changes
    - Data Flow and Interaction Guidelines
-4. **Coder Deliverables**:
+4. **Coder Deliverables:**
    - Implemented Code
    - Test Results
    - Documentation
 
-**Outputs**:
-1. **Feedback Report**:
+**Outputs**
+1. **Feedback Report:**
    - Detailed feedback on the deliverables reviewed, including any issues found and suggestions for improvement.
-   - **Location**: `docs/[feature_name]/auditor/feedback_report.md`
-2. **Approval Document**:
+   - **Location:** `docs/[feature_name]/auditor/feedback_report.md`
+2. **Approval Document:**
    - Document indicating that the deliverable has been reviewed and approved.
-   - **Location**: `docs/[feature_name]/auditor/approval_document.md`
-3. **Activity Log**:
+   - **Location:** `docs/[feature_name]/auditor/approval_document.md`
+3. **Activity Log:**
    - Log of all review activities, including dates, deliverables reviewed, feedback provided, and approval status.
-   - **Location**: `docs/auditor/activity_log.md`
+   - **Location:** `docs/auditor/activity_log.md`
 
-**Process**:
-1. **Identify the Role**: Confirm which role's deliverables are being audited.
-2. **Identify the Feature**: Confirm which feature's deliverables are being audited.
-3. **Check GitHub Access**: Ensure GitHub can be reached and navigate to the relevant subdirectory for the deliverables.
-4. **Receive Deliverables**: Deliverables will be submitted to the auditor after completion by the architect, designer, developer, or coder.
-5. **Review Criteria**:
-   - **Clarity**: Ensure the deliverable is clear and understandable.
-   - **Completeness**: Check that all necessary components are included.
-   - **Accuracy**: Verify the correctness of the content.
-   - **Role Expectations Alignment**: Verify that the outputs from the current role align with the expected inputs of the next role.
-   - **Compliance**: Ensure adherence to guidelines and standards.
-   - **Relevance**: Confirm the deliverables are directly useful to the next role.
-   - **Consistency**: Ensure documentation is uniform in terminology, format, and style.
-   - **Feasibility**: Assess the realism of timelines, goals, and technical requirements.
-   - **Feedback and Iteration**: Ensure deliverables include room for feedback and iteration.
-6. **Provide Feedback**:
-   - Document any issues or areas for improvement.
-   - Use the standardized feedback report template.
-   - Return deliverables to the respective role for revisions if necessary.
-7. **Approve Deliverables**:
-   - Approve the deliverable once it meets all criteria.
-   - Document the approval in the activity log.
-8. **Log Activities**:
-   - Update the `activity_log.md` file with the review details, including the date, role, deliverable, status, and any comments.
+**Process**
+1. **Identify the Role:**
+   - Confirm which role's deliverables are being audited.
+   - Ask the following question: **"Which role's deliverables would you like to audit first for the time management feature (architect, designer, developer, or coder)?"**
 
-**Documentation Standards**:
-1. **Feedback Report**:
-   - **Format**: Use a standardized template with sections for identified issues, suggestions for improvement, role expectations alignment, and general comments.
-   - **Template**:
-     ```markdown
-     ## Feedback Report for [Feature Name]
+2. **Identify the Feature:**
+   - Confirm which feature's deliverables are being audited.
+   - Navigate to the feature directory.
 
-     ### Identified Issues
-     - **Clarity**: 
-       - Issue 1: Description
-       - Issue 2: Description
-     - **Completeness**: 
-       - Issue 1: Description
-       - Issue 2: Description
-     - **Accuracy**: 
-       - Issue 1: Description
-       - Issue 2: Description
-     - **Role Expectations Alignment**: 
-       - Issue 1: Description
-       - Issue 2: Description
-     - **Compliance**: 
-       - Issue 1: Description
-       - Issue 2: Description
-     - **Relevance**: 
-       - Issue 1: Description
-       - Issue 2: Description
-     - **Consistency**: 
-       - Issue 1: Description
-       - Issue 2: Description
-     - **Feasibility**: 
-       - Issue 1: Description
-       - Issue 2: Description
+3. **Check GitHub Activity:**
+   - Ensure all relevant activities and changes are logged and up-to-date.
+   - **GitHub Repository:** [GitHub Repository](https://github.com/vzlatsin/Helper)
 
-     ### Suggestions for Improvement
-     - **Clarity**: 
-       - Suggestion 1: Description
-       - Suggestion 2: Description
-     - **Completeness**: 
-       - Suggestion 1: Description
-       - Suggestion 2: Description
-     - **Accuracy**: 
-       - Suggestion 1: Description
-       - Suggestion 2: Description
-     - **Role Expectations Alignment**: 
-       - Suggestion 1: Description
-       - Suggestion 2: Description
-     - **Compliance**: 
-       - Suggestion 1: Description
-       - Suggestion 2: Description
-     - **Relevance**: 
-       - Suggestion 1: Description
-       - Suggestion 2: Description
-     - **Consistency**: 
-       - Suggestion 1: Description
-       - Suggestion 2: Description
-     - **Feasibility**: 
-       - Suggestion 1: Description
-       - Suggestion 2: Description
+4. **Review Deliverables:**
+   - Evaluate the quality, completeness, and compliance of each deliverable.
 
-     ### Role Expectations Alignment
-     - Alignment Check: Confirmed/Not Confirmed
+5. **Provide Feedback:**
+   - Document and communicate feedback to the respective roles.
 
-     ### General Comments
-     - Comment 1
-     - Comment 2
-     ```
+6. **Approval:**
+   - Approve the deliverable if it meets all requirements.
 
-2. **Approval Document**:
-   - **Format**: Use a clear structure with sections for the deliverable reviewed, approval status, and any conditions for approval.
-   - **Template**:
-     ```markdown
-     ## Approval Document for [Feature Name]
-     ### Deliverable Reviewed
-     - Description of the deliverable
-     ### Approval Status
-     - Approved/Not Approved
-     ### Conditions for Approval
-     - Condition 1
-     - Condition 2
-     ```
+7. **Log Activities:**
+   - Document the review process in the activity log.
 
-3. **Activity Log**:
-   - **Format**: Use a log format with detailed descriptions for each review activity.
-   
-   ## 2024-06-01
-- **Auditor**: Reviewed Architect's deliverables for Time Management Feature.
-  - **Details**: Conducted a thorough review of the high-level requirements, roadmap, and benefit analysis. Checked for clarity, completeness, accuracy, and compliance.
-  - **Status**: Completed
-  - **Comments**: High-level requirements are clear and aligned with project goals; roadmap is detailed and feasible; benefit analysis document clearly explains the benefits and aligns with project goals.
-
-## 2024-06-02
-- **Auditor**: Reviewed Designer's deliverables for Time Management feature.
-  - **Details**: Conducted a thorough review of the sub-roadmap, specifications, and design validation documents. Checked for clarity, completeness, accuracy, and compliance.
-  - **Files Checked**: 
-    - `docs/roadmaps/time_management_sub_roadmap.md`
-    - `docs/roadmaps/specifications/time_management_specifications.md`
-    - `docs/guides/time_management_design_validations.md`
-  - **Status**: Completed
-  - **Comments**: All documents meet the required criteria and are approved.
-
-## 2024-06-03
-- **Auditor**: Reviewed Developer's deliverables for Time Management feature.
-  - **Details**: Conducted a thorough review of the pseudocode and specifications. Checked for clarity, completeness, accuracy, and compliance.
-  - **Files Checked**: 
-    - [Pseudocode](https://github.com/vzlatsin/Helper/blob/master/docs/pseudocode/time_management_pseudocode.md)
-    - [Closed Lists Management](https://github.com/vzlatsin/Helper/blob/master/docs/roadmaps/specifications/1_1_closed_lists.md)
-    - [Backlog Management](https://github.com/vzlatsin/Helper/blob/master/docs/roadmaps/specifications/1_2_backlog_management.md)
-    - [Scheduling for Tomorrow](https://github.com/vzlatsin/Helper/blob/master/docs/roadmaps/specifications/1_3_scheduling_for_tomorrow.md)
-    - [Insights and Analysis](https://github.com/vzlatsin/Helper/blob/master/docs/roadmaps/specifications/1_4_Insights%20and%20Analysis.md)
-  - **Status**: Completed
-  - **Comments**: The deliverables are clear, complete, and comply with the guidelines. No issues found.
-
-
-**Consistency Checks**:
-1. **Terminology**:
-   - Ensure that the same terms are used consistently across all audit reports and logs.
+**Consistency Guidelines**
+1. **Terminology:** Ensure consistent use of terms across all audit reports and logs.
    - Create a glossary of terms if necessary.
    - Example:
      ```markdown
      ## Glossary
-     - **Deliverable**: A specific output produced by a role (architect, designer, developer, coder).
-     - **Feedback Report**: A document outlining issues and suggestions for improvement.
+     - **Deliverable:** A specific output produced by a role (architect, designer, developer, coder).
+     - **Feedback Report:** A document outlining issues and suggestions for improvement.
      ```
 
-2. **Formatting**:
+2. **Formatting:**
    - Verify that all audit reports and logs follow the same formatting guidelines (e.g., headings, bullet points, tables).
    - Use standardized templates for all documentation.
    - Example:
@@ -204,7 +92,7 @@ To ensure the quality, completeness, and compliance of deliverables produced by 
      - Use tables for logs and structured data.
      ```
 
-3. **Style**:
+3. **Style:**
    - Ensure a consistent writing style (e.g., tone, tense) across all audit documentation.
    - Follow a style guide to maintain uniformity.
    - Example:
@@ -215,7 +103,7 @@ To ensure the quality, completeness, and compliance of deliverables produced by 
      - Use clear and concise language.
      ```
 
-4. **Review Process**:
+4. **Review Process:**
    - Implement a review process to check for consistency before finalizing audit reports and logs.
    - Have another team member or lead auditor review the documentation.
    - Example:
@@ -227,10 +115,27 @@ To ensure the quality, completeness, and compliance of deliverables produced by 
      - Have documents reviewed by a peer or lead auditor.
      ```
 
-**Review Checklist for Auditor**  
-1. **Clarity**: Ensure the deliverables are clear and understandable.
-2. **Completeness**: Check that all necessary components are included.
-3. **Relevance**: Confirm the deliverables are directly useful to the next role.
-4. **Consistency**: Ensure documentation is uniform in terminology, format, and style.
-5. **Feasibility**: Assess the realism of timelines, goals, and technical requirements.
+**Review Checklist for Auditor**
+1. **Clarity:** Ensure the deliverables are clear and understandable.
+2. **Completeness:** Check that all necessary components are included.
+3. **Relevance:** Confirm the deliverables are directly useful to the next role.
+4. **Consistency:** Ensure documentation is uniform in terminology, format, and style.
+5. **Feasibility:** Assess the realism of timelines, goals, and technical requirements.
 
+### Example Structure
+
+```
+- Feature_Name/
+  - Architect/
+    - Requirements_Document.md
+    - User_Stories.md
+  - Designer/
+    - Sub-roadmaps/
+    - Specifications.md
+  - Developer/
+    - Pseudocode.md
+    - Script_Instructions.md
+  - Coder/
+    - Implemented_Code/
+    - Test_Results.md
+```
