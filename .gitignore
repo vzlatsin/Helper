@@ -8,3 +8,4 @@ NEM.txt
 client_secret*.json
 credentials/
 openai-test.py
+node_modules
