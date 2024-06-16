@@ -1,9 +1,9 @@
-# run_tests.py
 import os
 import sys
 import json
 import logging
 import unittest
+import subprocess
 
 def load_config():
     config_name = 'testing'  # Directly use 'testing' as we're running tests
@@ -17,24 +17,34 @@ def configure_logging(config):
                         format=config['logging']['format'])
     logging.debug("Test logging is configured.")
 
+def run_python_tests():
+    # Discover and run Python tests
+    tests = unittest.TestLoader().discover('tests', pattern='test_*.py')
+    result = unittest.TextTestRunner().run(tests)
+    return result.wasSuccessful()
+
+def run_jest_tests():
+    # Run Jest tests
+    try:
+        result = subprocess.run(['C:\\Program Files\\nodejs\\npm.cmd', 'test'], capture_output=True, text=True)
+        print(result.stdout)
+        print(result.stderr)  # Print the error output for debugging
+        return result.returncode == 0
+    except Exception as e:
+        print(f"An error occurred while running Jest tests: {e}")
+        return False
 
 def run_tests():
     config = load_config()
     configure_logging(config)
-    # Set the environment variable to specify the testing environment
     os.environ['MY_APP_ENV'] = 'testing'
 
-    # Discover and run only TimeManagement tests
-    tests = unittest.TestLoader().discover('tests', pattern='TimeManagement.test.js')
-    # Discover and run tests
-    # tests = unittest.TestLoader().discover('tests')
-    # tests = unittest.TestLoader().discover('tests', pattern='test_flex_query.py')
-    tests = unittest.TestLoader().discover('tests', pattern='*.test.js')
-    result = unittest.TextTestRunner().run(tests)
-    if result.wasSuccessful():
-        return 0  # Exit with 0 if tests were successful
-    return 1  # Exit with 1 if tests failed
+    # Run both Python and JavaScript tests
+    python_tests_passed = run_python_tests()
+    jest_tests_passed = run_jest_tests()
 
+    return python_tests_passed and jest_tests_passed
 
 if __name__ == '__main__':
-    exit(run_tests())
+    success = run_tests()
+    sys.exit(0 if success else 1)
