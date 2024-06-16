@@ -24,9 +24,10 @@ def run_python_tests():
     return result.wasSuccessful()
 
 def run_jest_tests():
-    # Run Jest tests
+    # Determine the correct npm command
+    npm_command = 'npm.cmd' if os.name == 'nt' else 'npm'
     try:
-        result = subprocess.run(['C:\\Program Files\\nodejs\\npm.cmd', 'test'], capture_output=True, text=True)
+        result = subprocess.run([npm_command, 'test'], capture_output=True, text=True)
         print(result.stdout)
         print(result.stderr)  # Print the error output for debugging
         return result.returncode == 0
