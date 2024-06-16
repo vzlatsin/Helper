@@ -1,4 +1,6 @@
-### Integrated Changes for the Coder Guide
+
+
+### Coder Guide
 
 **Purpose**  
 To ensure the creation of detailed and clear code based on the developer's instructions and specifications.
@@ -10,15 +12,10 @@ To ensure the creation of detailed and clear code based on the developer's instr
 
 **Inputs**:
 1. **Pseudocode**: Detailed logical representation of the code.
-   - **Location**: `docs/[feature_name]/developer/pseudocode_new_feature.md`
 2. **Script Instructions**: Detailed instructions for coding.
-   - **Location**: `docs/[feature_name]/developer/script_instructions.md`
 3. **HTML Structure Plan**: Plan for the HTML structure and any changes needed.
-   - **Location**: `docs/[feature_name]/developer/html_structure_plan.md`
 4. **Code Changes**: Specific details on the changes to be made in the codebase.
-   - **Location**: `docs/[feature_name]/developer/code_changes.md`
 5. **Data Flow and Interaction Guidelines**: Detailed guidelines on data flow and user interactions.
-   - **Location**: `docs/[feature_name]/developer/data_flow_interaction.md`
 
 **Outputs**:
 1. **Implemented Code**:
@@ -31,6 +28,18 @@ To ensure the creation of detailed and clear code based on the developer's instr
    - Detailed documentation of the implemented code and its usage.
    - **Location**: `docs/[feature_name]/coder/`
 
+**Existing Project Structure**:
+
+```
+src/
+├── components/
+│   └── [ComponentName].js
+├── tests/
+│   └── [ComponentName].test.js
+├── templates/
+│   └── [TemplateName].html
+```
+
 **Process**  
 1. **Gather Inputs**:
    - **Sources**: Pseudocode, script instructions, HTML structure plans, and data flow guidelines from the developer.
@@ -38,64 +47,21 @@ To ensure the creation of detailed and clear code based on the developer's instr
 2. **Write Code**:
    - Implement the code following the provided instructions.
    - Ensure the code is clean, well-documented, and adheres to best practices.
+   - Follow a TDD approach: write tests before implementing functionality.
+   - Adhere to the philosophy of "test early, test often": make small incremental steps with early and frequent testing.
 
 3. **Test and Validate**:
-   - Conduct thorough testing to ensure the code functions correctly.
-   - Validate the code against the specified requirements and acceptance criteria.
+   - Conduct comprehensive testing covering all use cases.
+   - Run tests using `run_tests.py`.
+   - Document the test results and ensure all scenarios are covered.
 
-**Documentation Standards**:
-1. **Implemented Code**:
-   - **Format**: Ensure the code is clean, well-commented, and adheres to best practices.
-   - **Guidelines**:
-     - Use meaningful variable names.
-     - Include comments explaining the purpose of complex sections.
-     - Follow consistent indentation and coding style.
+4. **Document**:
+   - Write detailed documentation explaining the code and its usage.
+   - Ensure clarity and completeness in the documentation.
 
-2. **Test Results**:
-   - **Format**: Use a standardized template with sections for test cases, expected results, and actual results.
-   - **Template**:
-     ```markdown
-     ## Test Results for [Feature Name]
-     ### Test Case 1
-     - **Description**: Describe the test case.
-     - **Expected Result**: Describe the expected outcome.
-     - **Actual Result**: Describe the actual outcome.
-     - **Status**: Pass/Fail
-     ### Test Case 2
-     - **Description**: Describe the test case.
-     - **Expected Result**: Describe the expected outcome.
-     - **Actual Result**: Describe the actual outcome.
-     - **Status**: Pass/Fail
-     ```
-
-3. **Documentation**:
-   - **Format**: Use a clear hierarchical structure with section headings.
-   - **Template**:
-     ```markdown
-     ## Documentation for [Feature Name]
-     ### Overview
-     - Brief overview of the implemented code.
-     ### Usage Instructions
-     - Detailed instructions on how to use the code.
-     ### Examples
-     - Provide examples of usage.
-     ### Code Walkthrough
-     - Step-by-step explanation of the code.
-     ```
-
-**Consistency Checks**:
-1. **Terminology**:
-   - Ensure that the same terms are used consistently across all code and documentation.
-   - Create a glossary of terms if necessary.
-   - Example:
-     ```markdown
-     ## Glossary
-     - **Function**: A block of code designed to perform a particular task.
-     - **Variable**: A named space in memory to store data.
-     ```
-
-2. **Formatting**:
-   - Verify that all code and documentation follow the same formatting guidelines (e.g., indentation, comments, headings, bullet points).
+**Formatting, Style, and Review**:
+1. **Formatting**:
+   - Follow consistent formatting (e.g., headings, bullet points).
    - Use standardized templates for all documentation.
    - Example:
      ```markdown
@@ -106,7 +72,7 @@ To ensure the creation of detailed and clear code based on the developer's instr
      - Use `1.` for numbered lists.
      ```
 
-3. **Style**:
+2. **Style**:
    - Ensure a consistent writing style (e.g., tone, tense) across all documentation.
    - Follow a coding style guide to maintain uniformity.
    - Example:
@@ -117,7 +83,7 @@ To ensure the creation of detailed and clear code based on the developer's instr
      - Use clear and concise language.
      ```
 
-4. **Review Process**:
+3. **Review Process**:
    - Implement a review process to check for consistency before finalizing deliverables.
    - Have another team member or auditor review the code and documentation.
    - Example:
@@ -140,8 +106,16 @@ To ensure the creation of detailed and clear code based on the developer's instr
 - Ensure deliverables include room for feedback and iteration.
 - Define procedures for handling incomplete or unclear inputs.
 
+### GitHub Repository
+- All inputs and outputs should be stored in the GitHub repository.
+- **Developer Deliverables**: Located in `docs/[feature_name]/developer/`
+- **Implemented Code**: Located in `src/[feature_name]/`
+- **Test Results**: Located in `tests/[feature_name]/`
+- **Documentation**: Located in `docs/[feature_name]/coder/`
+
+### Running Tests
+- Use `run_tests.py` to execute all tests.
+- Ensure the script is updated to include the new tests for the time management feature.
+
 This guide ensures that the coder’s outputs are well-defined and meet the developer’s specifications, facilitating a smooth transition and effective workflow.
 
-### Next Steps:
-- Review the integrated changes to ensure they meet your expectations.
-- Identify any additional improvements or adjustments needed before finalizing the guide.

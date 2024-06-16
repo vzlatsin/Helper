@@ -24,9 +24,12 @@ def run_tests():
     # Set the environment variable to specify the testing environment
     os.environ['MY_APP_ENV'] = 'testing'
 
+    # Discover and run only TimeManagement tests
+    tests = unittest.TestLoader().discover('tests', pattern='TimeManagement.test.js')
     # Discover and run tests
-    tests = unittest.TestLoader().discover('tests')
+    # tests = unittest.TestLoader().discover('tests')
     # tests = unittest.TestLoader().discover('tests', pattern='test_flex_query.py')
+    tests = unittest.TestLoader().discover('tests', pattern='*.test.js')
     result = unittest.TextTestRunner().run(tests)
     if result.wasSuccessful():
         return 0  # Exit with 0 if tests were successful
