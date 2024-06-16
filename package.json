@@ -13,6 +13,10 @@
     "keywords": [],
     "author": "",
     "license": "ISC",
+    "dependencies": {
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2"
+    },
     "devDependencies": {
         "@babel/preset-env": "^7.24.7",
         "@babel/preset-react": "^7.24.7",
