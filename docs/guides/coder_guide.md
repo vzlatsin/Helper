@@ -117,5 +117,18 @@ src/
 - Use `run_tests.py` to execute all tests.
 - Ensure the script is updated to include the new tests for the time management feature.
 
-This guide ensures that the coder’s outputs are well-defined and meet the developer’s specifications, facilitating a smooth transition and effective workflow.
+### Section for Continuity with ChatGPT
+1. **Session Log**:
+   - Maintain a session log documenting what was done and what needs to be done next.
+   - Example:
+     ```markdown
+     ## Session Log
+     ### Current Session:
+     - Implemented initial time management feature.
+     - Set up tests.
 
+     ### Next Steps:
+     1. Add form for time management tasks.
+     2. Write tests for the form functionality.
+     3. Implement the form in the frontend.
+     ```

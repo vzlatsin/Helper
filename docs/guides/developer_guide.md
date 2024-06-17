@@ -1,245 +1,122 @@
+## Developer Guide
 
+### Objective
+To ensure the efficient and accurate development of features by breaking down tasks into small, testable steps and utilizing Test-Driven Development (TDD) methodology.
 
-### Developer Guide
+### Responsibilities
+1. **Understand the Feature Requirements**: Thoroughly review the high-level requirements and specifications provided by the architect and designer roles.
+2. **Break Down Tasks**: Decompose the feature into small, manageable, and testable steps. Each step should have a clear objective and be identifiable by a unique ID.
+3. **Specify Steps for the Coder**: Provide detailed instructions for each step, including the expected input, output, relevant constraints or considerations, and which scripts should be changed.
+4. **Ensure TDD Compliance**: Incorporate Test-Driven Development practices by defining tests that need to be implemented for each step. Ensure that tests are written before the actual implementation code.
+5. **Review and Iterate**: Continuously review the progress of the coder, providing feedback and adjustments to the steps as necessary.
 
-**Purpose**  
-To ensure the creation of detailed and clear code instructions that guide the coder effectively.
+### Inputs
+1. **Requirements Document**: Detailed requirements provided by the architect.
+   - **Location**: `docs/[feature_name]/architect/requirements.md`
+2. **User Stories**: Practical examples and use cases with acceptance criteria provided by the architect.
+   - **Location**: `docs/[feature_name]/architect/user_stories.md`
+3. **Feature Description**: Comprehensive overview of the feature provided by the architect.
+   - **Location**: `docs/[feature_name]/architect/feature_description.md`
+4. **Data Requirements**: Clearly defined data dependencies and requirements provided by the architect.
+   - **Location**: `docs/[feature_name]/architect/data_requirements.md`
+5. **Sub-roadmaps**: Detailed plans breaking down the project phases into specific tasks and steps for implementation, created by the designer.
+   - **Location**: `docs/[feature_name]/designer/sub_roadmaps.md`
+6. **Specifications**: Detailed design specifications including all necessary design details and implementation steps, created by the designer.
+   - **Location**: `docs/[feature_name]/designer/specifications.md`
 
-**Responsibilities**  
-1. **Interpret Designer Deliverables**: Understand sub-roadmaps, specifications, and design validations.
-2. **Create Development Deliverables**: Produce pseudocode and script instructions.
-3. **Ensure Clarity and Completeness**: Make sure all deliverables are comprehensive and easily understandable by the coder.
+### Deliverables
+1. **Task Breakdown Document**: A detailed document named `task_management_steps.md` outlining the small steps required to implement the feature. Each step should include:
+   - **Step ID**: A unique identifier for the step.
+   - **Description**: A clear and concise description of the task.
+   - **Objective**: The goal or purpose of the step.
+   - **Dependencies**: Any dependencies on previous steps or other components.
+   - **Scripts to Change**: Specific scripts or parts of the codebase that need to be modified.
+   - **Tests**: The tests that need to be written and passed for the step.
 
-**Inputs**:
-1. **Sub-roadmaps**: Detailed plans breaking down the project phases.
-   - **Location**: `docs/[feature_name]/designer/`
-2. **Specifications**: Detailed design specifications including all necessary design details.
-   - **Location**: `docs/[feature_name]/designer/`
-3. **Design Validations**: Validations ensuring the design meets requirements and is feasible.
-   - **Location**: `docs/[feature_name]/designer/`
+### Current Structure and Workflow
+1. **Code Structure**: 
+   - **Main Script**: `app_async.py`
+   - **Deprecated Script**: `app.py` (no longer used)
+   - **Folder Structure**: Include an overview of the current folder and file structure to help identify where changes should be made.
 
-**Outputs**:
-1. **Pseudocode**:
-   - **File Name**: `pseudocode_new_feature.md`
-   - **Location**: `docs/[feature_name]/developer/`
-   - **Content Example**:
-     ```markdown
-     # Pseudocode for [Feature Name]
+2. **Running the Web App**:
+   - **Command**: `python run.py async`
+   - **Environment**: Ensure that the required environment variables and configurations are set up.
 
-     ## Backend Logic
-     - Function: add_task(task_name, start_time, end_time)
-       - Insert task details into the database
-       - Return success/failure response
+3. **Running Tests**:
+   - **Command**: `python run_tests.py`
+   - **Test Locations**: Identify where tests are located in the project structure.
 
-     ## Frontend Logic
-     - Display task list
-       - Fetch tasks from the backend
-       - Render tasks in the UI
+### Example Task Breakdown
 
-     ## Data Flow
-     - User interacts with the UI to add, edit, or delete tasks.
-     - Frontend sends requests to backend API.
-     - Backend processes requests and interacts with the database.
-     - Backend returns responses to the frontend.
-     - Frontend updates the UI based on the responses.
-     ```
+**Step 1: Implement Task Creation**
+- **Step ID**: TM-01
+- **Description**: Implement the functionality for creating a new task.
+- **Objective**: Allow users to create new tasks via a form.
+- **Dependencies**: None
+- **Scripts to Change**: `app_async.py`, `templates/task_form.html`
+- **Tests**: Verify that tasks can be created and saved in the database.
 
-2. **Script Instructions**:
-   - **File Name**: `script_instructions.md`
-   - **Location**: `docs/[feature_name]/developer/`
-   - **Content Example**:
-     ```markdown
-     # Script Instructions for [Feature Name]
+**Step 2: Implement Task Retrieval**
+- **Step ID**: TM-02
+- **Description**: Implement the functionality for retrieving tasks.
+- **Objective**: Allow users to view tasks on a separate page.
+- **Dependencies**: TM-01
+- **Scripts to Change**: `app_async.py`, `templates/task_list.html`
+- **Tests**: Verify that tasks are retrieved and displayed correctly.
 
-     ## Backend Logic
-     ### Database Schema
-     1. **Create Time Management Table**:
-        - Table Name: `time_management`
-        - Fields:
-          - `task_id` (Primary Key, Integer, Auto-increment)
-          - `task_name` (String, Not Null)
-          - `start_time` (DateTime, Not Null)
-          - `end_time` (DateTime, Not Null)
-          - `status` (String, Default: 'Pending')
+**Step 3: Implement Task Detail View**
+- **Step ID**: TM-03
+- **Description**: Implement the functionality for viewing task details.
+- **Objective**: Allow users to view detailed information about a specific task.
+- **Dependencies**: TM-01, TM-02
+- **Scripts to Change**: `app_async.py`, `templates/task_detail.html`
+- **Tests**: Verify that task details are displayed correctly.
 
-     ### API Endpoints
-     1. **Add Task Endpoint**
-        - **Route**: `/api/add_task`
-        - **Method**: `POST`
-        - **Parameters**: `task_name`, `start_time`, `end_time`
-        - **Function**: `add_task(task_name, start_time, end_time)`
-        - **Description**: Insert task details into the database and return a success/failure response.
+**Step 4: Implement Task List Filtering and Sorting**
+- **Step ID**: TM-04
+- **Description**: Implement filtering and sorting of task lists.
+- **Objective**: Allow users to filter and sort tasks by various criteria.
+- **Dependencies**: TM-01, TM-02, TM-03
+- **Scripts to Change**: `app_async.py`, `templates/task_list.html`
+- **Tests**: Verify that tasks are displayed correctly and filters/sorting work as expected.
 
-     ## Frontend Logic
-     ### HTML Structure
-     1. **Task List Display**:
-        - Create a table to display tasks with columns for `task_name`, `start_time`, `end_time`, and `status`.
-        - Add buttons for editing and deleting tasks in each row.
+**Step 5: Implement Task Update**
+- **Step ID**: TM-05
+- **Description**: Implement the functionality for updating task details.
+- **Objective**: Allow users to edit task details on a separate page.
+- **Dependencies**: TM-01, TM-02, TM-03
+- **Scripts to Change**: `app_async.py`, `db/database.py`
+- **Tests**: Verify that task details can be updated correctly.
 
-     ### JavaScript Functions
-     1. **Fetch Tasks**:
-        - Function: `fetchTasks()`
-        - Description: Send a GET request to `/api/get_tasks` and populate the task list table.
+**Step 6: Implement Task Deletion**
+- **Step ID**: TM-06
+- **Description**: Implement the functionality for deleting tasks.
+- **Objective**: Allow users to delete tasks on a separate page.
+- **Dependencies**: TM-01, TM-02, TM-03
+- **Scripts to Change**: `app_async.py`, `db/database.py`
+- **Tests**: Verify that tasks can be deleted correctly.
 
-     ## Error Handling
-     - Handle database connection errors
-     - Validate user inputs
-     - Provide user feedback for success/failure actions
-     ```
+**Step 7: Implement Task Completion**
+- **Step ID**: TM-07
+- **Description**: Implement the functionality for marking tasks as completed.
+- **Objective**: Allow users to mark tasks as completed on a separate page.
+- **Dependencies**: TM-01, TM-02, TM-03
+- **Scripts to Change**: `app_async.py`, `db/database.py`
+- **Tests**: Verify that tasks can be marked as completed and updated in the database.
 
-3. **HTML Structure Plan**:
-   - **File Name**: `html_structure_plan.md`
-   - **Location**: `docs/[feature_name]/developer/`
-   - **Content Example**:
-     ```markdown
-     # HTML Structure Plan for [Feature Name]
+**Step 8: Implement Task Search**
+- **Step ID**: TM-08
+- **Description**: Implement the functionality for searching tasks.
+- **Objective**: Allow users to search for tasks by keyword on a separate page.
+- **Dependencies**: TM-01, TM-02, TM-03
+- **Scripts to Change**: `app_async.py`, `templates/task_search.html`
+- **Tests**: Verify that tasks can be searched and displayed correctly.
 
-     ## Task List Display
-     - Create a table with the following columns:
-       - Task Name
-       - Start Time
-       - End Time
-       - Status
-       - Actions (Edit/Delete buttons)
+### Conclusion
+The developer role is crucial in ensuring that features are developed efficiently and accurately. By breaking down tasks into small, testable steps and following TDD principles, the developer can guide the coder to produce high-quality code and achieve the desired outcomes. Additionally, having a clear understanding of the current code structure and workflow is essential for effective development.
 
-     ## Task Form
-     - Create a form with the following fields:
-       - Task Name (input text)
-       - Start Time (datetime picker)
-       - End Time (datetime picker)
-       - Status (dropdown)
+### Additional Resources
+All documentation, including the detailed requirements, user stories, feature descriptions, sub-roadmaps, and specifications, can be accessed in the GitHub repository: [Helper Repository](https://github.com/vzlatsin/Helper)
 
-     ## Modifications
-     - Add the form to the existing HTML template for task management.
-     - Ensure the new elements are styled consistently with the existing UI.
-     ```
-
-4. **Code Changes**:
-   - **File Name**: `code_changes.md`
-   - **Location**: `docs/[feature_name]/developer/`
-   - **Content Example**:
-     ```markdown
-     # Code Changes for [Feature Name]
-
-     ## Backend
-     - Add the following function to `app_async.py`:
-       ```python
-       def add_task(task_name, start_time, end_time):
-           sql = "INSERT INTO time_management (task_name, start_time, end_time) VALUES (?, ?, ?)"
-           execute_sql(sql, (task_name, start_time, end_time))
-       ```
-
-     ## Frontend
-     - Add the following function to `scripts.js`:
-       ```javascript
-       function fetchTasks() {
-           fetch('/api/get_tasks')
-               .then(response => response.json())
-               .then(data => renderTaskList(data));
-       }
-       ```
-
-     ## Integration
-     - Update the routes in `routes.py` to include the new API endpoints.
-     ```
-
-5. **Data Flow and Interaction Guidelines**:
-   - **File Name**: `data_flow_interaction.md`
-   - **Location**: `docs/[feature_name]/developer/`
-   - **Content Example**:
-     ```markdown
-     # Data Flow and Interaction Guidelines for [Feature Name]
-
-     ## User Interactions
-     - User adds, edits, or deletes tasks via the UI.
-     - User actions trigger JavaScript functions to send API requests.
-
-     ## Backend Processing
-     - API requests are processed by backend functions.
-     - Database operations are performed, and responses are returned to the frontend.
-
-     ## Frontend Updates
-     - API responses are handled by JavaScript functions.
-     - The task list is updated in the UI based on the API responses.
-
-     ## Error Handling
-     - Standardize error responses with HTTP status codes.
-     - Provide user-friendly error messages.
-     ```
-
-### Process
-1. **Familiarize with Current Codebase**:
-   - **Action**: Explore the project structure by reviewing the codebase on the project's GitHub repository.
-   - **GitHub Repository Location**: `https://github.com/vzlatsin/Helper`
-   - **Focus Areas**: 
-     - `app_async.py`: Main application logic.
-     - `helper.py`: Utility functions.
-     - `models.py`: Data models and database interactions.
-     - `routes.py`: API routes and endpoints.
-     - `templates/`: HTML templates and static files.
-   - **Outcome Expected**: Gain a thorough understanding of the codebase and its structure.
-
-2. **Review Designer Deliverables**:
-   - **Action**: Carefully review the sub-roadmaps, specifications, and design validations.
-   - **Details**: Understand the requirements, design details, and feasibility checks.
-   - **Outcome Expected**: Ensure a clear understanding of what needs to be developed.
-
-3. **Draft Pseudocode**:
-   - **Action**: Create a logical representation of the new feature.
-   - **Details**: Break down the feature into smaller, manageable components.
-   - **Outcome Expected**: Provide a clear plan for coding.
-
-4. **Develop Script Instructions**:
-   - **Action**: Write detailed instructions for the coder.
-   - **Details**: Include steps, methods, and functions needed for implementation.
-   - **Outcome Expected**: Ensure the coder can follow the instructions without confusion.
-
-5. **Plan HTML Structure**:
-   - **Action**: Develop a plan for any necessary changes to the HTML structure.
-   - **Details**: Specify new sections, elements, and templates.
-   - **Outcome Expected**: Ensure the front-end layout supports the new feature.
-
-6. **Document Code Changes**:
-   - **Action**: Detail specific changes to be made in the codebase.
-   - **Details**: Include file names, line numbers, and code snippets.
-   - **Outcome Expected**: Provide a clear guide for the coder to update the codebase.
-
-7. **Create Data Flow and Interaction Guidelines**:
-   - **Action**: Document the flow of data and user interactions.
-   - **Details**: Outline backend and frontend interactions, data processing, and user actions.
-   - **Outcome Expected**: Ensure a seamless user experience and efficient data handling.
-
-8. **Final Review and Adjustments**:
-   - **Action**: Review all documents and make necessary adjustments.
-   - **Outcome Expected**: Ensure completeness, consistency, and accuracy before handing off to the coder.
-
-**Consistency Checks**:
-1. **Terminology**:
-   - Ensure the same terms are used consistently across all documents.
-   - Create a glossary of terms if necessary.
-
-2. **Formatting**:
-   - Verify all documents follow the same formatting guidelines (e.g., headings, bullet points, numbering).
-   - Use standardized templates for all documents.
-
-3. **Style**:
-   - Ensure a consistent writing style (e.g., tone, tense) across all documents.
-   - Follow a style guide to maintain uniformity.
-
-4. **Review Process**:
-   - Implement a review process to check for consistency before deliverables are passed to the coder.
-   - Have another
-
- team member or auditor review the documents.
-
-**Review Checklist for Auditor**  
-1. **Clarity**: Ensure the deliverables are clear and understandable for the coder.
-2. **Completeness**: Check that all necessary components are included.
-3. **Relevance**: Confirm the deliverables are directly useful to the coder.
-4. **Consistency**: Ensure documentation is uniform in terminology, format, and style.
-5. **Feasibility**: Assess the realism and technical feasibility of the pseudocode and script instructions.
-
-**Feedback and Iteration**  
-- Ensure deliverables include room for feedback and iteration.
-- Define procedures for handling incomplete or unclear inputs.
-
+To ensure that the developer reads the output of the designer role, the developer should thoroughly review the specifications provided in the `docs/[feature_name]/designer/specifications.md` file and the sub-roadmaps provided in `docs/[feature_name]/designer/sub_roadmaps.md` as part of their initial responsibility to understand the feature requirements.

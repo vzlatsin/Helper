@@ -1,11 +1,12 @@
+
 ### Designer Guide
 
-**Purpose**  
-To ensure the creation of detailed and clear designs that guide the subsequent roles (developer, coder) effectively.
+**Purpose**
+- Ensure the creation of detailed and clear designs that guide the subsequent roles (developer, coder) effectively.
 
-**Responsibilities**  
+**Responsibilities**
 1. **Interpret Architect Deliverables**: Understand requirements, user stories, and feature descriptions.
-2. **Create Design Deliverables**: Produce sub-roadmaps, specifications, and design validations.
+2. **Create Design Deliverables**: Produce sub-roadmaps and specifications, including detailed programming tasks and steps for feature implementation.
 3. **Ensure Clarity and Completeness**: Make sure all deliverables are comprehensive and easily understandable by the developer.
 
 **Inputs**:
@@ -22,131 +23,125 @@ To ensure the creation of detailed and clear designs that guide the subsequent r
 
 **Outputs**:
 1. **Sub-roadmaps**:
-   - Detailed plans breaking down the project phases.
+   - Detailed plans breaking down the project phases, **including specific programming tasks and implementation steps**.
    - **Location**: `docs/[feature_name]/designer/sub_roadmaps.md`
 2. **Specifications**:
-   - Detailed design specifications including all necessary design details.
+   - Detailed design specifications including all necessary design details and **implementation steps**.
    - **Location**: `docs/[feature_name]/designer/specifications.md`
-3. **Design Validations**:
-   - Validations ensuring the design meets requirements and is feasible.
-   - **Location**: `docs/[feature_name]/designer/design_validations.md`
 
-**Process**  
+**Process**
 1. **Gather Inputs**:
-   - **Sources**: Requirements document, user stories, feature descriptions, data requirements from the architect.
-
-2. **Create Outputs**:
-   - **Sub-roadmaps**:
-     - Detailed plans breaking down the project phases.
-     - Format: Use a standardized template.
-   - **Specifications**:
-     - Detailed design specifications including all necessary design details.
-     - Format: Use clear and consistent language and diagrams.
-   - **Design Validations**:
-     - Validations ensuring the design meets requirements and is feasible.
-     - Format: Validation documents with checklists and testing criteria.
-
-**Documentation Standards**:
-1. **Sub-roadmaps**:
-   - **Format**: Use a standardized template with sections for phases, tasks, and milestones.
-   - **Template**:
-     ```markdown
-     ## Sub-roadmap for [Feature Name]
-     ### Phases
-     - Phase 1: Description and tasks
-     - Phase 2: Description and tasks
-     ### Tasks
-     - Task 1: Description
-     - Task 2: Description
-     ### Milestones
-     - Milestone 1: Description and due date
-     - Milestone 2: Description and due date
-     ```
-
-2. **Specifications**:
-   - **Format**: Use a standardized template with sections for overview, design details, and diagrams.
-   - **Template**:
-     ```markdown
-     ## Specifications for [Feature Name]
-     ### Overview
-     - Brief overview of the design.
-     ### Design Details
-     - Detail 1: Description
-     - Detail 2: Description
-     ### Diagrams
-     - Diagram 1: Description
-     - Diagram 2: Description
-     ```
-
-3. **Design Validations**:
-   - **Format**: Use a standardized template with sections for validation criteria, test cases, and results.
-   - **Template**:
-     ```markdown
-     ## Design Validations for [Feature Name]
-     ### Validation Criteria
-     - Criterion 1: Description
-     - Criterion 2: Description
-     ### Test Cases
-     - Test Case 1: Description and expected result
-     - Test Case 2: Description and expected result
-     ### Results
-     - Result 1: Description
-     - Result 2: Description
-     ```
-
-**Consistency Checks**:
-1. **Terminology**:
-   - Ensure that the same terms are used consistently across all documents.
-   - Create a glossary of terms if necessary.
-   - Example:
-     ```markdown
-     ## Glossary
-     - **Phase**: A stage in the project lifecycle.
-     - **Milestone**: A significant point or event in the project timeline.
-     ```
-
-2. **Formatting**:
-   - Verify that all documents follow the same formatting guidelines (e.g., headings, bullet points, numbering).
-   - Use standardized templates for all documents.
-   - Example:
-     ```markdown
-     ## Formatting Guidelines
-     - Use `#` for main headings.
-     - Use `##` for subheadings.
-     - Use `-` for bullet points.
-     - Use `1.` for numbered lists.
-     ```
-
-3. **Style**:
-   - Ensure a consistent writing style (e.g., tone, tense) across all documents.
-   - Follow a style guide to maintain uniformity.
-   - Example:
-     ```markdown
-     ## Style Guide
-     - Use active voice.
-     - Write in the present tense.
-     - Use clear and concise language.
-     ```
-
+   - **Sources**: Requirements document, user stories, feature description, data requirements, roadmap.
+   - **Purpose**: To ensure a comprehensive understanding of the feature.
+2. **Create Design Deliverables**:
+   - **Sub-roadmaps**: Break down the project phases into specific tasks and steps.
+     - **Expected Details**:
+       - Clear definition of tasks and sub-tasks.
+       - Step-by-step implementation instructions for each task.
+       - Specific details on database schema design, API endpoints, frontend components, testing, and documentation.
+       - Inclusion of dependencies and order of execution.
+   - **Specifications**: Detailed design documents outlining all necessary implementation steps.
+3. **Ensure Clarity**:
+   - **Objective**: Make sure all deliverables are clear and understandable.
+   - **Method**: Use diagrams, flowcharts, and clear explanations.
 4. **Review Process**:
-   - Implement a review process to check for consistency before deliverables are passed to the developer.
-   - Have another team member or auditor review the documents.
-   - Example:
-     ```markdown
-     ## Review Checklist
-     - Check for consistent terminology.
-     - Verify formatting guidelines are followed.
-     - Ensure the writing style is uniform.
-     - Have documents reviewed by a peer or auditor.
-     ```
+   - **Objective**: Check for consistency and completeness.
+   - **Method**: Have another team member or auditor review the documents.
 
-**Review Checklist for Auditor**  
+**Review Checklist for Auditor**
 1. **Clarity**: Ensure the deliverables are clear and understandable for the developer.
-2. **Completeness**: Check that all necessary components are included.
+2. **Completeness**: Check that all necessary components are included, **including specific programming tasks**.
 3. **Relevance**: Confirm the deliverables are directly useful to the developer.
 4. **Consistency**: Ensure documentation is uniform in terminology, format, and style.
 5. **Feasibility**: Assess the realism and technical feasibility of the design.
 
-**Feedback and Iteration**  
+**Feedback and Iteration**
 - Ensure deliverables include room for feedback and iteration.
 - Define procedures for handling incomplete or unclear inputs.
+
+---
+
+### Example Sub-roadmap for Time Management Feature
+
+```markdown
+## Task 1: Set Up Project Structure
+- **Step 1**: Initialize a new Python project.
+  - **Details**: Create a new project directory, initialize a Git repository.
+- **Step 2**: Set up a virtual environment.
+  - **Details**: Use `venv` or `virtualenv` to create a virtual environment.
+- **Step 3**: Install required packages.
+  - **Details**: Install packages such as Flask, SQLAlchemy, Flask-JWT-Extended using `pip`.
+
+## Task 2: Design Database Schema
+- **Step 1**: Define tables for tasks, lists, and reminders.
+  - **Details**: Create tables:
+    - `Tasks`: Fields for `id`, `name`, `description`, `due_date`, `status`, `list_id`
+    - `Lists`: Fields for `id`, `name`, `is_closed`
+    - `Reminders`: Fields for `id`, `task_id`, `reminder_time`
+- **Step 2**: Create relationships between tables.
+  - **Details**: Define foreign key relationships:
+    - `Tasks` to `Lists` (one-to-many)
+    - `Reminders` to `Tasks` (one-to-one)
+- **Step 3**: Implement migrations.
+  - **Details**: Use `Alembic` to create and apply database migrations.
+
+## Task 3: Develop API Endpoints
+- **Step 1**: Create endpoints for CRUD operations on tasks.
+  - **Details**:
+    - POST `/tasks`: Create a new task
+    - GET `/tasks`: Retrieve all tasks
+    - GET `/tasks/<id>`: Retrieve a specific task
+    - PUT `/tasks/<id>`: Update a specific task
+    - DELETE `/tasks/<id>`: Delete a specific task
+- **Step 2**: Create endpoints for managing lists.
+  - **Details**:
+    - POST `/lists`: Create a new list
+    - GET `/lists`: Retrieve all lists
+    - GET `/lists/<id>`: Retrieve a specific list
+    - PUT `/lists/<id>`: Update a specific list (including closing it)
+    - DELETE `/lists/<id>`: Delete a specific list
+- **Step 3**: Create endpoints for reminders and notifications.
+  - **Details**:
+    - POST `/reminders`: Create a new reminder
+    - GET `/reminders`: Retrieve all reminders
+    - GET `/reminders/<id>`: Retrieve a specific reminder
+    - PUT `/reminders/<id>`: Update a specific reminder
+    - DELETE `/reminders/<id>`: Delete a specific reminder
+- **Step 4**: Implement authentication and authorization.
+  - **Details**: Use `Flask-JWT-Extended` to secure endpoints.
+
+## Task 4: Develop Frontend Components
+- **Step 1**: Create UI components for task management.
+  - **Details**:
+    - Task list component: Display a list of tasks
+    - Task item component: Display individual task details
+    - Task form component: Form to create/edit tasks
+- **Step 2**: Create UI components for list management.
+  - **Details**:
+    - List component: Display a list of task lists
+    - List item component: Display individual list details
+    - List form component: Form to create/edit lists
+- **Step 3**: Implement calendar integration.
+  - **Details**: Use a calendar library (e.g., FullCalendar) to display tasks and reminders.
+- **Step 4**: Add reminder and notification features.
+  - **Details**: Implement UI components to manage reminders and display notifications.
+
+## Task 5: Testing and Debugging
+- **Step 1**: Write unit tests for backend components.
+  - **Details**: Use `pytest` to write tests for API endpoints and database models.
+- **Step 2**: Write unit tests for frontend components.
+  - **Details**: Use a testing library like Jest for React components.
+- **Step 3**: Perform integration testing.
+  - **Details**: Test the interaction between frontend and backend components.
+- **Step 4**: Debug and fix issues.
+  - **Details**: Identify and resolve bugs and issues found during testing.
+
+## Task 6: Documentation
+- **Step 1**: Document API endpoints.
+  - **Details**: Use tools like Swagger to create comprehensive API documentation.
+- **Step 2**: Write user guides for frontend components.
+  - **Details**: Provide detailed user guides on how to use the task management features.
+- **Step 3**: Maintain a changelog.
+  - **Details**: Keep a log of changes, updates, and bug fixes for reference.
+
+
