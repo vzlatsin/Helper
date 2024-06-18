@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, render_template_string
+from flask import Flask, request, jsonify, render_template, render_template_string, send_from_directory
 from markupsafe import Markup
 
 from flask_socketio import SocketIO, emit
@@ -49,9 +49,21 @@ def create_async_app(config):
     def home():
         return render_template('index.html')
     
+    @app.route('/index.html')
+    def index_file():
+        return render_template('index.html')
+       
+    @app.route('/time_management.html')
+    def time_management():
+        return render_template('time_management.html')
+    
     @app.route('/closed-lists')
     def closed_lists():
         return render_template('closed_lists.html')
+    
+    @app.route('/static/<path:filename>')
+    def static_files(filename):
+        return send_from_directory(app.static_folder, filename)
     
     @app.route('/async-route')
     async def async_route():

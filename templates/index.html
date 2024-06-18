@@ -10,47 +10,25 @@
         <h1>Welcome to Your Web App</h1>
         <nav>
             <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#fetch-financial-data-async">Fetch Financial Data</a></li>
-                <li><a href="#compare-dividends-form">Compare Dividends</a></li>
-                <li><a href="#get-dividends-form">Get Dividends</a></li>
-                <li><a href="#dividends-chart">Dividends Chart</a></li>
-                <li><a href="#time-management">Time Management</a></li> <!-- New menu item for Time Management -->
+                <li><a href="/">Home</a></li>
+                <li><a href="/fetch_financial_data.html">Fetch Financial Data</a></li>
+                <li><a href="/compare_dividends.html">Compare Dividends</a></li>
+                <li><a href="/get_dividends.html">Get Dividends</a></li>
+                <li><a href="/dividends_chart.html">Dividends Chart</a></li>
+                <li><a href="/time_management.html">Time Management</a></li>
             </ul>
         </nav>
     </header>
+
     <main>
         <section id="home">
             <h2>Welcome</h2>
             <p>Welcome to the main dashboard of Your Web App!</p>
+            <div id="root"></div>
         </section>
-
-        <section id="fetch-financial-data-async">
-            <h2>Fetch Trades for a Stock</h2>
-            <form action="/get-trades-for-stock" method="post">
-                <label for="stockSymbol">Enter the stock symbol:</label><br>
-                <input type="text" id="stockSymbol" name="stockSymbol" required>
-                <br>
-                <label for="fileName">File Name:</label><br>
-                <input type="text" id="fileName" name="fileName" required>
-                <br>
-                <input type="submit" value="Fetch Trades">
-            </form>
-        </section>
-
-        <!-- Additional sections for other features -->
-
-        <!-- Time Management Section -->
-        <section id="time-management">
-            <h2>Time Management</h2>
-            <p>Manage your daily tasks and backlog efficiently using Closed Lists and Backlog features.</p>
-            <!-- Placeholder for the Time Management React component -->
-            <div id="time-management-root"></div> <!-- New div for React component -->
-        </section>
-
-        <!-- Remaining sections and scripts -->
     </main>
-    <!-- Include the bundled React script at the end of the body -->
-    <script src="{{ url_for('static', filename='bundle.js') }}"></script> <!-- Add this line -->
+
+    <script src="/static/bundle.js" defer></script>
+
 </body>
 </html>

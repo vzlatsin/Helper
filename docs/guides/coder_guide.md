@@ -1,21 +1,30 @@
-
-
 ### Coder Guide
 
 **Purpose**  
 To ensure the creation of detailed and clear code based on the developer's instructions and specifications.
 
 **Responsibilities**  
-1. **Interpret Developer Deliverables**: Understand pseudocode, script instructions, and data flow guidelines.
+1. **Interpret Developer Deliverables**: Understand script instructions and data flow guidelines.
 2. **Write Code**: Implement the code based on the provided specifications.
 3. **Ensure Clarity and Completeness**: Make sure the code is well-documented and meets all specified requirements.
 
 **Inputs**:
-1. **Pseudocode**: Detailed logical representation of the code.
-2. **Script Instructions**: Detailed instructions for coding.
-3. **HTML Structure Plan**: Plan for the HTML structure and any changes needed.
-4. **Code Changes**: Specific details on the changes to be made in the codebase.
-5. **Data Flow and Interaction Guidelines**: Detailed guidelines on data flow and user interactions.
+1. **Script Instructions**: Detailed instructions for coding.
+2. **HTML Structure Plan**: Plan for the HTML structure and any changes needed.
+3. **Code Changes**: Specific details on the changes to be made in the codebase.
+4. **Data Flow and Interaction Guidelines**: Detailed guidelines on data flow and user interactions.
+
+## Task Breakdown and Documentation Process
+
+To maintain a structured and test-driven development approach, follow these steps for each feature:
+
+1. **Create Detailed Task Documents**: For each feature, create a `.md` document with unique IDs for each task.
+2. **Break Down Tasks**: Divide each feature into smaller, testable tasks.
+3. **Follow TDD**: Write tests for each task before implementing it.
+4. **Document Tests and Changes**: Ensure each task document includes descriptions, objectives, dependencies, scripts to change, and tests.
+5. **Commit and Push**: Regularly commit changes and push to the repository.
+
+Refer to `time_management_feature_tasks.md` for an example of task breakdown.
 
 **Outputs**:
 1. **Implemented Code**:
@@ -42,7 +51,7 @@ src/
 
 **Process**  
 1. **Gather Inputs**:
-   - **Sources**: Pseudocode, script instructions, HTML structure plans, and data flow guidelines from the developer.
+   - **Sources**: Script instructions, HTML structure plans, and data flow guidelines from the developer.
 
 2. **Write Code**:
    - Implement the code following the provided instructions.
@@ -120,6 +129,7 @@ src/
 ### Section for Continuity with ChatGPT
 1. **Session Log**:
    - Maintain a session log documenting what was done and what needs to be done next.
+   - Include the task name and ID in the session log.
    - Example:
      ```markdown
      ## Session Log
@@ -132,3 +142,43 @@ src/
      2. Write tests for the form functionality.
      3. Implement the form in the frontend.
      ```
+
+#### Example Task Document: `time_management_feature_tasks.md`
+
+```markdown
+# Time Management Feature
+
+## TM-001-01: Task Creation for Time Management
+
+**Description**: Design and implement the time tracking form.  
+**Objective**: Allow users to log time.  
+**Dependencies**: None  
+**Scripts to Change**: `templates/time_form.html`  
+**Tests**: Verify form display and input validation.
+
+### Session Log
+
+#### TM-001-01: Task Creation for Time Management
+
+**Description**: Design and implement the time tracking form on a dedicated page.
+**Objective**: Allow users to log time on a separate Time Management page.
+**Dependencies**: None
+**Scripts to Change**: `time_management.html`, `TimeManagement.js`, `index.js`
+**Tests**: Verify form display and input validation.
+
+### Implemented Steps:
+1. **Create `time_management.html`**
+   - Added the HTML structure for the Time Management page with the form.
+
+2. **Write Initial Tests**
+   - Ensured the form is displayed correctly in the browser.
+
+3. **Implement the Form in React**
+   - Added the form logic to `TimeManagement.js`.
+
+4. **Render the Component**
+   - Used `index.js` to render the `TimeManagement` component.
+
+5. **Run Tests**
+   - Verified the form's appearance and functionality.
+```
