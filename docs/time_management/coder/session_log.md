@@ -28,3 +28,22 @@
 - Implemented initial time management feature.
 - Set up and ran tests successfully (ID: TM-001-01).
 
+
+
+
+### TM-001-02: Data Validation
+- **Objective**: Ensure correct time input.
+- **Status**: Completed
+- **Details**: 
+  - Implemented client-side validation in `TimeManagement.js` to ensure valid `HH:MM` format.
+  - Checked that both start and end times are provided if one is used.
+  - Validated that the end time is after the start time.
+  - Wrote and ran unit tests to ensure the validation logic works correctly.
+  - Updated the document to reflect the actual steps taken for data validation.
+
+### Next Steps
+- **TM-001-03: Backend Storage**: Store time entries.
+- **TM-001-04: Time Retrieval**: Display logged time entries.
+- **TM-001-05: Time Reporting**: Generate time usage reports.
+
+

@@ -182,3 +182,24 @@ src/
 5. **Run Tests**
    - Verified the form's appearance and functionality.
 ```
+
+
+
+**User Guide Updates**
+- **Purpose**: Ensure the user guide remains up-to-date with application changes.
+- **Steps**:
+  1. **Review Changes**: After implementing new features or updates.
+  2. **Update User Guide**: Add or modify relevant sections in the `user_guide.md`.
+  3. **Include Examples**: Provide examples and usage instructions if applicable.
+  4. **Verify Accuracy**: Ensure the information is accurate and clear.
+
+**Task Management Documentation**
+- **Ensure** all task-related changes are reflected in the documentation.
+- **Maintain** consistency between the implementation and the documented features.
+
+**Example Workflow**
+1. **Implement Feature**: Complete the feature as per the task document.
+2. **Update User Guide**: Reflect the changes in the user guide.
+3. **Review Documentation**: Ensure all relevant documents are updated.
+
+[View the full coder guide](https://github.com/vzlatsin/Helper/blob/master/docs/guides/coder_guide.md)

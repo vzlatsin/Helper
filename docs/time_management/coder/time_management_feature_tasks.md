@@ -39,10 +39,15 @@
 ## TM-001-02: Data Validation for Time Entries
 
 **Description**: Implement validation logic for time entries.  
-**Objective**: Ensure correct time input.  
-**Dependencies**: TM-001-01  
-**Scripts to Change**: `app_async.py`  
-**Tests**: Validate input constraints.
+**Objective**: Ensure correct time input.
+**Updated Steps**:
+  1. **Client-side Validation**: 
+     - Implement time validation in `TimeManagement.js` to ensure valid `HH:MM` format.
+     - Check if both start and end times are provided if one is used.
+     - Validate that end time is after start time.
+  2. **Testing**: 
+     - Write and run unit tests to ensure validation logic works correctly.
+
 
 ## TM-001-03: Backend for Time Entry Storage
 
