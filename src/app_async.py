@@ -7,9 +7,11 @@ from src.helper import MyTradingApp  # Assuming these imports are used elsewhere
 from src.flex_query import initiate_flex_query_report, download_flex_query_report
 #from src.compile_documentation import compile_documentation
 from src.db.data_access import create_connection, get_latest_dividend_date, count_dividend_records, insert_dividend
+from src.db.data_access import save_time_entry
 from .data_sync import compare_dividend_data
 from src.ib_data_fetcher import fetch_dividends_from_ib, fetch_trades_from_ib
-from .db.data_access import fetch_dividends_from_db, fetch_all_trades, insert_dividend_if_not_exists, insert_trade_if_not_exists, fetch_dividends_by_quarter, get_dividend_date_range, get_trades_by_symbol
+from .db.data_access import fetch_dividends_from_db, fetch_all_trades, insert_dividend_if_not_exists, insert_trade_if_not_exists, fetch_dividends_by_quarter, get_dividend_date_range, get_trades_by_symbol, save_task_diary_entry
+from .db.data_access import fetch_task_diary_entries
 from src.file_operations import write_transactions_to_file
 from src.trade_processing import generate_description_for_trade, filter_and_organize_trades
 from flask import request
@@ -52,10 +54,84 @@ def create_async_app(config):
     @app.route('/index.html')
     def index_file():
         return render_template('index.html')
+    
+    @app.route('/task_diary')
+    def task_diary():
+        return render_template('task_diary.html')
+    
+    @app.route('/task-diary', methods=['POST'])
+    def add_task_diary_entry():
+        data = request.json
+        # Validate data
+        if not all(key in data for key in ("date", "tasks", "reflections")):
+            return jsonify({"error": "Invalid data"}), 400
+        
+        try:
+            # Directly save the task diary entry
+            conn = create_connection(app.config['db_path'])
+            if conn:
+                entry_id = save_task_diary_entry(conn, data)
+                conn.close()
+                return jsonify({"success": True, "entry_id": entry_id}), 201
+            else:
+                return jsonify({"error": "Database connection failed"}), 500
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
+    @app.route('/get-task-diary-entries', methods=['GET'])
+    def get_task_diary_entries():
+        try:
+            conn = create_connection(app.config['db_path'])
+            if conn:
+                entries = fetch_task_diary_entries(conn)
+                conn.close()
+                return jsonify(entries), 200
+            else:
+                return jsonify({"error": "Database connection failed"}), 500
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+    
+    @app.route('/time-entry', methods=['POST'])
+    def handle_time_entry():
+        data = request.json
+        # Validate data
+        if not all(key in data for key in ("date", "start_time", "end_time", "task_description")):
+            return jsonify({"error": "Invalid data"}), 400
+        
+        try:
+            # Directly save the time entry
+            conn = create_connection(app.config['db_path'])
+            if conn:
+                entry_id = save_time_entry(conn, data)
+                conn.close()
+                return jsonify({"success": True, "entry_id": entry_id}), 201
+            else:
+                return jsonify({"error": "Database connection failed"}), 500
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+    
        
     @app.route('/time_management.html')
     def time_management():
         return render_template('time_management.html')
+    
+    @app.route('/select-tasks', methods=['GET', 'POST'])
+    def select_tasks():
+        sample_backlog = [
+            {"id": 1, "task_description": "Review project proposal"},
+            {"id": 2, "task_description": "Write report"},
+            {"id": 3, "task_description": "Team meeting"}
+        ]
+        if request.method == 'POST':
+            task_ids = request.form.getlist('task_ids')
+            selected_tasks = [task for task in sample_backlog if str(task["id"]) in task_ids]
+            return f'Tasks added to the closed list for today: {selected_tasks}'
+        
+        return render_template('select_tasks.html', backlog=sample_backlog)
+
+    @app.route('/closed-list')
+    def closed_list():
+        return render_template('closed_lists.html')
     
     @app.route('/closed-lists')
     def closed_lists():

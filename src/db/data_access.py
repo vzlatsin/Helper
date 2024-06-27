@@ -4,6 +4,7 @@ import sqlite3
 import logging
 from sqlite3 import Error
 from datetime import datetime, timedelta
+import json 
 
 def create_connection(db_file):
     """ create a database connection to a SQLite database """
@@ -241,7 +242,78 @@ def get_trades_by_symbol(conn, symbol):
     
     return trades
 
+def insert_time_entry(conn, date, start_time, end_time, task_description):
+    """
+    Insert a new time entry into the time_entries table
+    :param conn: Database connection object
+    :param date: Task date
+    :param start_time: Task start time
+    :param end_time: Task end time
+    :param task_description: Description of the task
+    :return: id of the inserted entry
+    """
+    sql = ''' INSERT INTO time_entries(date, start_time, end_time, task_description)
+              VALUES(?, ?, ?, ?) '''
+    cur = conn.cursor()
+    cur.execute(sql, (date, start_time, end_time, task_description))
+    conn.commit()
+    return cur.lastrowid
 
+def fetch_time_entries(conn):
+    """
+    Query all rows in the time_entries table
+    :param conn: the Connection object
+    :return: a list of dictionaries containing all time entries
+    """
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM time_entries")
+
+    rows = cur.fetchall()
+    entries = []
+    for row in rows:
+        entry = {
+            "id": row[0],
+            "date": row[1],
+            "start_time": row[2],
+            "end_time": row[3],
+            "task_description": row[4]
+        }
+        entries.append(entry)
+    return entries
+
+
+def save_time_entry(conn, data):
+    """
+    Save a time entry to the database
+    :param conn: Database connection object
+    :param data: Dictionary containing date, start_time, end_time, and task_description
+    """
+    return insert_time_entry(conn, data['date'], data['start_time'], data['end_time'], data['task_description'])
+
+def save_task_diary_entry(conn, data):
+    """ Save a task diary entry to the database """
+    sql = ''' INSERT INTO task_diary(date, tasks, reflections)
+              VALUES(?, ?, ?) '''
+    cur = conn.cursor()
+    cur.execute(sql, (data['date'], json.dumps(data['tasks']), data['reflections']))
+    conn.commit()
+    return cur.lastrowid
+
+def fetch_task_diary_entries(conn):
+    """ Fetch all task diary entries from the database """
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM task_diary")
+    rows = cur.fetchall()
+    entries = []
+    for row in rows:
+        entry = {
+            "id": row[0],
+            "date": row[1],
+            "tasks": json.loads(row[2]),
+            "reflections": row[3]
+        }
+        entries.append(entry)
+    return entries
 
 
 

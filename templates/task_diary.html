@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Diary</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div id="diary-container">
+        <!-- Header with Date and Add Task Form -->
+        <div id="diary-header">
+            <div id="date-container">
+                <h2 id="current-date"></h2>
+                <h3 id="current-weekday"></h3>
+            </div>
+            <div id="add-task-container">
+                <form id="task-form">
+                    <input type="text" id="task-description" placeholder="Enter task description">
+                    <textarea id="task-reflection" placeholder="Enter reflections"></textarea>
+                    <button type="submit">Add Task</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tasks Section -->
+        <div id="tasks-section">
+            <h3>Today's Tasks</h3>
+            <ul id="tasks-list">
+                <!-- Dynamically populated list of tasks -->
+            </ul>
+        </div>
+
+        <!-- Save Button -->
+        <div id="save-button-container">
+            <button id="save-button">Save Today's Tasks</button>
+        </div>
+
+        <!-- Container for Saved Entries -->
+        <div id="entries-container">
+            <!-- Dynamically populated list of saved entries -->
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='task_diary.js') }}"></script>
+</body>
+</html>

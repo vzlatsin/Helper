@@ -53,6 +53,20 @@ def main():
                                 tradeDate TEXT
                             );"""
 
+    sql_create_time_entries_table = """CREATE TABLE IF NOT EXISTS time_entries (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            date TEXT NOT NULL,
+            start_time TEXT,
+            end_time TEXT,
+            task_description TEXT NOT NULL
+        );"""
+    
+    sql_create_task_diary_table = """CREATE TABLE IF NOT EXISTS task_diary (
+                                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                        date TEXT NOT NULL,
+                                        tasks TEXT NOT NULL,
+                                        reflections TEXT
+                                    );"""
     
     # Create a database connection
     conn = create_connection(database)
@@ -66,6 +80,14 @@ def main():
         # Create trades table
         create_table(conn, sql_create_trades_table)
         print("Trades table created successfully.")
+
+        # Create time entries table
+        create_table(conn, sql_create_time_entries_table)
+        print("Time entries table created successfully.")
+
+        # create task_diary table
+        create_table(conn, sql_create_task_diary_table)
+        print("Task diary table created successfully.")
 
         conn.close()
     else:

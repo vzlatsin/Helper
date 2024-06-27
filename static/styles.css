@@ -1,55 +1,87 @@
+/* styles.css */
+
 body {
     font-family: Arial, sans-serif;
-}
-
-header {
-    background-color: #f8f9fa;
-    padding: 1rem;
-    text-align: center;
-}
-
-nav ul {
-    list-style-type: none;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
-nav ul li {
-    display: inline;
-    margin-right: 1rem;
+#diary-container {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-form {
-    margin: 2rem;
-    padding: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+#diary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
 }
 
-form label {
-    display: block;
-    margin-top: 0.5rem;
+#date-container {
+    text-align: left;
+    flex: 1;
 }
 
-form input {
+#current-date {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+#current-weekday {
+    font-size: 18px;
+    color: #666;
+}
+
+#add-task-container {
+    text-align: right;
+    flex: 1;
+    margin-top: 10px;
+}
+
+#task-form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+#task-form input[type="text"],
+#task-form textarea {
     width: 100%;
-    padding: 0.5rem;
-    margin-top: 0.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 10px;
+    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 
-form button {
-    background-color: #007bff;
+#task-form button {
+    background-color: #3498db;
     color: white;
+    padding: 10px 20px;
     border: none;
-    padding: 0.5rem 1rem;
     border-radius: 5px;
     cursor: pointer;
 }
 
-form button:hover {
-    background-color: #0056b3;
+#task-form button:hover {
+    background-color: #2980b9;
+}
+
+#tasks-section {
+    border-top: 1px solid #ccc;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+#tasks-section h3 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
 }
 
 ul {
@@ -57,9 +89,51 @@ ul {
     padding: 0;
 }
 
-ul li {
-    margin-bottom: 1rem;
-    padding: 1rem;
-    border: 1px solid #ccc;
+li {
+    margin-bottom: 5px;
+}
+
+#save-button-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#save-button {
+    background-color: #3498db;
+    color: white;
+    padding: 10px 20px;
+    border: none;
     border-radius: 5px;
+    cursor: pointer;
+}
+
+#save-button:hover {
+    background-color: #2980b9;
+}
+
+#entries-container {
+    margin-top: 20px;
+}
+
+.entry {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s;
+}
+
+.entry:hover {
+    background-color: #eaeaea;
+}
+
+.entry h3 {
+    margin: 0 0 10px 0;
+    color: #34495e;
+}
+
+.entry p {
+    margin: 5px 0;
+    line-height: 1.5;
 }

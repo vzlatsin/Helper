@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+    <title>Select Tasks</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { font-size: 24px; }
+        form { margin-top: 20px; }
+        input[type="checkbox"] { margin-right: 10px; }
+        input[type="submit"] { margin-top: 20px; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Select Tasks for Today</h1>
+    <form method="post" action="/select-tasks">
+        {% for task in backlog %}
+            <div>
+                <input type="checkbox" name="task_ids" value="{{ task['id'] }}">
+                <label>{{ task['task_description'] }}</label>
+            </div>
+        {% endfor %}
+        <input type="submit" value="Add to Closed List">
+    </form>
+</body>
+</html>
