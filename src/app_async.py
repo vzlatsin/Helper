@@ -11,7 +11,7 @@ from src.db.data_access import save_time_entry
 from .data_sync import compare_dividend_data
 from src.ib_data_fetcher import fetch_dividends_from_ib, fetch_trades_from_ib
 from .db.data_access import fetch_dividends_from_db, fetch_all_trades, insert_dividend_if_not_exists, insert_trade_if_not_exists, fetch_dividends_by_quarter, get_dividend_date_range, get_trades_by_symbol, save_task_diary_entry
-from .db.data_access import fetch_task_diary_entries
+from .db.data_access import fetch_task_diary_entries, fetch_todays_tasks
 from src.file_operations import write_transactions_to_file
 from src.trade_processing import generate_description_for_trade, filter_and_organize_trades
 from flask import request
@@ -27,12 +27,16 @@ import glob
 
 
 def create_async_app(config):
+
+  
     app = Flask(__name__, static_folder='../static', template_folder='../templates')
     CORS(app)  # Enable CORS if it's required for your async app
 
-    # Here, default configurations are set first.
+
+     # Here, default configurations are set first.
     default_config = {'TESTING': True, 'DEBUG': True}
     app.config.update(default_config)
+
     
     # Then, the externally loaded configuration is applied.
     # This allows your external configuration to override the defaults as needed.
@@ -41,11 +45,11 @@ def create_async_app(config):
 
     # Initialize SocketIO with your app
     socketio = SocketIO(app, logger=True, engineio_logger=True)
-
     
     # If you use trading_app in your async version, initialize it here.
     # Ensure that any use of trading_app is compatible with asynchronous operations.
     trading_app = MyTradingApp()
+    app.logger.info("app_async.py is being executed....")
 
     @app.route('/')
     def home():
@@ -57,13 +61,16 @@ def create_async_app(config):
     
     @app.route('/task_diary')
     def task_diary():
+        app.logger.info("task_diary....")
         return render_template('task_diary.html')
     
     @app.route('/task-diary', methods=['POST'])
     def add_task_diary_entry():
+        app.logger.info("add_task_diary_entry....")
         data = request.json
         # Validate data
         if not all(key in data for key in ("date", "tasks", "reflections")):
+            app.logger.error("Invalid data received: %s", data)
             return jsonify({"error": "Invalid data"}), 400
         
         try:
@@ -72,17 +79,21 @@ def create_async_app(config):
             if conn:
                 entry_id = save_task_diary_entry(conn, data)
                 conn.close()
+                app.logger.info("Successfully saved task diary entry with ID: %s", entry_id)
                 return jsonify({"success": True, "entry_id": entry_id}), 201
             else:
+                app.logger.error("Database connection failed.")
                 return jsonify({"error": "Database connection failed"}), 500
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
     @app.route('/get-task-diary-entries', methods=['GET'])
     def get_task_diary_entries():
+        app.logger.info("get_task_diary_entries ...")
         try:
             conn = create_connection(app.config['db_path'])
             if conn:
+                app.logger.info("fetch entries from task diary ...")
                 entries = fetch_task_diary_entries(conn)
                 conn.close()
                 return jsonify(entries), 200
@@ -114,6 +125,24 @@ def create_async_app(config):
     @app.route('/time_management.html')
     def time_management():
         return render_template('time_management.html')
+    
+    @app.route('/todays_tasks')
+    def todays_tasks():
+        return render_template('todays_tasks.html')
+    
+    @app.route('/get-todays-tasks', methods=['GET'])
+    def get_todays_tasks():
+        app.logger.info("Fetching today's tasks")
+        try:
+            conn = create_connection(app.config['db_path'])
+            if conn:
+                tasks = fetch_todays_tasks(conn)
+                conn.close()
+                return jsonify([{'description': task} for task in tasks]), 200
+            else:
+                return jsonify({"error": "Database connection failed"}), 500
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
     
     @app.route('/select-tasks', methods=['GET', 'POST'])
     def select_tasks():

@@ -315,6 +315,21 @@ def fetch_task_diary_entries(conn):
         entries.append(entry)
     return entries
 
+def fetch_todays_tasks(conn):
+    """
+    Fetch tasks for today's date from the task_diary table.
+    :param conn: the Connection object
+    :return: a list of dictionaries containing today's tasks
+    """
+    today_date = datetime.now().date().isoformat()
+    cur = conn.cursor()
+    cur.execute("SELECT tasks FROM task_diary WHERE date = ?", (today_date,))
+    rows = cur.fetchall()
+    tasks = []
+    for row in rows:
+        tasks.extend(json.loads(row[0]))
+    return tasks
+
 
 
 # Specify the path to your SQLite database file

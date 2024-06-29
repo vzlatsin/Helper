@@ -1,33 +1,51 @@
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM fully loaded and parsed for Task Diary');
+
     const currentDate = new Date().toISOString().split('T')[0];
     const currentWeekday = new Date().toLocaleDateString('en-US', { weekday: 'long' });
-    document.getElementById('current-date').innerText = currentDate;
-    document.getElementById('current-weekday').innerText = currentWeekday;
+    const currentDateElem = document.getElementById('current-date');
+    const currentWeekdayElem = document.getElementById('current-weekday');
+
+    if (!currentDateElem || !currentWeekdayElem) {
+        console.error('current-date or current-weekday element is missing');
+        return;
+    }
+
+    currentDateElem.innerText = currentDate;
+    currentWeekdayElem.innerText = currentWeekday;
 
     const taskList = document.getElementById('tasks-list');
     const taskForm = document.getElementById('task-form');
+    const taskDescription = document.getElementById('task-description');
+    const saveButton = document.getElementById('save-button');
+    const taskReflection = document.getElementById('task-reflection');
+
+    if (!taskForm || !taskDescription || !taskList || !saveButton || !taskReflection) {
+        console.error('One or more elements are missing from the DOM');
+        return;
+    }
 
     taskForm.addEventListener('submit', function(event) {
         event.preventDefault();
-        const taskDescription = document.getElementById('task-description').value;
+        const taskDescriptionValue = taskDescription.value;
 
-        if (taskDescription) {
+        if (taskDescriptionValue) {
             const taskItem = document.createElement('li');
-            taskItem.textContent = taskDescription;
+            taskItem.textContent = taskDescriptionValue;
             taskList.appendChild(taskItem);
 
             // Clear the form
-            document.getElementById('task-description').value = '';
+            taskDescription.value = '';
         }
     });
 
-    document.getElementById('save-button').addEventListener('click', function(event) {
+    saveButton.addEventListener('click', function(event) {
         event.preventDefault();
         const tasks = [];
         taskList.querySelectorAll('li').forEach(taskItem => {
             tasks.push(taskItem.textContent);
         });
-        const reflections = document.getElementById('task-reflection').value;
+        const reflections = taskReflection.value;
 
         fetch('/task-diary', {
             method: 'POST',
