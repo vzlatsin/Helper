@@ -3,34 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Web App</title>
+    <title>Welcome to Your Web App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <header>
         <h1>Welcome to Your Web App</h1>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/fetch_financial_data.html">Fetch Financial Data</a></li>
-                <li><a href="/compare_dividends.html">Compare Dividends</a></li>
-                <li><a href="/get_dividends.html">Get Dividends</a></li>
-                <li><a href="/dividends_chart.html">Dividends Chart</a></li>
-                <li><a href="/time_management.html">Time Management</a></li>
-                <li><a href="/select-tasks">Select Tasks for Today</a></li>
-                <li><a href="/closed-list">Today's Closed List</a></li>
-            </ul>
-        </nav>
     </header>
-
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/fetch-financial-data">Fetch Financial Data</a></li>
+            <li><a href="/compare-dividends">Compare Dividends</a></li>
+            <li><a href="/get-dividends">Get Dividends</a></li>
+            <li><a href="/dividends-chart">Dividends Chart</a></li>
+            <li><a href="/time-management">Time Management</a></li>
+        </ul>
+    </nav>
     <main>
-        <section id="home">
+        <section>
             <h2>Welcome</h2>
             <p>Welcome to the main dashboard of Your Web App!</p>
-            <div id="root"></div>
         </section>
     </main>
-
-    <script src="/static/bundle.js" defer></script>
-
+    <footer>
+        <p>&copy; 2024 Your Web App</p>
+    </footer>
 </body>
 </html>
