@@ -4,28 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Web App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
-        <h1>Welcome to Your Web App</h1>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/fetch_financial_data.html">Fetch Financial Data</a></li>
-                <li><a href="/compare_dividends.html">Compare Dividends</a></li>
-                <li><a href="/get_dividends.html">Get Dividends</a></li>
-                <li><a href="/dividends_chart.html">Dividends Chart</a></li>
-                <li><a href="/time_management.html">Time Management</a></li>
-            </ul>
-        </nav>
+        <div class="container">
+            <h1>Your Web App</h1>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/fetch_financial_data.html">Fetch Financial Data</a></li>
+                    <li><a href="/compare_dividends.html">Compare Dividends</a></li>
+                    <li><a href="/get_dividends.html">Get Dividends</a></li>
+                    <li><a href="/dividends_chart.html">Dividends Chart</a></li>
+                    <li><a href="/time_management.html">Time Management</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
     <main>
-        <section id="home">
-            <h2>Welcome</h2>
-            <p>Welcome to the main dashboard of Your Web App!</p>
-            <div id="root"></div>
-        </section>
+        <div class="hero">
+            <div class="container">
+                <h2>Welcome</h2>
+                <p>Welcome to the main dashboard of Your Web App!</p>
+                <a href="/time_management.html" class="btn">Get Started</a>
+            </div>
+        </div>
     </main>
-
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Your Web App</p>
+        </div>
+    </footer>
 </body>
 </html>
