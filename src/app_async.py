@@ -11,7 +11,7 @@ from src.db.data_access import save_time_entry
 from .data_sync import compare_dividend_data
 from src.ib_data_fetcher import fetch_dividends_from_ib, fetch_trades_from_ib
 from .db.data_access import fetch_dividends_from_db, fetch_all_trades, insert_dividend_if_not_exists, insert_trade_if_not_exists, fetch_dividends_by_quarter, get_dividend_date_range, get_trades_by_symbol, save_task_diary_entry
-from .db.data_access import fetch_task_diary_entries, fetch_time_entries
+from .db.data_access import fetch_task_diary_entries, fetch_time_entries, fetch_tasks_for_date
 from src.file_operations import write_transactions_to_file
 from src.trade_processing import generate_description_for_trade, filter_and_organize_trades
 from flask import request
@@ -147,7 +147,20 @@ def create_async_app(config):
         except Exception as e:
             return jsonify({"error": str(e)}), 500
     
-       
+    @app.route('/tasks', methods=['GET'])
+    def get_tasks_for_date():
+        try:
+            conn = create_connection(app.config['db_path'])
+            if conn:
+                date = request.args.get('date')
+                tasks = fetch_tasks_for_date(conn, date)
+                conn.close()
+                return jsonify(tasks), 200
+            else:
+                return jsonify({"error": "Database connection failed"}), 500
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
     @app.route('/time_management.html')
     def time_management():
         return render_template('time_management.html')

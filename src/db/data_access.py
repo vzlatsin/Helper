@@ -314,6 +314,13 @@ def fetch_task_diary_entries(conn):
         entries.append(entry)
     return entries
 
+def fetch_tasks_for_date(conn, date):
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM time_entries WHERE date = ?", (date,))
+    rows = cur.fetchall()
+    tasks = [{'id': row[0], 'date': row[1], 'start_time': row[2], 'end_time': row[3], 'task_description': row[4]} for row in rows]
+    return tasks
+
 
 
 # Specify the path to your SQLite database file
