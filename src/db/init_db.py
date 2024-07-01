@@ -64,7 +64,6 @@ def main():
     sql_create_task_diary_table = """CREATE TABLE IF NOT EXISTS task_diary (
                                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                                         date TEXT NOT NULL,
-                                        tasks TEXT NOT NULL,
                                         reflections TEXT
                                     );"""
     

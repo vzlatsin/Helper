@@ -11,7 +11,7 @@ from src.db.data_access import save_time_entry
 from .data_sync import compare_dividend_data
 from src.ib_data_fetcher import fetch_dividends_from_ib, fetch_trades_from_ib
 from .db.data_access import fetch_dividends_from_db, fetch_all_trades, insert_dividend_if_not_exists, insert_trade_if_not_exists, fetch_dividends_by_quarter, get_dividend_date_range, get_trades_by_symbol, save_task_diary_entry
-from .db.data_access import fetch_task_diary_entries, fetch_todays_tasks
+from .db.data_access import fetch_task_diary_entries, fetch_time_entries
 from src.file_operations import write_transactions_to_file
 from src.trade_processing import generate_description_for_trade, filter_and_organize_trades
 from flask import request
@@ -68,19 +68,23 @@ def create_async_app(config):
     def add_task_diary_entry():
         app.logger.info("add_task_diary_entry....")
         data = request.json
-        # Validate data
-        if not all(key in data for key in ("date", "tasks", "reflections")):
+        if not "tasks" in data or not isinstance(data["tasks"], list):
             app.logger.error("Invalid data received: %s", data)
             return jsonify({"error": "Invalid data"}), 400
         
         try:
-            # Directly save the task diary entry
             conn = create_connection(app.config['db_path'])
             if conn:
-                entry_id = save_task_diary_entry(conn, data)
+                for task in data["tasks"]:
+                    save_time_entry(conn, {
+                        "date": task["date"],
+                        "start_time": None,
+                        "end_time": None,
+                        "task_description": task["description"]
+                    })
                 conn.close()
-                app.logger.info("Successfully saved task diary entry with ID: %s", entry_id)
-                return jsonify({"success": True, "entry_id": entry_id}), 201
+                app.logger.info("Successfully saved task diary entries")
+                return jsonify({"success": True}), 201
             else:
                 app.logger.error("Database connection failed.")
                 return jsonify({"error": "Database connection failed"}), 500
@@ -94,9 +98,31 @@ def create_async_app(config):
             conn = create_connection(app.config['db_path'])
             if conn:
                 app.logger.info("fetch entries from task diary ...")
-                entries = fetch_task_diary_entries(conn)
+                # Fetch task diary entries
+                diary_entries = fetch_task_diary_entries(conn)
+                # Fetch time entries
+                time_entries = fetch_time_entries(conn)
                 conn.close()
-                return jsonify(entries), 200
+
+                # Create a dictionary to hold tasks by date
+                tasks_by_date = {}
+                for entry in time_entries:
+                    date = entry['date']
+                    if date not in tasks_by_date:
+                        tasks_by_date[date] = []
+                    tasks_by_date[date].append(entry['task_description'])
+
+                # Format the diary entries with their associated tasks
+                formatted_entries = []
+                for entry in diary_entries:
+                    date = entry['date']
+                    formatted_entries.append({
+                        "date": date,
+                        "tasks": tasks_by_date.get(date, []),
+                        "reflections": entry['reflections']
+                    })
+
+                return jsonify(formatted_entries), 200
             else:
                 return jsonify({"error": "Database connection failed"}), 500
         except Exception as e:
@@ -133,16 +159,9 @@ def create_async_app(config):
     @app.route('/get-todays-tasks', methods=['GET'])
     def get_todays_tasks():
         app.logger.info("Fetching today's tasks")
-        try:
-            conn = create_connection(app.config['db_path'])
-            if conn:
-                tasks = fetch_todays_tasks(conn)
-                conn.close()
-                return jsonify([{'description': task} for task in tasks]), 200
-            else:
-                return jsonify({"error": "Database connection failed"}), 500
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
+        # will be fixed later
+        return 0
+    
     
     @app.route('/select-tasks', methods=['GET', 'POST'])
     def select_tasks():

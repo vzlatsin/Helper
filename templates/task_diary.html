@@ -9,27 +9,17 @@
 <body>
     <header>
         <h1>Task Diary</h1>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/time_management.html">Time Management</a></li>
-            </ul>
-        </nav>
     </header>
     <main>
-        <div>
-            <p id="current-date"></p>
-            <p id="current-weekday"></p>
-        </div>
         <form id="task-form">
-            <input type="text" id="task-description" placeholder="Enter task description">
-            <textarea id="task-reflection" placeholder="Enter reflections"></textarea>
+            <label for="task-date">Date:</label>
+            <input type="date" id="task-date" name="task-date">
+            <label for="task-desc">Task Description:</label>
+            <input type="text" id="task-desc" name="task-desc">
             <button type="submit">Add Task</button>
         </form>
-        <ul id="tasks-list">
-            <!-- Tasks will be listed here -->
-        </ul>
-        <button id="save-button">Save Today's Tasks</button>
+        <ul id="tasks-list"></ul>
+        <button id="save-button">Save Tasks</button>
         <div id="entries-container"></div>
     </main>
     <script src="{{ url_for('static', filename='task_diary.js') }}"></script>

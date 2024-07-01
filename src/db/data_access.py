@@ -292,10 +292,10 @@ def save_time_entry(conn, data):
 
 def save_task_diary_entry(conn, data):
     """ Save a task diary entry to the database """
-    sql = ''' INSERT INTO task_diary(date, tasks, reflections)
-              VALUES(?, ?, ?) '''
+    sql = ''' INSERT INTO task_diary(date, reflections)
+              VALUES(?, ?) '''
     cur = conn.cursor()
-    cur.execute(sql, (data['date'], json.dumps(data['tasks']), data['reflections']))
+    cur.execute(sql, (data['date'], data['reflections']))
     conn.commit()
     return cur.lastrowid
 
@@ -309,26 +309,10 @@ def fetch_task_diary_entries(conn):
         entry = {
             "id": row[0],
             "date": row[1],
-            "tasks": json.loads(row[2]),
-            "reflections": row[3]
+            "reflections": row[2]
         }
         entries.append(entry)
     return entries
-
-def fetch_todays_tasks(conn):
-    """
-    Fetch tasks for today's date from the task_diary table.
-    :param conn: the Connection object
-    :return: a list of dictionaries containing today's tasks
-    """
-    today_date = datetime.now().date().isoformat()
-    cur = conn.cursor()
-    cur.execute("SELECT tasks FROM task_diary WHERE date = ?", (today_date,))
-    rows = cur.fetchall()
-    tasks = []
-    for row in rows:
-        tasks.extend(json.loads(row[0]))
-    return tasks
 
 
 

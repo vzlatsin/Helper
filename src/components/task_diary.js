@@ -1,51 +1,45 @@
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM fully loaded and parsed for Task Diary');
-
-    const currentDate = new Date().toISOString().split('T')[0];
-    const currentWeekday = new Date().toLocaleDateString('en-US', { weekday: 'long' });
-    const currentDateElem = document.getElementById('current-date');
-    const currentWeekdayElem = document.getElementById('current-weekday');
-
-    if (!currentDateElem || !currentWeekdayElem) {
-        console.error('current-date or current-weekday element is missing');
-        return;
-    }
-
-    currentDateElem.innerText = currentDate;
-    currentWeekdayElem.innerText = currentWeekday;
-
-    const taskList = document.getElementById('tasks-list');
     const taskForm = document.getElementById('task-form');
-    const taskDescription = document.getElementById('task-description');
+    const taskDate = document.getElementById('task-date');
+    const taskDesc = document.getElementById('task-desc');
+    const taskList = document.getElementById('tasks-list');
     const saveButton = document.getElementById('save-button');
-    const taskReflection = document.getElementById('task-reflection');
+    const entriesContainer = document.getElementById('entries-container');
 
-    if (!taskForm || !taskDescription || !taskList || !saveButton || !taskReflection) {
+    if (!taskForm || !taskDate || !taskDesc || !taskList || !saveButton || !entriesContainer) {
         console.error('One or more elements are missing from the DOM');
         return;
     }
 
     taskForm.addEventListener('submit', function(event) {
         event.preventDefault();
-        const taskDescriptionValue = taskDescription.value;
 
-        if (taskDescriptionValue) {
+        const date = taskDate.value;
+        const description = taskDesc.value;
+
+        if (date && description) {
             const taskItem = document.createElement('li');
-            taskItem.textContent = taskDescriptionValue;
+            taskItem.textContent = `${date}: ${description}`;
             taskList.appendChild(taskItem);
 
             // Clear the form
-            taskDescription.value = '';
+            taskDate.value = '';
+            taskDesc.value = '';
         }
     });
 
     saveButton.addEventListener('click', function(event) {
         event.preventDefault();
+
         const tasks = [];
         taskList.querySelectorAll('li').forEach(taskItem => {
-            tasks.push(taskItem.textContent);
+            const [date, ...descriptionParts] = taskItem.textContent.split(': ');
+            const description = descriptionParts.join(': ');
+            tasks.push({
+                date: date,
+                description: description
+            });
         });
-        const reflections = taskReflection.value;
 
         fetch('/task-diary', {
             method: 'POST',
@@ -53,42 +47,48 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                date: currentDate,
                 tasks: tasks,
-                reflections: reflections
+                reflections: "" // Modify this part to include actual reflections if needed
             })
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 alert('Task diary entry saved!');
-                loadEntries(); // Load entries after saving a new one
+                loadEntries();
             } else {
                 alert('Error saving task diary entry.');
             }
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
         });
     });
 
     function loadEntries() {
         fetch('/get-task-diary-entries')
-            .then(response => response.json())
-            .then(entries => {
-                const entriesContainer = document.getElementById('entries-container');
-                entriesContainer.innerHTML = ''; // Clear previous entries
-                entries.forEach(entry => {
-                    if (entry.date === currentDate) { // Only display tasks for the current date
-                        const entryDiv = document.createElement('div');
-                        entryDiv.classList.add('entry');
-                        const entryTasks = document.createElement('p');
-                        entryTasks.innerText = `Tasks: ${entry.tasks.join(', ')}`;
-                        const entryReflections = document.createElement('p');
-                        entryReflections.innerText = `Reflections: ${entry.reflections}`;
-                        entryDiv.appendChild(entryTasks);
-                        entryDiv.appendChild(entryReflections);
-                        entriesContainer.appendChild(entryDiv);
-                    }
-                });
+        .then(response => response.json())
+        .then(entries => {
+            entriesContainer.innerHTML = ''; // Clear previous entries
+            entries.forEach(entry => {
+                const entryDiv = document.createElement('div');
+                entryDiv.classList.add('entry');
+                const entryDate = document.createElement('h3');
+                entryDate.innerText = `Date: ${entry.date}`;
+                entryDiv.appendChild(entryDate);
+                const entryTasks = document.createElement('p');
+                // Check if 'tasks' exists and is an array before using join
+                const tasks = entry.tasks && Array.isArray(entry.tasks) ? entry.tasks.join(', ') : 'No tasks available';
+                entryTasks.innerText = `Tasks: ${tasks}`;
+                entryDiv.appendChild(entryTasks);
+                entriesContainer.appendChild(entryDiv);
             });
+        });
     }
 
     // Load entries on page load
