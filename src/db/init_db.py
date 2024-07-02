@@ -58,7 +58,8 @@ def main():
             date TEXT NOT NULL,
             start_time TEXT,
             end_time TEXT,
-            task_description TEXT NOT NULL
+            task_description TEXT NOT NULL,
+            status text DEFAULT 'pending'
         );"""
     
     sql_create_task_diary_table = """CREATE TABLE IF NOT EXISTS task_diary (

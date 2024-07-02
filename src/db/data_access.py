@@ -282,13 +282,31 @@ def fetch_time_entries(conn):
     return entries
 
 
-def save_time_entry(conn, data):
+def save_time_entry(conn, date, start_time, end_time, task_description, status='pending'):
     """
-    Save a time entry to the database
+    Insert a new time entry into the time_entries table
     :param conn: Database connection object
-    :param data: Dictionary containing date, start_time, end_time, and task_description
+    :param date: Task date
+    :param start_time: Task start time
+    :param end_time: Task end time
+    :param task_description: Description of the task
+    :param status: Status of the task (default is 'pending')
+    :return: id of the inserted entry
     """
-    return insert_time_entry(conn, data['date'], data['start_time'], data['end_time'], data['task_description'])
+    try:
+        logging.info(f"Attempting to save time entry: date={date}, start_time={start_time}, end_time={end_time}, task_description={task_description}, status={status}")
+        
+        sql = ''' INSERT INTO time_entries(date, start_time, end_time, task_description, status)
+                  VALUES(?, ?, ?, ?, ?) '''
+        cur = conn.cursor()
+        cur.execute(sql, (date, start_time, end_time, task_description, status))
+        conn.commit()
+        logging.info(f"Successfully saved time entry with id: {cur.lastrowid}")
+        return cur.lastrowid
+    except Exception as e:
+        logging.error(f"Error saving time entry: {e}")
+        return None
+    
 
 def save_task_diary_entry(conn, data):
     """ Save a task diary entry to the database """
@@ -320,6 +338,18 @@ def fetch_tasks_for_date(conn, date):
     rows = cur.fetchall()
     tasks = [{'id': row[0], 'date': row[1], 'start_time': row[2], 'end_time': row[3], 'task_description': row[4]} for row in rows]
     return tasks
+
+def mark_tasks_as_selected(conn, date):
+    cur = conn.cursor()
+    cur.execute("UPDATE time_entries SET status = 'selected' WHERE date = ?", (date,))
+    conn.commit()
+
+def add_task(conn, date, start_time, end_time, task_description):
+    cur = conn.cursor()
+    cur.execute("INSERT INTO time_entries (date, start_time, end_time, task_description, status) VALUES (?, ?, ?, ?, 'pending')", 
+                (date, start_time, end_time, task_description))
+    conn.commit()
+
 
 
 

@@ -32,6 +32,7 @@ def drop_table(db_file, table_name):
 if __name__ == "__main__":
     if len(sys.argv) != 3:
         print("Usage: python drop_table.py <database_path> <table_name>")
+        # example:   python src\db\drop_table.py src\db\database.db time_entries
         sys.exit(1)
 
     database_path = sys.argv[1]

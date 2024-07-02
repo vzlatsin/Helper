@@ -7,11 +7,11 @@ from src.helper import MyTradingApp  # Assuming these imports are used elsewhere
 from src.flex_query import initiate_flex_query_report, download_flex_query_report
 #from src.compile_documentation import compile_documentation
 from src.db.data_access import create_connection, get_latest_dividend_date, count_dividend_records, insert_dividend
-from src.db.data_access import save_time_entry
+from src.db.data_access import save_time_entry, add_task
 from .data_sync import compare_dividend_data
 from src.ib_data_fetcher import fetch_dividends_from_ib, fetch_trades_from_ib
 from .db.data_access import fetch_dividends_from_db, fetch_all_trades, insert_dividend_if_not_exists, insert_trade_if_not_exists, fetch_dividends_by_quarter, get_dividend_date_range, get_trades_by_symbol, save_task_diary_entry
-from .db.data_access import fetch_task_diary_entries, fetch_time_entries, fetch_tasks_for_date
+from .db.data_access import fetch_task_diary_entries, fetch_time_entries, fetch_tasks_for_date, mark_tasks_as_selected
 from src.file_operations import write_transactions_to_file
 from src.trade_processing import generate_description_for_trade, filter_and_organize_trades
 from flask import request
@@ -68,6 +68,7 @@ def create_async_app(config):
     def add_task_diary_entry():
         app.logger.info("add_task_diary_entry....")
         data = request.json
+        app.logger.info(f"Received data: {data}")
         if not "tasks" in data or not isinstance(data["tasks"], list):
             app.logger.error("Invalid data received: %s", data)
             return jsonify({"error": "Invalid data"}), 400
@@ -76,12 +77,11 @@ def create_async_app(config):
             conn = create_connection(app.config['db_path'])
             if conn:
                 for task in data["tasks"]:
-                    save_time_entry(conn, {
-                        "date": task["date"],
-                        "start_time": None,
-                        "end_time": None,
-                        "task_description": task["description"]
-                    })
+                    app.logger.info(f"Saving task: {task}")
+                    result = save_time_entry(conn, task["date"], task["start_time"], task["end_time"], task["task_description"])
+                    if result is None:
+                        app.logger.error("Failed to save task: %s", task)
+                        return jsonify({"error": "Failed to save task"}), 500
                 conn.close()
                 app.logger.info("Successfully saved task diary entries")
                 return jsonify({"success": True}), 201
@@ -89,6 +89,7 @@ def create_async_app(config):
                 app.logger.error("Database connection failed.")
                 return jsonify({"error": "Database connection failed"}), 500
         except Exception as e:
+            app.logger.error("Error saving task diary entry: %s", str(e))
             return jsonify({"error": str(e)}), 500
 
     @app.route('/get-task-diary-entries', methods=['GET'])
@@ -160,6 +161,44 @@ def create_async_app(config):
                 return jsonify({"error": "Database connection failed"}), 500
         except Exception as e:
             return jsonify({"error": str(e)}), 500
+        
+    @app.route('/tasks/select', methods=['POST'])
+    def select_tasks_for_date():
+        try:
+            conn = create_connection(app.config['db_path'])
+            if conn:
+                date = request.json.get('date')
+                if not date:
+                    return jsonify({"error": "Date is required"}), 400
+                
+                app.logger.info(f"Marking tasks as selected for date: {date}")
+                mark_tasks_as_selected(conn, date)
+                conn.close()
+                return jsonify({"message": "Tasks marked as selected"}), 200
+            else:
+                return jsonify({"error": "Database connection failed"}), 500
+        except Exception as e:
+            app.logger.error(f"Error selecting tasks: {str(e)}")
+            return jsonify({"error": str(e)}), 500
+
+
+    @app.route('/tasks/add', methods=['POST'])
+    def add_task_route():
+        try:
+            conn = create_connection(app.config['db_path'])
+            if conn:
+                date = request.json.get('date')
+                start_time = request.json.get('start_time')
+                end_time = request.json.get('end_time')
+                task_description = request.json.get('task_description')
+                add_task(conn, date, start_time, end_time, task_description)
+                conn.close()
+                return jsonify({"message": "Task added"}), 200
+            else:
+                return jsonify({"error": "Database connection failed"}), 500
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
 
     @app.route('/time_management.html')
     def time_management():

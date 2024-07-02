@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     const taskForm = document.getElementById('task-form');
     const taskDate = document.getElementById('task-date');
+    const startTime = document.getElementById('start-time');
+    const endTime = document.getElementById('end-time');
     const taskDesc = document.getElementById('task-desc');
     const taskList = document.getElementById('tasks-list');
     const saveButton = document.getElementById('save-button');
@@ -15,15 +17,19 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
 
         const date = taskDate.value;
+        const start = startTime.value;
+        const end = endTime.value;
         const description = taskDesc.value;
 
         if (date && description) {
             const taskItem = document.createElement('li');
-            taskItem.textContent = `${date}: ${description}`;
+            taskItem.textContent = `${date} ${start}-${end}: ${description}`;
             taskList.appendChild(taskItem);
 
             // Clear the form
             taskDate.value = '';
+            startTime.value = '';
+            endTime.value = '';
             taskDesc.value = '';
         }
     });
@@ -33,11 +39,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const tasks = [];
         taskList.querySelectorAll('li').forEach(taskItem => {
-            const [date, ...descriptionParts] = taskItem.textContent.split(': ');
+            const [dateTime, ...descriptionParts] = taskItem.textContent.split(': ');
+            const [date, timeRange] = dateTime.split(' ');
+            const [start, end] = timeRange.split('-');
             const description = descriptionParts.join(': ');
             tasks.push({
                 date: date,
-                description: description
+                start_time: start,
+                end_time: end,
+                task_description: description
             });
         });
 
@@ -70,6 +80,32 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    async function viewTasksForDate() {
+        const date = document.getElementById('task-date').value;
+        const response = await fetch(`/tasks?date=${date}`);
+        const data = await response.json();
+        const taskContainer = document.getElementById('tasks-for-date');
+        taskContainer.innerHTML = '';
+        data.forEach(task => {
+            const taskElement = document.createElement('div');
+            taskElement.textContent = task.task_description + (task.status === 'selected' ? ' (Selected)' : '');
+            taskContainer.appendChild(taskElement);
+        });
+    }
+
+    async function selectTasksForDate() {
+        const date = document.getElementById('task-date').value;
+        const response = await fetch('/tasks/select', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ date })
+        });
+        const result = await response.json();
+        alert(result.message);
+    }
+
     function loadEntries() {
         fetch('/get-task-diary-entries')
         .then(response => response.json())
@@ -82,7 +118,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 entryDate.innerText = `Date: ${entry.date}`;
                 entryDiv.appendChild(entryDate);
                 const entryTasks = document.createElement('p');
-                // Check if 'tasks' exists and is an array before using join
                 const tasks = entry.tasks && Array.isArray(entry.tasks) ? entry.tasks.join(', ') : 'No tasks available';
                 entryTasks.innerText = `Tasks: ${tasks}`;
                 entryDiv.appendChild(entryTasks);
@@ -93,4 +128,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Load entries on page load
     loadEntries();
+
+    // Attach functions to window object to make them accessible in HTML
+    window.viewTasksForDate = viewTasksForDate;
+    window.selectTasksForDate = selectTasksForDate;
 });

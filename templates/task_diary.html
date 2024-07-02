@@ -1,29 +1,34 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Diary</title>
-    <script>
-        async function viewTasksForDate() {
-            const date = document.getElementById('task-date').value;
-            const response = await fetch(`/tasks?date=${date}`);
-            const data = await response.json();
-            const taskContainer = document.getElementById('tasks-for-date');
-            taskContainer.innerHTML = '';
-            data.forEach(task => {
-                const taskElement = document.createElement('div');
-                taskElement.textContent = task.task_description;
-                taskContainer.appendChild(taskElement);
-            });
-        }
-    </script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Task Diary</h1>
-    <form id="view-tasks-form">
-        <label for="task-date">Select Date:</label>
-        <input type="date" id="task-date" />
+    <header>
+        <h1>Task Diary</h1>
+    </header>
+    <main>
+        <form id="task-form">
+            <label for="task-date">Date:</label>
+            <input type="date" id="task-date" name="task-date">
+            <label for="start-time">Start Time:</label>
+            <input type="time" id="start-time" name="start-time">
+            <label for="end-time">End Time:</label>
+            <input type="time" id="end-time" name="end-time">
+            <label for="task-desc">Task Description:</label>
+            <input type="text" id="task-desc" name="task-desc">
+            <button type="submit">Add Task</button>
+        </form>
+        <ul id="tasks-list"></ul>
+        <button id="save-button">Save Tasks</button>
         <button type="button" onclick="viewTasksForDate()">View Tasks</button>
-    </form>
-    <div id="tasks-for-date"></div>
+        <button type="button" onclick="selectTasksForDate()">Select Tasks</button>
+        <div id="tasks-for-date"></div>
+        <div id="entries-container"></div>
+    </main>
+    <script src="{{ url_for('static', filename='task_diary.js') }}"></script>
 </body>
 </html>
