@@ -10,25 +10,48 @@
     <header>
         <h1>Task Diary</h1>
     </header>
+    <nav>
+        <ul class="tabs">
+            <li class="tab" data-tab="today">Today's Tasks</li>
+            <li class="tab" data-tab="forgotten">Forgotten Tasks</li>
+            <li class="tab" data-tab="tomorrow">Tomorrow's Tasks</li>
+        </ul>
+    </nav>
     <main>
-        <form id="task-form">
-            <label for="task-date">Date:</label>
-            <input type="date" id="task-date" name="task-date">
-            <label for="start-time">Start Time:</label>
-            <input type="time" id="start-time" name="start-time">
-            <label for="end-time">End Time:</label>
-            <input type="time" id="end-time" name="end-time">
-            <label for="task-desc">Task Description:</label>
-            <input type="text" id="task-desc" name="task-desc">
-            <button type="submit">Add Task</button>
-        </form>
-        <ul id="tasks-list"></ul>
-        <button id="save-button">Save Tasks</button>
-        <button type="button" onclick="viewTasksForDate()">View Tasks</button>
-        <button type="button" onclick="selectTasksForDate()">Select Tasks</button>
-        <div id="tasks-for-date"></div>
+        <div id="today" class="tab-content active">
+            <h2>Today's Tasks</h2>
+            <form id="task-form">
+                <label for="task-date">Date:</label>
+                <input type="date" id="task-date" name="task-date">
+                <label for="start-time">Start Time:</label>
+                <input type="time" id="start-time" name="start-time">
+                <label for="end-time">End Time:</label>
+                <input type="time" id="end-time" name="end-time">
+                <label for="task-desc">Task Description:</label>
+                <input type="text" id="task-desc" name="task-desc">
+                <button type="submit">Add Task</button>
+            </form>
+            <ul id="tasks-list"></ul>
+            <button id="save-button">Save Tasks</button>
+            <button type="button" onclick="viewTasksForDate()">View Tasks</button>
+            <button type="button" onclick="selectTasksForDate()">Select Tasks</button>
+            <div id="tasks-for-date"></div>
+        </div>
+        <div id="forgotten" class="tab-content">
+            <h2>Forgotten Tasks</h2>
+            <ul id="forgotten-tasks-list"></ul>
+        </div>
+        <div id="tomorrow" class="tab-content">
+            <h2>Tomorrow's Tasks</h2>
+            <h3>Locked Tasks</h3>
+            <ul id="locked-tasks-list"></ul>
+            <h3>Unlocked Tasks</h3>
+            <ul id="unlocked-tasks-list"></ul>
+            <button id="lock-tasks-button">Lock Selected Tasks</button>
+        </div>
         <div id="entries-container"></div>
     </main>
     <script src="{{ url_for('static', filename='task_diary.js') }}"></script>
+    <script src="{{ url_for('static', filename='tabs.js') }}"></script>
 </body>
 </html>

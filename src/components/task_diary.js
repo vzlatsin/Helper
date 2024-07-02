@@ -8,11 +8,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const saveButton = document.getElementById('save-button');
     const entriesContainer = document.getElementById('entries-container');
 
-    if (!taskForm || !taskDate || !taskDesc || !taskList || !saveButton || !entriesContainer) {
+    // Ensure all elements exist
+    if (!taskForm || !taskDate || !startTime || !endTime || !taskDesc || !taskList || !saveButton || !entriesContainer) {
         console.error('One or more elements are missing from the DOM');
         return;
     }
 
+    // Form submission event
     taskForm.addEventListener('submit', function(event) {
         event.preventDefault();
 
@@ -34,6 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Save button event
     saveButton.addEventListener('click', function(event) {
         event.preventDefault();
 
@@ -80,6 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // View tasks for a specific date
     async function viewTasksForDate() {
         const date = document.getElementById('task-date').value;
         const response = await fetch(`/tasks?date=${date}`);
@@ -93,6 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Select tasks for a specific date
     async function selectTasksForDate() {
         const date = document.getElementById('task-date').value;
         const response = await fetch('/tasks/select', {
@@ -106,6 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
         alert(result.message);
     }
 
+    // Load task diary entries
     function loadEntries() {
         fetch('/get-task-diary-entries')
         .then(response => response.json())

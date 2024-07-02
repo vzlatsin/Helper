@@ -4,7 +4,8 @@ module.exports = {
     entry: {
         bundle: './src/index.js',
         task_diary: './src/components/task_diary.js',
-        todays_tasks: './src/components/todays_tasks.js'
+        todays_tasks: './src/components/todays_tasks.js',
+        tabs: './src/components/tabs.js'
     },
     output: {
         filename: '[name].js',

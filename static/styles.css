@@ -1,4 +1,4 @@
-/* styles.css */
+/* Existing styles */
 body {
     font-family: 'Roboto', sans-serif;
     background-color: #f4f4f9;
@@ -98,4 +98,42 @@ footer {
     .hero .container {
         padding: 1rem;
     }
+}
+
+/* Tab styles */
+.tabs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid #ddd;
+    background: #f4f4f9;
+}
+
+.tab {
+    padding: 1rem;
+    cursor: pointer;
+    flex: 1;
+    text-align: center;
+    border-bottom: 2px solid transparent;
+    transition: background 0.3s;
+}
+
+.tab:hover {
+    background: #e4e4e4;
+}
+
+.tab.active {
+    border-bottom: 2px solid #333;
+    background: #e4e4e4;
+}
+
+.tab-content {
+    display: none;
+    padding: 2rem;
+}
+
+.tab-content.active {
+    display: block;
 }
