@@ -126,10 +126,11 @@ document.addEventListener('DOMContentLoaded', function() {
         taskList.innerHTML = ''; // Clear existing tasks
         tasks.forEach(task => {
             const taskItem = document.createElement('li');
-            taskItem.textContent = task.task;
+            taskItem.textContent = `${task.task_description} (${task.start_time} - ${task.end_time})`;
             taskList.appendChild(taskItem);
         });
     }
+    
     
 
     // Load task diary entries

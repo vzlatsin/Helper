@@ -24,6 +24,7 @@ import re
 from werkzeug.utils import secure_filename
 import logging
 import glob
+from datetime import date
 
 
 def create_async_app(config):
@@ -202,9 +203,21 @@ def create_async_app(config):
 
 
     @app.route('/tasks/today', methods=['GET'])
-    def get_today_tasks():
-        tasks = get_dummy_today_tasks()
-        return jsonify(tasks)
+    def get_today_tasks_endpoint():
+        try:
+            conn = create_connection(app.config['db_path'])
+            if conn:
+                today = date.today().isoformat()
+                app.logger.info(f"Retrieving tasks for today: {today}")
+                tasks = fetch_tasks_for_date(conn, today)
+                conn.close()
+                app.logger.debug(f"Tasks retrieved: {tasks}")
+                return jsonify(tasks), 200
+            else:
+                return jsonify({"error": "Database connection failed"}), 500
+        except Exception as e:
+            app.logger.error(f"Error retrieving tasks: {str(e)}")
+            return jsonify({"error": str(e)}), 500
 
     if __name__ == '__main__':
         app.run(debug=True)
