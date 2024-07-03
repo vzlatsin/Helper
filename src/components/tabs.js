@@ -11,6 +11,11 @@ document.addEventListener('DOMContentLoaded', function() {
             tab.classList.add('active');
             const tabContent = document.getElementById(tab.getAttribute('data-tab'));
             tabContent.classList.add('active');
+
+            // Fetch tasks if the "Today's Tasks" tab is clicked
+            if (tab.getAttribute('data-tab') === 'today') {
+                fetchTodayTasks();
+            }
         });
     });
 });

@@ -350,6 +350,14 @@ def add_task(conn, date, start_time, end_time, task_description):
                 (date, start_time, end_time, task_description))
     conn.commit()
 
+# data_access.py
+def get_dummy_today_tasks():
+    return [
+        {"id": 1, "task": "Dummy Task 1", "date": "2024-07-02"},
+        {"id": 2, "task": "Dummy Task 2", "date": "2024-07-02"}
+    ]
+
+
 
 
 

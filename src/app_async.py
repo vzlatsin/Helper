@@ -7,7 +7,7 @@ from src.helper import MyTradingApp  # Assuming these imports are used elsewhere
 from src.flex_query import initiate_flex_query_report, download_flex_query_report
 #from src.compile_documentation import compile_documentation
 from src.db.data_access import create_connection, get_latest_dividend_date, count_dividend_records, insert_dividend
-from src.db.data_access import save_time_entry, add_task
+from src.db.data_access import save_time_entry, add_task, get_dummy_today_tasks
 from .data_sync import compare_dividend_data
 from src.ib_data_fetcher import fetch_dividends_from_ib, fetch_trades_from_ib
 from .db.data_access import fetch_dividends_from_db, fetch_all_trades, insert_dividend_if_not_exists, insert_trade_if_not_exists, fetch_dividends_by_quarter, get_dividend_date_range, get_trades_by_symbol, save_task_diary_entry
@@ -198,6 +198,17 @@ def create_async_app(config):
                 return jsonify({"error": "Database connection failed"}), 500
         except Exception as e:
             return jsonify({"error": str(e)}), 500
+        
+
+
+    @app.route('/tasks/today', methods=['GET'])
+    def get_today_tasks():
+        tasks = get_dummy_today_tasks()
+        return jsonify(tasks)
+
+    if __name__ == '__main__':
+        app.run(debug=True)
+
 
 
     @app.route('/time_management.html')

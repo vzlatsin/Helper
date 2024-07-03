@@ -12,14 +12,16 @@
     </header>
     <nav>
         <ul class="tabs">
+            <li class="tab" data-tab="add-tasks">Add Tasks</li>
             <li class="tab" data-tab="today">Today's Tasks</li>
             <li class="tab" data-tab="forgotten">Forgotten Tasks</li>
             <li class="tab" data-tab="tomorrow">Tomorrow's Tasks</li>
         </ul>
     </nav>
+    
     <main>
-        <div id="today" class="tab-content active">
-            <h2>Today's Tasks</h2>
+        <div id="add-tasks" class="tab-content active">
+            <h2>Add Tasks</h2>
             <form id="task-form">
                 <label for="task-date">Date:</label>
                 <input type="date" id="task-date" name="task-date">
@@ -37,6 +39,10 @@
             <button type="button" onclick="selectTasksForDate()">Select Tasks</button>
             <div id="tasks-for-date"></div>
         </div>
+        <div id="today" class="tab-content">
+            <h2>Today's Tasks</h2>
+            <ul id="today-tasks-list"></ul>
+        </div>
         <div id="forgotten" class="tab-content">
             <h2>Forgotten Tasks</h2>
             <ul id="forgotten-tasks-list"></ul>
@@ -51,6 +57,8 @@
         </div>
         <div id="entries-container"></div>
     </main>
+    
+    
     <script src="{{ url_for('static', filename='task_diary.js') }}"></script>
     <script src="{{ url_for('static', filename='tabs.js') }}"></script>
 </body>

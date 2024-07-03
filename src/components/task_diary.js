@@ -111,6 +111,27 @@ document.addEventListener('DOMContentLoaded', function() {
         alert(result.message);
     }
 
+    async function fetchTodayTasks() {
+        try {
+            const response = await fetch('/tasks/today');
+            const tasks = await response.json();
+            displayTasks(tasks, 'today-tasks-list');
+        } catch (error) {
+            console.error('Error fetching today\'s tasks:', error);
+        }
+    }
+    
+    function displayTasks(tasks, elementId) {
+        const taskList = document.getElementById(elementId);
+        taskList.innerHTML = ''; // Clear existing tasks
+        tasks.forEach(task => {
+            const taskItem = document.createElement('li');
+            taskItem.textContent = task.task;
+            taskList.appendChild(taskItem);
+        });
+    }
+    
+
     // Load task diary entries
     function loadEntries() {
         fetch('/get-task-diary-entries')
@@ -138,4 +159,5 @@ document.addEventListener('DOMContentLoaded', function() {
     // Attach functions to window object to make them accessible in HTML
     window.viewTasksForDate = viewTasksForDate;
     window.selectTasksForDate = selectTasksForDate;
+    window.fetchTodayTasks = fetchTodayTasks;
 });
