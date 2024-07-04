@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.message) {
-                closedTaskIds = selectedTaskIds;
+                closedTaskIds = selectedTaskIds;  // Track the moved task IDs
                 const closedTasksList = document.getElementById('closed-tasks-list');
                 const pendingTasksList = document.getElementById('pending-tasks-list');
     
@@ -263,20 +263,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    
-    
-    
-    
-    
     // Add event listener for the "Move to Closed List" button
     document.getElementById('move-tasks-button').addEventListener('click', moveSelectedTasks);
     
     
 
     function undoMove() {
-        console.log('Reverting task IDs:', closedTaskIds);  // Updated variable name
+        console.log('Reverting task IDs:', closedTaskIds);  // Log the task IDs to check
     
-        if (closedTaskIds.length === 0) {  // Updated variable name
+        if (closedTaskIds.length === 0) {
             alert('No tasks to revert');
             return;
         }
@@ -286,29 +281,37 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ task_ids: closedTaskIds })  // Updated variable name
+            body: JSON.stringify({ task_ids: closedTaskIds })  // Send only the closedTaskIds
         })
         .then(response => response.json())
         .then(data => {
             if (data.message) {
-                console.log('Tasks reverted successfully:', data.message);
-                const taskList = document.getElementById('pending-tasks-list');
-                closedTaskIds.forEach(taskId => {  // Updated variable name
-                    const taskItem = document.querySelector(`input[value="${taskId}"]`).parentElement;
-                    taskItem.dataset.status = 'pending';
-                    taskList.appendChild(taskItem);
+                console.log('Tasks reverted successfully:', data.message);  // Log success message
+                const closedTasksList = document.getElementById('closed-tasks-list');
+                const pendingTasksList = document.getElementById('pending-tasks-list');
+    
+                closedTaskIds.forEach(taskId => {
+                    const checkbox = document.querySelector(`input[value="${taskId}"]`);
+                    if (checkbox) {
+                        const taskItem = checkbox.parentElement;
+                        if (taskItem) {
+                            taskItem.querySelector('input[type="checkbox"]').checked = false;  // Uncheck the checkbox
+                            pendingTasksList.appendChild(taskItem);
+                        }
+                    }
                 });
                 closedTaskIds = [];  // Clear the list after reverting
             } else {
-                console.error('Error reverting tasks:', data.error);
+                console.error('Error reverting tasks:', data.error);  // Log the error message
                 alert('Error reverting tasks');
             }
         })
         .catch(error => {
-            console.error('Fetch error:', error);
+            console.error('Fetch error:', error);  // Log any fetch errors
             alert('Error reverting tasks');
         });
     }
+    
     
     
 
