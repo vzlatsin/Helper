@@ -157,7 +157,18 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const response = await fetch('/tasks/today');
             const tasks = await response.json();
-            displayTasks(tasks, 'today-tasks-list');
+            
+            // Separate tasks into pending and closed lists
+            const pendingTasks = tasks.filter(task => task.status === 'pending');
+            const closedTasks = tasks.filter(task => task.status === 'selected');
+    
+            // Populate closedTaskIds with the IDs of closed tasks
+            closedTaskIds = closedTasks.map(task => task.id);
+
+    
+            // Display tasks in their respective lists
+            displayTasks(pendingTasks, 'pending-tasks-list');
+            displayTasks(closedTasks, 'closed-tasks-list');
         } catch (error) {
             console.error('Error fetching today\'s tasks:', error);
         }
@@ -193,29 +204,26 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    let previousTaskIds = [];
+    let closedTaskIds = [];
 
     function moveSelectedTasks() {
-        console.log("moveSelectedTasks function called");
-    
-        const taskList = document.getElementById('today-tasks-list');
+        const taskList = document.getElementById('pending-tasks-list');
         const selectedTaskIds = [];
         const nonSelectedTasks = [];
-        previousTaskIds = []; // Save current task IDs
     
         taskList.querySelectorAll('li').forEach(taskItem => {
             const checkbox = taskItem.querySelector('input[type="checkbox"]');
-            if (checkbox.checked) {
-                selectedTaskIds.push(parseInt(checkbox.value)); // Ensure IDs are integers
+            if (checkbox && checkbox.checked) {
+                selectedTaskIds.push(parseInt(checkbox.value));
             } else {
                 nonSelectedTasks.push(taskItem);
             }
-            previousTaskIds.push(parseInt(checkbox.value)); 
         });
     
-        const date = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+        const date = new Date().toISOString().split('T')[0];  // Get today's date in YYYY-MM-DD format
         const payload = { task_ids: selectedTaskIds, date: date };
-        console.log("Payload being sent to /tasks/select:", payload); 
+    
+        console.log('Payload being sent:', payload);  // Log the payload to check its format
     
         fetch('/tasks/select', {
             method: 'POST',
@@ -224,23 +232,28 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify(payload)
         })
-        .then(response => {
-            console.log("Response from /tasks/select:", response);
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
-            console.log("Data from /tasks/select:", data);
             if (data.message) {
-                const selectedTasksList = document.getElementById('selected-tasks-list');
-                const nonSelectedTasksList = document.getElementById('non-selected-tasks-list');
-                selectedTasksList.innerHTML = '';
-                nonSelectedTasksList.innerHTML = '';
+                closedTaskIds = selectedTaskIds;
+                const closedTasksList = document.getElementById('closed-tasks-list');
+                const pendingTasksList = document.getElementById('pending-tasks-list');
     
+                // Append the moved tasks to the closed tasks list
                 selectedTaskIds.forEach(taskId => {
-                    const taskItem = document.querySelector(`input[value="${taskId}"]`).parentElement;
-                    selectedTasksList.appendChild(taskItem);
+                    const checkbox = document.querySelector(`input[value="${taskId}"]`);
+                    if (checkbox) {
+                        const taskItem = checkbox.parentElement;
+                        if (taskItem) {
+                            taskItem.querySelector('input[type="checkbox"]').checked = false;  // Uncheck the checkbox
+                            closedTasksList.appendChild(taskItem);
+                        }
+                    }
                 });
-                nonSelectedTasks.forEach(task => nonSelectedTasksList.appendChild(task));
+    
+                // Clear the pending tasks list and re-append non-selected tasks
+                pendingTasksList.innerHTML = '';
+                nonSelectedTasks.forEach(task => pendingTasksList.appendChild(task));
             } else {
                 alert('Error closing tasks');
             }
@@ -250,37 +263,54 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    
+    
+    
+    
+    
     // Add event listener for the "Move to Closed List" button
     document.getElementById('move-tasks-button').addEventListener('click', moveSelectedTasks);
     
     
 
     function undoMove() {
+        console.log('Reverting task IDs:', closedTaskIds);  // Updated variable name
+    
+        if (closedTaskIds.length === 0) {  // Updated variable name
+            alert('No tasks to revert');
+            return;
+        }
+    
         fetch('/tasks/revert', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ task_ids: previousTaskIds })
+            body: JSON.stringify({ task_ids: closedTaskIds })  // Updated variable name
         })
         .then(response => response.json())
         .then(data => {
             if (data.message) {
-                const taskList = document.getElementById('today-tasks-list');
-                previousTaskIds.forEach(taskId => {
+                console.log('Tasks reverted successfully:', data.message);
+                const taskList = document.getElementById('pending-tasks-list');
+                closedTaskIds.forEach(taskId => {  // Updated variable name
                     const taskItem = document.querySelector(`input[value="${taskId}"]`).parentElement;
-                    taskItem.dataset.status = 'pending'; // Revert status
+                    taskItem.dataset.status = 'pending';
                     taskList.appendChild(taskItem);
                 });
-                previousTaskIds = []; // Clear saved state
+                closedTaskIds = [];  // Clear the list after reverting
             } else {
+                console.error('Error reverting tasks:', data.error);
                 alert('Error reverting tasks');
             }
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('Fetch error:', error);
+            alert('Error reverting tasks');
         });
     }
+    
+    
 
     document.getElementById('undo-move-button').addEventListener('click', undoMove);
 
