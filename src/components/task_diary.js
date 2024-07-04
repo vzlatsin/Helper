@@ -276,10 +276,24 @@ document.addEventListener('DOMContentLoaded', function() {
     
 
     function undoMove() {
-        console.log('Reverting task IDs:', closedTaskIds);  // Log the task IDs to check
+        const closedTasksList = document.getElementById('closed-tasks-list');
+        const selectedClosedTaskIds = [];
+        const nonSelectedClosedTasks = [];
     
-        if (closedTaskIds.length === 0) {
-            alert('No tasks to revert');
+        closedTasksList.querySelectorAll('li').forEach(taskItem => {
+            const checkbox = taskItem.querySelector('input[type="checkbox"]');
+            if (checkbox && checkbox.checked) {
+                selectedClosedTaskIds.push(parseInt(checkbox.value));
+            } else {
+                nonSelectedClosedTasks.push(taskItem);
+            }
+        });
+    
+        console.log('Reverting task IDs:', selectedClosedTaskIds);  // Log the task IDs to check
+    
+        // Check if there are any tasks to revert
+        if (selectedClosedTaskIds.length === 0) {
+            alert('No tasks selected to revert.');
             return;
         }
     
@@ -288,16 +302,15 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ task_ids: closedTaskIds })  // Send only the closedTaskIds
+            body: JSON.stringify({ task_ids: selectedClosedTaskIds })  // Send only the selected closed task IDs
         })
         .then(response => response.json())
         .then(data => {
             if (data.message) {
                 console.log('Tasks reverted successfully:', data.message);  // Log success message
-                const closedTasksList = document.getElementById('closed-tasks-list');
                 const pendingTasksList = document.getElementById('pending-tasks-list');
     
-                closedTaskIds.forEach(taskId => {
+                selectedClosedTaskIds.forEach(taskId => {
                     const checkbox = document.querySelector(`input[value="${taskId}"]`);
                     if (checkbox) {
                         const taskItem = checkbox.parentElement;
@@ -307,7 +320,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }
                 });
-                closedTaskIds = [];  // Clear the list after reverting
+    
+                // Update closedTaskIds to remove the reverted tasks
+                closedTaskIds = closedTaskIds.filter(id => !selectedClosedTaskIds.includes(id));
+    
+                // Update the closed tasks list with non-selected tasks
+                closedTasksList.innerHTML = '';
+                nonSelectedClosedTasks.forEach(task => closedTasksList.appendChild(task));
             } else {
                 console.error('Error reverting tasks:', data.error);  // Log the error message
                 alert('Error reverting tasks');
@@ -318,10 +337,7 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Error reverting tasks');
         });
     }
-    
-    
-    
-
+  
     document.getElementById('undo-move-button').addEventListener('click', undoMove);
 
     
