@@ -276,7 +276,8 @@ def fetch_time_entries(conn):
             "date": row[1],
             "start_time": row[2],
             "end_time": row[3],
-            "task_description": row[4]
+            "task_description": row[4],
+            "status": row[5] 
         }
         entries.append(entry)
     return entries
@@ -336,7 +337,7 @@ def fetch_tasks_for_date(conn, date):
     cur = conn.cursor()
     cur.execute("SELECT * FROM time_entries WHERE date = ?", (date,))
     rows = cur.fetchall()
-    tasks = [{'id': row[0], 'date': row[1], 'start_time': row[2], 'end_time': row[3], 'task_description': row[4]} for row in rows]
+    tasks = [{'id': row[0], 'date': row[1], 'start_time': row[2], 'end_time': row[3], 'task_description': row[4], "status": row[5]} for row in rows]
     return tasks
 
 def mark_tasks_as_selected(conn, date):
