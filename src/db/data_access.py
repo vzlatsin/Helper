@@ -350,6 +350,29 @@ def add_task(conn, date, start_time, end_time, task_description):
                 (date, start_time, end_time, task_description))
     conn.commit()
 
+def mark_tasks_as_closed(conn, task_ids):
+    cursor = conn.cursor()
+    cursor.executemany("UPDATE time_entries SET status = 'selected' WHERE id = ?", [(task_id,) for task_id in task_ids])
+    conn.commit()
+
+def revert_task_statuses(conn, task_ids):
+    cursor = conn.cursor()
+    cursor.executemany("UPDATE time_entries SET status = 'pending' WHERE id = ?", [(task_id,) for task_id in task_ids])
+    conn.commit()
+
+def validate_pending_status(conn, task_ids):
+    cursor = conn.cursor()
+    placeholder = ', '.join('?' for _ in task_ids)  # Create a placeholder string
+    query = f"SELECT id FROM time_entries WHERE id IN ({placeholder}) AND status = 'pending'"
+    print(f"Running query: {query} with task_ids: {task_ids}")
+    cursor.execute(query, task_ids)
+    valid_ids = [row[0] for row in cursor.fetchall()]
+    print(f"Valid task IDs with 'pending' status: {valid_ids}")
+    return valid_ids
+
+
+
+
 # data_access.py
 def get_dummy_today_tasks():
     return [

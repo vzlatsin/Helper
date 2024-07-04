@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (date && description) {
             const taskItem = document.createElement('li');
             taskItem.textContent = `${date} ${start}-${end}: ${description}`;
+            taskItem.dataset.status = 'pending'; // Add status data attribute
             taskList.appendChild(taskItem);
 
             // Clear the form
@@ -99,17 +100,58 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Select tasks for a specific date
     async function selectTasksForDate() {
-        const date = document.getElementById('task-date').value;
-        const response = await fetch('/tasks/select', {
+        console.log("selectTasksForDate function called"); // Log function call
+    
+        const taskList = document.getElementById('today-tasks-list');
+        const selectedTaskIds = [];
+    
+        taskList.querySelectorAll('li').forEach(taskItem => {
+            const checkbox = taskItem.querySelector('input[type="checkbox"]');
+            const status = taskItem.dataset.status; // Assuming status is stored in a data attribute
+    
+            if (checkbox.checked && status === 'pending') {
+                selectedTaskIds.push(parseInt(checkbox.value));
+            }
+        });
+    
+        console.log("Selected task IDs:", selectedTaskIds); // Log selected task IDs
+    
+        const payload = { task_ids: selectedTaskIds };
+        console.log("Payload being sent to /tasks/select:", JSON.stringify(payload)); // Log the payload
+    
+        fetch('/tasks/select', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ date })
+            body: JSON.stringify(payload)
+        })
+        .then(response => {
+            console.log("Response from /tasks/select:", response); // Log the response
+            return response.json();
+        })
+        .then(data => {
+            console.log("Data from /tasks/select:", data); // Log the response data
+            if (data.message) {
+                // Update the UI to reflect the task state changes
+                alert(data.message);
+                selectedTaskIds.forEach(taskId => {
+                    const taskItem = document.querySelector(`input[value="${taskId}"]`).parentElement;
+                    taskItem.dataset.status = 'selected'; // Update status
+                });
+            } else if (data.error) {
+                alert(`Error: ${data.error}`);
+            } else {
+                alert('Unknown error occurred.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
         });
-        const result = await response.json();
-        alert(result.message);
     }
+    
+    
+
 
     async function fetchTodayTasks() {
         try {
@@ -120,16 +162,128 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error fetching today\'s tasks:', error);
         }
     }
-    
+
     function displayTasks(tasks, elementId) {
         const taskList = document.getElementById(elementId);
         taskList.innerHTML = ''; // Clear existing tasks
         tasks.forEach(task => {
             const taskItem = document.createElement('li');
-            taskItem.textContent = `${task.task_description} (${task.start_time} - ${task.end_time})`;
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = task.id;
+            taskItem.dataset.status = task.status; // Set the status
+            taskItem.appendChild(checkbox);
+            taskItem.appendChild(document.createTextNode(`${task.task_description} (${task.start_time} - ${task.end_time})`));
             taskList.appendChild(taskItem);
         });
     }
+
+    let selectedTasks = [];
+
+    function trackSelectedTasks() {
+        const checkboxes = document.querySelectorAll('#today-tasks-list input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    selectedTasks.push(this.value);
+                } else {
+                    selectedTasks = selectedTasks.filter(id => id !== this.value);
+                }
+            });
+        });
+    }
+
+    let previousTaskIds = [];
+
+    function moveSelectedTasks() {
+        console.log("moveSelectedTasks function called");
+    
+        const taskList = document.getElementById('today-tasks-list');
+        const selectedTaskIds = [];
+        const nonSelectedTasks = [];
+        previousTaskIds = []; // Save current task IDs
+    
+        taskList.querySelectorAll('li').forEach(taskItem => {
+            const checkbox = taskItem.querySelector('input[type="checkbox"]');
+            if (checkbox.checked) {
+                selectedTaskIds.push(parseInt(checkbox.value)); // Ensure IDs are integers
+            } else {
+                nonSelectedTasks.push(taskItem);
+            }
+            previousTaskIds.push(parseInt(checkbox.value)); 
+        });
+    
+        const date = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+        const payload = { task_ids: selectedTaskIds, date: date };
+        console.log("Payload being sent to /tasks/select:", payload); 
+    
+        fetch('/tasks/select', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(response => {
+            console.log("Response from /tasks/select:", response);
+            return response.json();
+        })
+        .then(data => {
+            console.log("Data from /tasks/select:", data);
+            if (data.message) {
+                const selectedTasksList = document.getElementById('selected-tasks-list');
+                const nonSelectedTasksList = document.getElementById('non-selected-tasks-list');
+                selectedTasksList.innerHTML = '';
+                nonSelectedTasksList.innerHTML = '';
+    
+                selectedTaskIds.forEach(taskId => {
+                    const taskItem = document.querySelector(`input[value="${taskId}"]`).parentElement;
+                    selectedTasksList.appendChild(taskItem);
+                });
+                nonSelectedTasks.forEach(task => nonSelectedTasksList.appendChild(task));
+            } else {
+                alert('Error closing tasks');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+    
+    // Add event listener for the "Move to Closed List" button
+    document.getElementById('move-tasks-button').addEventListener('click', moveSelectedTasks);
+    
+    
+
+    function undoMove() {
+        fetch('/tasks/revert', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ task_ids: previousTaskIds })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                const taskList = document.getElementById('today-tasks-list');
+                previousTaskIds.forEach(taskId => {
+                    const taskItem = document.querySelector(`input[value="${taskId}"]`).parentElement;
+                    taskItem.dataset.status = 'pending'; // Revert status
+                    taskList.appendChild(taskItem);
+                });
+                previousTaskIds = []; // Clear saved state
+            } else {
+                alert('Error reverting tasks');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    document.getElementById('undo-move-button').addEventListener('click', undoMove);
+
     
     
 

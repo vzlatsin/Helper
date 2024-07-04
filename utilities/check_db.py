@@ -22,6 +22,7 @@ def clear_tasks():
     cursor = conn.cursor()
 
     cursor.execute("DELETE FROM task_diary")
+    cursor.execute("DELETE FROM time_entries")
     conn.commit()
     print("All tasks have been deleted.")
 

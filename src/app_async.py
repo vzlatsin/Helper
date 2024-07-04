@@ -7,11 +7,12 @@ from src.helper import MyTradingApp  # Assuming these imports are used elsewhere
 from src.flex_query import initiate_flex_query_report, download_flex_query_report
 #from src.compile_documentation import compile_documentation
 from src.db.data_access import create_connection, get_latest_dividend_date, count_dividend_records, insert_dividend
-from src.db.data_access import save_time_entry, add_task, get_dummy_today_tasks
+from src.db.data_access import save_time_entry, add_task, get_dummy_today_tasks, mark_tasks_as_closed
 from .data_sync import compare_dividend_data
 from src.ib_data_fetcher import fetch_dividends_from_ib, fetch_trades_from_ib
 from .db.data_access import fetch_dividends_from_db, fetch_all_trades, insert_dividend_if_not_exists, insert_trade_if_not_exists, fetch_dividends_by_quarter, get_dividend_date_range, get_trades_by_symbol, save_task_diary_entry
 from .db.data_access import fetch_task_diary_entries, fetch_time_entries, fetch_tasks_for_date, mark_tasks_as_selected
+from .db.data_access import validate_pending_status, revert_task_statuses
 from src.file_operations import write_transactions_to_file
 from src.trade_processing import generate_description_for_trade, filter_and_organize_trades
 from flask import request
@@ -163,24 +164,6 @@ def create_async_app(config):
         except Exception as e:
             return jsonify({"error": str(e)}), 500
         
-    @app.route('/tasks/select', methods=['POST'])
-    def select_tasks_for_date():
-        try:
-            conn = create_connection(app.config['db_path'])
-            if conn:
-                date = request.json.get('date')
-                if not date:
-                    return jsonify({"error": "Date is required"}), 400
-                
-                app.logger.info(f"Marking tasks as selected for date: {date}")
-                mark_tasks_as_selected(conn, date)
-                conn.close()
-                return jsonify({"message": "Tasks marked as selected"}), 200
-            else:
-                return jsonify({"error": "Database connection failed"}), 500
-        except Exception as e:
-            app.logger.error(f"Error selecting tasks: {str(e)}")
-            return jsonify({"error": str(e)}), 500
 
 
     @app.route('/tasks/add', methods=['POST'])
@@ -219,10 +202,93 @@ def create_async_app(config):
             app.logger.error(f"Error retrieving tasks: {str(e)}")
             return jsonify({"error": str(e)}), 500
 
-    if __name__ == '__main__':
-        app.run(debug=True)
+    @app.route('/tasks/close', methods=['POST'])
+    def close_tasks_endpoint():
+        try:
+            conn = create_connection(app.config['db_path'])
+            if conn:
+                task_ids = request.json.get('task_ids')
+                app.logger.debug(f"Received task IDs for closing: {task_ids}")
+
+                if not task_ids:
+                    app.logger.error("Task IDs are required but not provided.")
+                    return jsonify({"error": "Task IDs are required"}), 400
+                
+                # Convert task IDs to integers
+                try:
+                    task_ids = [int(task_id) for task_id in task_ids]
+                except ValueError as e:
+                    app.logger.error(f"Error converting task IDs to integers: {e}")
+                    return jsonify({"error": "Invalid task IDs"}), 400
+                
+                app.logger.debug(f"Converted task IDs to integers: {task_ids}")
+
+                valid_ids = validate_pending_status(conn, task_ids)
+                if len(valid_ids) != len(task_ids):
+                    app.logger.error(f"Some tasks are not in the selected state: {task_ids}")
+                    return jsonify({"error": "Some tasks are not in the selected state"}), 400
+
+                app.logger.info(f"Closing tasks: {task_ids}")
+                mark_tasks_as_closed(conn, task_ids)
+                conn.close()
+                return jsonify({"message": "Tasks marked as locked"}), 200
+            else:
+                app.logger.error("Database connection failed.")
+                return jsonify({"error": "Database connection failed"}), 500
+        except Exception as e:
+            app.logger.error(f"Error closing tasks: {str(e)}")
+            return jsonify({"error": str(e)}), 500
+
+    @app.route('/tasks/select', methods=['POST'])
+    def select_tasks_for_date():
+        try:
+            conn = create_connection(app.config['db_path'])
+            if conn:
+                data = request.json
+                date = data.get('date')
+                task_ids = data.get('task_ids')
+                
+                if not date:
+                    return jsonify({"error": "Date is required"}), 400
+                if not task_ids:
+                    return jsonify({"error": "Task IDs are required"}), 400
+                
+                app.logger.info(f"Marking tasks as selected for date: {date}")
+                valid_ids = validate_pending_status(conn, task_ids)
+                if len(valid_ids) != len(task_ids):
+                    invalid_ids = set(task_ids) - set(valid_ids)
+                    return jsonify({"error": f"Some tasks are not in the pending state: {invalid_ids}"}), 400
+
+                mark_tasks_as_closed(conn, task_ids)
+                conn.close()
+                return jsonify({"message": "Tasks marked as selected"}), 200
+            else:
+                return jsonify({"error": "Database connection failed"}), 500
+        except Exception as e:
+            app.logger.error(f"Error selecting tasks: {str(e)}")
+            return jsonify({"error": str(e)}), 500
 
 
+
+
+    @app.route('/tasks/revert', methods=['POST'])
+    def revert_tasks_endpoint():
+        try:
+            conn = create_connection(app.config['db_path'])
+            if conn:
+                task_ids = request.json.get('task_ids')
+                if not task_ids:
+                    return jsonify({"error": "Task IDs are required"}), 400
+                
+                app.logger.info(f"Reverting tasks to selected state: {task_ids}")
+                revert_task_statuses(conn, task_ids)
+                conn.close()
+                return jsonify({"message": "Tasks reverted to selected state"}), 200
+            else:
+                return jsonify({"error": "Database connection failed"}), 500
+        except Exception as e:
+            app.logger.error(f"Error reverting tasks: {str(e)}")
+            return jsonify({"error": str(e)}), 500
 
     @app.route('/time_management.html')
     def time_management():

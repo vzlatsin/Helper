@@ -42,6 +42,8 @@
         <div id="today" class="tab-content">
             <h2>Today's Tasks</h2>
             <ul id="today-tasks-list"></ul>
+            <button id="move-tasks-button">Move to Closed List</button>
+            <button id="undo-move-button">Undo Move</button> <!-- Added this line -->
         </div>
         <div id="forgotten" class="tab-content">
             <h2>Forgotten Tasks</h2>
@@ -55,7 +57,14 @@
             <ul id="unlocked-tasks-list"></ul>
             <button id="lock-tasks-button">Lock Selected Tasks</button>
         </div>
+        <div id="closed-tasks">
+            <h2>Closed Tasks</h2>
+            <ul id="selected-tasks-list"></ul>
+            <hr>
+            <ul id="non-selected-tasks-list"></ul>
+        </div>
         <div id="entries-container"></div>
+
     </main>
     
     
