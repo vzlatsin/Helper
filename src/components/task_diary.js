@@ -220,6 +220,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     
+        // Check if there are any selected tasks
+        if (selectedTaskIds.length === 0) {
+            alert('No tasks selected to move.');
+            return;
+        }
+    
         const date = new Date().toISOString().split('T')[0];  // Get today's date in YYYY-MM-DD format
         const payload = { task_ids: selectedTaskIds, date: date };
     
@@ -262,6 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error:', error);
         });
     }
+    
     
     // Add event listener for the "Move to Closed List" button
     document.getElementById('move-tasks-button').addEventListener('click', moveSelectedTasks);
