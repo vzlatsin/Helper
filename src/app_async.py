@@ -12,7 +12,7 @@ from .data_sync import compare_dividend_data
 from src.ib_data_fetcher import fetch_dividends_from_ib, fetch_trades_from_ib
 from .db.data_access import fetch_dividends_from_db, fetch_all_trades, insert_dividend_if_not_exists, insert_trade_if_not_exists, fetch_dividends_by_quarter, get_dividend_date_range, get_trades_by_symbol, save_task_diary_entry
 from .db.data_access import fetch_task_diary_entries, fetch_time_entries, fetch_tasks_for_date, mark_tasks_as_selected
-from .db.data_access import validate_pending_status, revert_task_statuses
+from .db.data_access import validate_pending_status, revert_task_statuses, fetch_forgotten_tasks
 from src.file_operations import write_transactions_to_file
 from src.trade_processing import generate_description_for_trade, filter_and_organize_trades
 from flask import request
@@ -291,6 +291,22 @@ def create_async_app(config):
             app.logger.error(f"Error selecting tasks: {str(e)}")
             return jsonify({"error": str(e)}), 500
 
+
+    @app.route('/tasks/forgotten', methods=['GET'])
+    def get_forgotten_tasks_endpoint():
+        try:
+            conn = create_connection(app.config['db_path'])
+            if conn:
+                forgotten_tasks = fetch_forgotten_tasks(conn)
+                app.logger.debug(f"Forgotten tasks retrieved: {forgotten_tasks}")
+                conn.close()
+                return jsonify(forgotten_tasks), 200
+            else:
+                app.logger.error("Database connection failed")
+                return jsonify({"error": "Database connection failed"}), 500
+        except Exception as e:
+            app.logger.error(f"Error retrieving forgotten tasks: {str(e)}")
+            return jsonify({"error": str(e)}), 500
 
 
 

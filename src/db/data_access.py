@@ -3,7 +3,7 @@
 import sqlite3
 import logging
 from sqlite3 import Error
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import json 
 
 def create_connection(db_file):
@@ -370,6 +370,24 @@ def validate_pending_status(conn, task_ids):
     valid_ids = [row[0] for row in cursor.fetchall()]
     print(f"Valid task IDs with 'pending' status: {valid_ids}")
     return valid_ids
+
+def fetch_forgotten_tasks(conn):
+    try:
+        cursor = conn.cursor()
+        cursor.row_factory = sqlite3.Row  # This will allow us to use row objects which can be converted to dicts
+        today = date.today().isoformat()
+        cursor.execute("""
+            SELECT * FROM time_entries 
+            WHERE status = 'pending' AND date < ?
+        """, (today,))
+        rows = cursor.fetchall()
+        tasks = [dict(row) for row in rows]  # Convert row objects to dictionaries
+        return tasks
+    except Exception as e:
+        print(f"Error fetching forgotten tasks: {str(e)}")
+        return []
+
+
 
 
 

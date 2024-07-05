@@ -23,6 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 fetchTodayTasks();
             } else if (tabId === 'tomorrow') {
                 fetchTomorrowTasks();
+            } else if (tabId === 'forgotten') {
+                fetchForgottenTasks();
             }
         });
     });
@@ -216,6 +218,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayTasks(tasks, elementId) {
         const taskList = document.getElementById(elementId);
         taskList.innerHTML = ''; // Clear existing tasks
+
+        if (tasks.length === 0) {
+            // If there are no tasks, display a message or handle the empty state
+            const emptyMessage = document.createElement('li');
+            emptyMessage.textContent = 'No tasks found';
+            taskList.appendChild(emptyMessage);
+            return;
+        }
         tasks.forEach(task => {
             const taskItem = document.createElement('li');
             const checkbox = document.createElement('input');
@@ -497,6 +507,33 @@ document.addEventListener('DOMContentLoaded', function() {
     
     document.getElementById('undo-move-button-tomorrow').addEventListener('click', undoMoveTomorrow);
 
+    async function fetchForgottenTasks() {
+        console.log("fetchForgottenTasks function executed");  // Log when the function is executed
+        try {
+            const response = await fetch('/tasks/forgotten');
+            const tasks = await response.json();
+            
+            // Ensure the tasks variable is an array
+            if (!Array.isArray(tasks)) {
+                console.error('Invalid response format for forgotten tasks:', tasks);
+                return;
+            }
+    
+            // Log the tasks array
+            console.log('Tasks for forgotten:', tasks);
+    
+            // Display tasks in the forgotten tasks list
+            displayTasks(tasks, 'forgotten-tasks-list');
+        } catch (error) {
+            console.error('Error fetching forgotten tasks:', error);
+        }
+    }
+    
+    
+    
+    // Add event listener for the "Forgotten Tasks" tab
+    document.querySelector('.tabs .tab[data-tab="forgotten"]').addEventListener('click', fetchForgottenTasks);
+    
     // Load task diary entries
     function loadEntries() {
         fetch('/get-task-diary-entries')
@@ -526,4 +563,5 @@ document.addEventListener('DOMContentLoaded', function() {
     window.selectTasksForDate = selectTasksForDate;
     window.fetchTodayTasks = fetchTodayTasks;
     window.fetchTomorrowTasks = fetchTomorrowTasks;
+    window.fetchForgottenTasks = fetchForgottenTasks;
 });
