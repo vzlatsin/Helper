@@ -14,6 +14,20 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
+    // Add event listeners for tab clicks
+    document.querySelectorAll('.tabs .tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            const tabId = this.dataset.tab;
+            console.log(`Tab clicked: ${tabId}`);
+            if (tabId === 'today') {
+                fetchTodayTasks();
+            } else if (tabId === 'tomorrow') {
+                fetchTomorrowTasks();
+            }
+        });
+    });
+    
+
     // Form submission event
     taskForm.addEventListener('submit', function(event) {
         event.preventDefault();
@@ -154,6 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     async function fetchTodayTasks() {
+        console.log("fetchTodayTasks");
         try {
             const response = await fetch('/tasks/today');
             const tasks = await response.json();
@@ -173,6 +188,30 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error fetching today\'s tasks:', error);
         }
     }
+
+    async function fetchTomorrowTasks() {
+        console.log("fetchTomorrowTasks");
+        try {
+            const response = await fetch('/tasks/tomorrow');
+            const tasks = await response.json();
+            
+            // Separate tasks into pending and closed lists
+            const pendingTasks = tasks.filter(task => task.status === 'pending');
+            const closedTasks = tasks.filter(task => task.status === 'selected');
+            
+            // Populate closedTaskIds with the IDs of closed tasks
+            closedTaskIds = closedTasks.map(task => task.id);
+    
+            // Display tasks in their respective lists
+            displayTasks(pendingTasks, 'tomorrow-pending-tasks-list');
+            displayTasks(closedTasks, 'tomorrow-closed-tasks-list');
+        } catch (error) {
+            console.error('Error fetching tomorrow\'s tasks:', error);
+        }
+    }
+    
+    
+    
 
     function displayTasks(tasks, elementId) {
         const taskList = document.getElementById(elementId);
@@ -340,8 +379,123 @@ document.addEventListener('DOMContentLoaded', function() {
   
     document.getElementById('undo-move-button').addEventListener('click', undoMove);
 
+    function moveSelectedTasksTomorrow() {
+        const taskList = document.getElementById('tomorrow-pending-tasks-list');
+        const selectedTaskIds = [];
+        const nonSelectedTasks = [];
     
+        taskList.querySelectorAll('li').forEach(taskItem => {
+            const checkbox = taskItem.querySelector('input[type="checkbox"]');
+            if (checkbox && checkbox.checked) {
+                selectedTaskIds.push(parseInt(checkbox.value));
+            } else {
+                nonSelectedTasks.push(taskItem);
+            }
+        });
     
+        if (selectedTaskIds.length === 0) {
+            alert('No tasks selected to move.');
+            return;
+        }
+    
+        const payload = { task_ids: selectedTaskIds };
+        console.log('Payload being sent:', JSON.stringify(payload));
+    
+        fetch('/tasks/select', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                const closedTasksList = document.getElementById('tomorrow-closed-tasks-list');
+                const pendingTasksList = document.getElementById('tomorrow-pending-tasks-list');
+    
+                selectedTaskIds.forEach(taskId => {
+                    const checkbox = document.querySelector(`input[value="${taskId}"]`);
+                    if (checkbox) {
+                        const taskItem = checkbox.parentElement;
+                        if (taskItem) {
+                            taskItem.querySelector('input[type="checkbox"]').checked = false;
+                            closedTasksList.appendChild(taskItem);
+                        }
+                    }
+                });
+    
+                pendingTasksList.innerHTML = '';
+                nonSelectedTasks.forEach(task => pendingTasksList.appendChild(task));
+            } else {
+                alert('Error closing tasks');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    document.getElementById('move-tasks-button-tomorrow').addEventListener('click', moveSelectedTasksTomorrow);
+
+    function undoMoveTomorrow() {
+        const closedTasksList = document.getElementById('tomorrow-closed-tasks-list');
+        const selectedClosedTaskIds = [];
+        const nonSelectedClosedTasks = [];
+    
+        closedTasksList.querySelectorAll('li').forEach(taskItem => {
+            const checkbox = taskItem.querySelector('input[type="checkbox"]');
+            if (checkbox && checkbox.checked) {
+                selectedClosedTaskIds.push(parseInt(checkbox.value));
+            } else {
+                nonSelectedClosedTasks.push(taskItem);
+            }
+        });
+    
+        if (selectedClosedTaskIds.length === 0) {
+            alert('No tasks selected to revert.');
+            return;
+        }
+    
+        fetch('/tasks/revert', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ task_ids: selectedClosedTaskIds })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                const pendingTasksList = document.getElementById('tomorrow-pending-tasks-list');
+    
+                selectedClosedTaskIds.forEach(taskId => {
+                    const checkbox = document.querySelector(`input[value="${taskId}"]`);
+                    if (checkbox) {
+                        const taskItem = checkbox.parentElement;
+                        if (taskItem) {
+                            taskItem.querySelector('input[type="checkbox"]').checked = false;
+                            pendingTasksList.appendChild(taskItem);
+                        }
+                    }
+                });
+    
+                closedTaskIds = closedTaskIds.filter(id => !selectedClosedTaskIds.includes(id));
+    
+                closedTasksList.innerHTML = '';
+                nonSelectedClosedTasks.forEach(task => closedTasksList.appendChild(task));
+            } else {
+                console.error('Error reverting tasks:', data.error);
+                alert('Error reverting tasks');
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+            alert('Error reverting tasks');
+        });
+    }
+    
+    document.getElementById('undo-move-button-tomorrow').addEventListener('click', undoMoveTomorrow);
 
     // Load task diary entries
     function loadEntries() {
@@ -371,4 +525,5 @@ document.addEventListener('DOMContentLoaded', function() {
     window.viewTasksForDate = viewTasksForDate;
     window.selectTasksForDate = selectTasksForDate;
     window.fetchTodayTasks = fetchTodayTasks;
+    window.fetchTomorrowTasks = fetchTomorrowTasks;
 });

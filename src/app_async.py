@@ -25,7 +25,7 @@ import re
 from werkzeug.utils import secure_filename
 import logging
 import glob
-from datetime import date
+from datetime import date, timedelta
 
 
 def create_async_app(config):
@@ -187,6 +187,7 @@ def create_async_app(config):
 
     @app.route('/tasks/today', methods=['GET'])
     def get_today_tasks_endpoint():
+        app.logger.info(f"get_today_tasks_endpoint")
         try:
             conn = create_connection(app.config['db_path'])
             if conn:
@@ -201,6 +202,25 @@ def create_async_app(config):
         except Exception as e:
             app.logger.error(f"Error retrieving tasks: {str(e)}")
             return jsonify({"error": str(e)}), 500
+
+    @app.route('/tasks/tomorrow', methods=['GET'])
+    def get_tomorrows_tasks_endpoint():
+        app.logger.info(f"get_tomorrows_tasks_endpoint")
+        try:
+            conn = create_connection(app.config['db_path'])
+            if conn:
+                tomorrow = (date.today() + timedelta(days=1)).isoformat()
+                app.logger.info(f"Retrieving tasks for tomorrow: {tomorrow}")
+                tasks = fetch_tasks_for_date(conn, tomorrow)
+                conn.close()
+                app.logger.debug(f"Tasks retrieved: {tasks}")
+                return jsonify(tasks), 200
+            else:
+                return jsonify({"error": "Database connection failed"}), 500
+        except Exception as e:
+            app.logger.error(f"Error retrieving tasks: {str(e)}")
+            return jsonify({"error": str(e)}), 500
+
 
     @app.route('/tasks/close', methods=['POST'])
     def close_tasks_endpoint():
@@ -245,28 +265,32 @@ def create_async_app(config):
             conn = create_connection(app.config['db_path'])
             if conn:
                 data = request.json
-                date = data.get('date')
                 task_ids = data.get('task_ids')
                 
-                if not date:
-                    return jsonify({"error": "Date is required"}), 400
                 if not task_ids:
+                    app.logger.error("Task IDs are required but not provided")
                     return jsonify({"error": "Task IDs are required"}), 400
-                
-                app.logger.info(f"Marking tasks as selected for date: {date}")
+
+                app.logger.info(f"Marking tasks as selected: {task_ids}")
                 valid_ids = validate_pending_status(conn, task_ids)
+                app.logger.debug(f"Valid IDs: {valid_ids}")
+
                 if len(valid_ids) != len(task_ids):
                     invalid_ids = set(task_ids) - set(valid_ids)
+                    app.logger.error(f"Some tasks are not in the pending state: {invalid_ids}")
                     return jsonify({"error": f"Some tasks are not in the pending state: {invalid_ids}"}), 400
 
                 mark_tasks_as_closed(conn, task_ids)
+                app.logger.info(f"Tasks marked as closed: {task_ids}")
                 conn.close()
                 return jsonify({"message": "Tasks marked as selected"}), 200
             else:
+                app.logger.error("Database connection failed")
                 return jsonify({"error": "Database connection failed"}), 500
         except Exception as e:
             app.logger.error(f"Error selecting tasks: {str(e)}")
             return jsonify({"error": str(e)}), 500
+
 
 
 
