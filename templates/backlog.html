@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Management</title>
+    <title>Backlog</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <header>
-        <h1>Time Management</h1>
+        <h1>Backlog</h1>
         <nav>
             <ul>
                 <li><a href="/">Home</a></li>
@@ -17,17 +17,9 @@
         </nav>
     </header>
     <main>
-        <!-- Integrate Task Diary links here -->
-        <section>
-            <h2>Task Diary</h2>
-            <div id="task-diary">
-                <a href="{{ url_for('task_diary') }}">Go to Task Diary</a><br>
-                <a href="{{ url_for('backlog') }}">Backlog</a> <!-- Updated link -->
-            </div>
-        </section>
+        <h2>Backlog Tasks</h2>
+        <ul id="backlog-tasks"></ul>
     </main>
-    <script>
-        console.log("HTML Script Loaded");
-    </script>
+    <script src="{{ url_for('static', filename='backlog.js') }}"></script>
 </body>
 </html>

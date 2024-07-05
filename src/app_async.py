@@ -13,6 +13,7 @@ from src.ib_data_fetcher import fetch_dividends_from_ib, fetch_trades_from_ib
 from .db.data_access import fetch_dividends_from_db, fetch_all_trades, insert_dividend_if_not_exists, insert_trade_if_not_exists, fetch_dividends_by_quarter, get_dividend_date_range, get_trades_by_symbol, save_task_diary_entry
 from .db.data_access import fetch_task_diary_entries, fetch_time_entries, fetch_tasks_for_date, mark_tasks_as_selected
 from .db.data_access import validate_pending_status, revert_task_statuses, fetch_forgotten_tasks
+from .db.data_access import insert_backlog_entry, fetch_backlog_entries, move_task_to_backlog, move_task_to_time_entries
 from src.file_operations import write_transactions_to_file
 from src.trade_processing import generate_description_for_trade, filter_and_organize_trades
 from flask import request
@@ -344,6 +345,75 @@ def create_async_app(config):
         # will be fixed later
         return 0
     
+    @app.route('/backlog')
+    def backlog():
+        return render_template('backlog.html')
+    
+    @app.route('/tasks/backlog', methods=['GET'])
+    def get_backlog_tasks_endpoint():
+        try:
+            conn = create_connection(app.config['db_path'])
+            if conn:
+                tasks = fetch_backlog_entries(conn)
+                conn.close()
+                app.logger.debug(f"Backlog tasks retrieved: {tasks}")
+                return jsonify(tasks), 200
+            else:
+                return jsonify({"error": "Database connection failed"}), 500
+        except Exception as e:
+            app.logger.error(f"Error retrieving backlog tasks: {str(e)}")
+            return jsonify({"error": str(e)}), 500
+
+
+    @app.route('/move_to_backlog', methods=['POST'])
+    def move_task_to_backlog_endpoint():
+        try:
+            conn = create_connection(app.config['db_path'])
+            if conn:
+                data = request.json
+                task_id = data.get('task_id')
+                
+                if not task_id:
+                    return jsonify({"error": "Task ID is required"}), 400
+                
+                success = move_task_to_backlog(conn, task_id)
+                conn.close()
+                if success:
+                    return jsonify({"message": "Task moved to backlog successfully"}), 200
+                else:
+                    return jsonify({"error": "Task not found in time_entries"}), 404
+            else:
+                return jsonify({"error": "Database connection failed"}), 500
+        except Exception as e:
+            app.logger.error(f"Error moving task to backlog: {str(e)}")
+            return jsonify({"error": str(e)}), 500
+
+    @app.route('/move_to_time_entries', methods=['POST'])
+    def move_task_to_time_entries_endpoint():
+        try:
+            conn = create_connection(app.config['db_path'])
+            if conn:
+                data = request.json
+                backlog_id = data.get('backlog_id')
+                date = data.get('date')
+                start_time = data.get('start_time')
+                end_time = data.get('end_time')
+                
+                if not backlog_id or not date or not start_time or not end_time:
+                    return jsonify({"error": "All fields are required"}), 400
+                
+                success = move_task_to_time_entries(conn, backlog_id, date, start_time, end_time)
+                conn.close()
+                if success:
+                    return jsonify({"message": "Task moved to time_entries successfully"}), 200
+                else:
+                    return jsonify({"error": "Task not found in backlog"}), 404
+            else:
+                return jsonify({"error": "Database connection failed"}), 500
+        except Exception as e:
+            app.logger.error(f"Error moving task to time_entries: {str(e)}")
+            return jsonify({"error": str(e)}), 500
+
     
     @app.route('/select-tasks', methods=['GET', 'POST'])
     def select_tasks():

@@ -67,6 +67,12 @@ def main():
                                         date TEXT NOT NULL,
                                         reflections TEXT
                                     );"""
+
+    sql_create_backlog_table = """CREATE TABLE IF NOT EXISTS backlog (
+                                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                        task_description TEXT NOT NULL,
+                                        date_added TEXT NOT NULL
+                                    );"""
     
     # Create a database connection
     conn = create_connection(database)
@@ -88,6 +94,10 @@ def main():
         # create task_diary table
         create_table(conn, sql_create_task_diary_table)
         print("Task diary table created successfully.")
+
+        # Create backlog table
+        create_table(conn, sql_create_backlog_table)
+        print("Backlog table created successfully.")
 
         conn.close()
     else:

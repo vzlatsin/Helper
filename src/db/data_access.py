@@ -387,6 +387,71 @@ def fetch_forgotten_tasks(conn):
         print(f"Error fetching forgotten tasks: {str(e)}")
         return []
 
+def insert_backlog_entry(conn, task_description):
+    """
+    Insert a new entry into the backlog table
+    :param conn: Database connection object
+    :param task_description: Description of the task
+    :return: id of the inserted entry
+    """
+    sql = ''' INSERT INTO backlog(task_description, date_added)
+              VALUES(?, ?) '''
+    cur = conn.cursor()
+    cur.execute(sql, (task_description, date.today().isoformat()))
+    conn.commit()
+    return cur.lastrowid
+
+def fetch_backlog_entries(conn):
+    """
+    Query all rows in the backlog table
+    :param conn: the Connection object
+    :return: a list of dictionaries containing all backlog entries
+    """
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM backlog")
+    rows = cur.fetchall()
+    entries = [{'id': row[0], 'task_description': row[1], 'date_added': row[2]} for row in rows]
+    return entries
+
+def move_task_to_backlog(conn, task_id):
+    """
+    Move a task from time_entries to backlog
+    :param conn: Database connection object
+    :param task_id: ID of the task to move
+    """
+    cur = conn.cursor()
+    cur.execute("SELECT task_description FROM time_entries WHERE id = ?", (task_id,))
+    task = cur.fetchone()
+    if task:
+        task_description = task[0]
+        insert_backlog_entry(conn, task_description)
+        cur.execute("DELETE FROM time_entries WHERE id = ?", (task_id,))
+        conn.commit()
+        return True
+    else:
+        return False
+
+def move_task_to_time_entries(conn, backlog_id, date, start_time, end_time):
+    """
+    Move a task from backlog to time_entries
+    :param conn: Database connection object
+    :param backlog_id: ID of the backlog entry to move
+    :param date: Task date
+    :param start_time: Task start time
+    :param end_time: Task end time
+    """
+    cur = conn.cursor()
+    cur.execute("SELECT task_description FROM backlog WHERE id = ?", (backlog_id,))
+    task = cur.fetchone()
+    if task:
+        task_description = task[0]
+        insert_time_entry(conn, date, start_time, end_time, task_description)
+        cur.execute("DELETE FROM backlog WHERE id = ?", (backlog_id,))
+        conn.commit()
+        return True
+    else:
+        return False
+
 
 
 
