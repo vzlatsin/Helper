@@ -33,10 +33,15 @@
                 <input type="text" id="task-desc" name="task-desc">
                 <button type="submit">Add Task</button>
             </form>
-            <ul id="tasks-list"></ul>
+            <ul id="tasks-list">
+                <li>
+                    <input type="checkbox" class="task-checkbox" value="task_description">
+                    2024-07-07 - test for backlog
+                </li>
+            </ul>            
             <button id="save-button">Save Tasks</button>
             <button type="button" onclick="viewTasksForDate()">View Tasks</button>
-            <button type="button" onclick="selectTasksForDate()">Select Tasks</button>
+            <button id="move-to-backlog-button">Move to Backlog</button>
             <div id="tasks-for-date"></div>
         </div>
         <div id="today" class="tab-content">

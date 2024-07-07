@@ -6,6 +6,22 @@ from sqlite3 import Error
 from datetime import datetime, timedelta, date
 import json 
 
+# Configure logger for this module
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+# Create handler
+handler = logging.StreamHandler()
+handler.setLevel(logging.DEBUG)
+
+# Create formatter and add it to the handler
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+
+# Add the handler to the logger
+logger.addHandler(handler)
+
+
 def create_connection(db_file):
     """ create a database connection to a SQLite database """
     conn = None
@@ -401,6 +417,23 @@ def insert_backlog_entry(conn, task_description):
     conn.commit()
     return cur.lastrowid
 
+def add_task_to_backlog(conn, task_description):
+    try:
+        cursor = conn.cursor()
+        sql = ''' INSERT INTO backlog (task_description, date_added)
+                  VALUES (?, ?) '''
+        logger.debug(f"Executing SQL: {sql} with task_description: {task_description} and date_added: {date.today().isoformat()}")
+        cursor.execute(sql, (task_description, date.today().isoformat()))
+        conn.commit()
+        logger.info("Task successfully added to backlog")
+        return cursor.lastrowid is not None
+    except Exception as e:
+        logger.error(f"Error adding task to backlog: {str(e)}")
+        return False
+
+
+
+
 def fetch_backlog_entries(conn):
     """
     Query all rows in the backlog table
@@ -413,23 +446,29 @@ def fetch_backlog_entries(conn):
     entries = [{'id': row[0], 'task_description': row[1], 'date_added': row[2]} for row in rows]
     return entries
 
+# data_access.py
 def move_task_to_backlog(conn, task_id):
-    """
-    Move a task from time_entries to backlog
-    :param conn: Database connection object
-    :param task_id: ID of the task to move
-    """
-    cur = conn.cursor()
-    cur.execute("SELECT task_description FROM time_entries WHERE id = ?", (task_id,))
-    task = cur.fetchone()
-    if task:
-        task_description = task[0]
-        insert_backlog_entry(conn, task_description)
-        cur.execute("DELETE FROM time_entries WHERE id = ?", (task_id,))
-        conn.commit()
-        return True
-    else:
+    try:
+        cursor = conn.cursor()
+
+        # Fetch the task from time_entries
+        cursor.execute("SELECT task_description FROM time_entries WHERE id = ?", (task_id,))
+        task = cursor.fetchone()
+
+        if task:
+            task_description = task[0]
+            # Insert the task into the backlog table
+            cursor.execute("INSERT INTO backlog (task_description) VALUES (?)", (task_description,))
+            # Delete the task from time_entries
+            cursor.execute("DELETE FROM time_entries WHERE id = ?", (task_id,))
+            conn.commit()
+            return True
+        else:
+            return False
+    except Exception as e:
+        print(f"Error moving task to backlog: {str(e)}")
         return False
+
 
 def move_task_to_time_entries(conn, backlog_id, date, start_time, end_time):
     """
