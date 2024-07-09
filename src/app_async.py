@@ -73,6 +73,7 @@ def create_async_app(config):
         app.logger.info("add_task_diary_entry....")
         data = request.json
         app.logger.info(f"Received data: {data}")
+        
         if not "tasks" in data or not isinstance(data["tasks"], list):
             app.logger.error("Invalid data received: %s", data)
             return jsonify({"error": "Invalid data"}), 400
@@ -82,10 +83,22 @@ def create_async_app(config):
             if conn:
                 for task in data["tasks"]:
                     app.logger.info(f"Saving task: {task}")
-                    result = save_time_entry(conn, task["date"], task["start_time"], task["end_time"], task["task_description"])
+                    # Provide default empty strings for start_time and end_time if they are missing
+                    date = task.get("date", "").strip()
+                    start_time = task.get("start_time", "")
+                    end_time = task.get("end_time", "")
+                    task_description = task.get("task_description", "").strip()
+
+                    # Ensure date and task_description are not empty
+                    if not date or not task_description:
+                        app.logger.error("Invalid task data: %s", task)
+                        return jsonify({"error": "Invalid task data"}), 400
+
+                    result = save_time_entry(conn, date, start_time, end_time, task_description)
                     if result is None:
                         app.logger.error("Failed to save task: %s", task)
                         return jsonify({"error": "Failed to save task"}), 500
+
                 conn.close()
                 app.logger.info("Successfully saved task diary entries")
                 return jsonify({"success": True}), 201
@@ -99,14 +112,17 @@ def create_async_app(config):
     @app.route('/get-task-diary-entries', methods=['GET'])
     def get_task_diary_entries():
         app.logger.info("get_task_diary_entries ...")
+
         try:
             conn = create_connection(app.config['db_path'])
             if conn:
                 app.logger.info("fetch entries from task diary ...")
                 # Fetch task diary entries
                 diary_entries = fetch_task_diary_entries(conn)
+                app.logger.info(f"Fetched diary entries: {diary_entries}")
                 # Fetch time entries
                 time_entries = fetch_time_entries(conn)
+                app.logger.info(f"Fetched time entries: {time_entries}")
                 conn.close()
 
                 # Create a dictionary to hold tasks by date
@@ -127,11 +143,15 @@ def create_async_app(config):
                         "reflections": entry['reflections']
                     })
 
+                app.logger.info(f"Formatted entries to be returned: {formatted_entries}")
                 return jsonify(formatted_entries), 200
             else:
                 return jsonify({"error": "Database connection failed"}), 500
         except Exception as e:
+            app.logger.error(f"Error fetching task diary entries: {str(e)}")
             return jsonify({"error": str(e)}), 500
+
+ 
     
     @app.route('/time-entry', methods=['POST'])
     def handle_time_entry():
@@ -370,24 +390,36 @@ def create_async_app(config):
     def move_tasks_to_backlog_endpoint():
         app.logger.info("Received request to move tasks to backlog")
         try:
+            # Create a database connection
             conn = create_connection(app.config['db_path'])
             if conn:
                 app.logger.info("Database connection established")
+
+                # Retrieve JSON data from the request
                 data = request.json
                 app.logger.debug(f"Received data: {data}")
+
+                # Extract task descriptions from the received data
                 task_descriptions = data.get('task_descriptions')
 
+                # Validate the task descriptions
                 if not isinstance(task_descriptions, list) or not task_descriptions:
                     app.logger.warning("Task descriptions are required and must be a list")
                     return jsonify({"error": "Task descriptions are required and must be a list"}), 400
 
                 success = True
+
+                # Process each task description
                 for desc in task_descriptions:
+                    # Add the task to the backlog
                     if not add_task_to_backlog(conn, desc):
                         success = False
                         app.logger.error(f"Failed to add task to backlog: {desc}")
-                
+
+                # Close the database connection
                 conn.close()
+
+                # Return appropriate response based on success or failure
                 if success:
                     app.logger.info("Tasks moved to backlog successfully")
                     return jsonify({"message": "Tasks moved to backlog successfully"}), 200
@@ -400,6 +432,7 @@ def create_async_app(config):
         except Exception as e:
             app.logger.error(f"Error moving tasks to backlog: {str(e)}")
             return jsonify({"error": str(e)}), 500
+
 
 
 

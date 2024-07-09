@@ -31,17 +31,11 @@
                 <input type="time" id="end-time" name="end-time">
                 <label for="task-desc">Task Description:</label>
                 <input type="text" id="task-desc" name="task-desc">
-                <button type="submit">Add Task</button>
+                <button type="submit" style="display: none;">Add Task</button> <!-- Hidden button -->
             </form>
-            <ul id="tasks-list">
-                <li>
-                    <input type="checkbox" class="task-checkbox" value="task_description">
-                    2024-07-07 - test for backlog
-                </li>
-            </ul>            
-            <button id="save-button">Save Tasks</button>
-            <button type="button" onclick="viewTasksForDate()">View Tasks</button>
-            <button id="move-to-backlog-button">Move to Backlog</button>
+            <ul id="tasks-list"></ul>
+            <button id="save-button" type="button">Save Tasks</button>
+            <button id="move-to-backlog-button" type="button">Move to Backlog</button>
             <div id="tasks-for-date"></div>
         </div>
         <div id="today" class="tab-content">
@@ -73,9 +67,7 @@
             <ul id="non-selected-tasks-list"></ul>
         </div>
         <div id="entries-container"></div>
-
     </main>
-    
     
     <script src="{{ url_for('static', filename='task_diary.js') }}"></script>
     <script src="{{ url_for('static', filename='tabs.js') }}"></script>

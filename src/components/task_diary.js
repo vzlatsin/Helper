@@ -5,6 +5,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const endTime = document.getElementById('end-time');
     const taskDesc = document.getElementById('task-desc');
     const taskList = document.getElementById('tasks-list');
+    console.log("Initial task list items:", taskList.innerHTML);
+    taskList.querySelectorAll('li').forEach(taskItem => {
+        console.log(taskItem.innerHTML);
+    });
+    loadEntries();
+
     const saveButton = document.getElementById('save-button');
     const entriesContainer = document.getElementById('entries-container');
     const moveToBacklogButton = document.getElementById('move-to-backlog-button'); 
@@ -59,24 +65,41 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
 
-    // Save button event
+
+
     saveButton.addEventListener('click', function(event) {
         event.preventDefault();
 
-        const tasks = [];
-        taskList.querySelectorAll('li').forEach(taskItem => {
-            const [dateTime, ...descriptionParts] = taskItem.textContent.split(': ');
-            const [date, timeRange] = dateTime.split(' ');
-            const [start, end] = timeRange.split('-');
-            const description = descriptionParts.join(': ');
-            tasks.push({
-                date: date,
-                start_time: start,
-                end_time: end,
-                task_description: description
-            });
-        });
+        console.log("Save button clicked");
 
+        const taskDate = document.getElementById('task-date').value;
+        const startTime = document.getElementById('start-time').value;
+        const endTime = document.getElementById('end-time').value;
+        const taskDesc = document.getElementById('task-desc').value.trim();
+
+        console.log(`Task Date: ${taskDate}`);
+        console.log(`Start Time: ${startTime}`);
+        console.log(`End Time: ${endTime}`);
+        console.log(`Task Description: ${taskDesc}`);
+
+        const tasks = [];
+
+        // Validate and format the task input
+        if (taskDate && taskDesc) {
+            tasks.push({
+                date: taskDate,
+                start_time: startTime,
+                end_time: endTime,
+                task_description: taskDesc
+            });
+        } else {
+            alert("Please enter a valid date and description.");
+            return;
+        }
+
+        console.log("Tasks to be saved:", tasks);
+
+        // Send the task to the backend
         fetch('/task-diary', {
             method: 'POST',
             headers: {
@@ -88,15 +111,19 @@ document.addEventListener('DOMContentLoaded', function() {
             })
         })
         .then(response => {
+            console.log("Save response:", response);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             return response.json();
         })
         .then(data => {
+            console.log("Response data from save:", data);
             if (data.success) {
                 alert('Task diary entry saved!');
-                loadEntries();
+                // Clear the input fields
+                document.getElementById('task-form').reset();
+                // Optionally, refresh the task list or update the UI
             } else {
                 alert('Error saving task diary entry.');
             }
@@ -106,63 +133,84 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    
+        
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     // Move to backlog button event with diagnostics
-    document.getElementById('move-to-backlog-button').addEventListener('click', async function() {
+    moveToBacklogButton.addEventListener('click', function(event) {
         console.log("Move to Backlog button clicked");
-
-        // Select all checked checkboxes
-        const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
-        console.log(`Number of checkboxes found: ${checkboxes.length}`);
-
-        // Extract task descriptions from the checked checkboxes
-        const tasks = Array.from(checkboxes).map(checkbox => checkbox.parentElement.textContent.trim());
-        console.log("Tasks to move to backlog:", tasks);
-
-        // Check if there are tasks selected to move to the backlog
-        if (tasks.length === 0) {
-            alert('No tasks selected to move to backlog.');
+    
+        const taskDate = document.getElementById('task-date').value;
+        const startTime = document.getElementById('start-time').value;
+        const endTime = document.getElementById('end-time').value;
+        const taskDesc = document.getElementById('task-desc').value.trim();
+    
+        console.log(`Task Date: ${taskDate}`);
+        console.log(`Start Time: ${startTime}`);
+        console.log(`End Time: ${endTime}`);
+        console.log(`Task Description: ${taskDesc}`);
+    
+        const tasks = [];
+    
+        // Validate and format the task input
+        if (taskDate && taskDesc) {
+            tasks.push(taskDesc);
+        } else {
+            alert("Please enter a valid date and description.");
             return;
         }
-
-        // Create payload object with task_descriptions as an array
-        const payload = { task_descriptions: tasks };
-        console.log("Payload to send to the server:", payload);
-
-        try {
-            console.log("Sending fetch request to move tasks to backlog");
-            const response = await fetch('/move_to_backlog', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            });
-            console.log("Fetch request sent");
-
-            // Parse the server response
-            const result = await response.json();
-            console.log("Response from moving tasks to backlog:", result);
-
-            // Check if the response is successful
-            if (response.ok) {
-                alert('Tasks moved to backlog successfully.');
-                tasks.forEach(task => {
-                    const listItem = Array.from(checkboxes).find(checkbox => checkbox.parentElement.textContent.trim() === task);
-                    if (listItem) {
-                        listItem.parentElement.remove();
-                    }
-                });
-            } else {
-                console.error('Error moving tasks to backlog:', result);
-                alert(`Error moving tasks to backlog: ${result.error}`);
+    
+        console.log("Tasks to be moved to backlog:", tasks);
+    
+        // Send the task to the backend
+        fetch('/move_to_backlog', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                task_descriptions: tasks
+            })
+        })
+        .then(response => {
+            console.log("Move to Backlog response:", response);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-        } catch (error) {
-            console.error('Unexpected error:', error);
-            alert('Unexpected error occurred while moving tasks to backlog.');
-        }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Response data from move to backlog:", data);
+            if (data.message) {
+                alert('Tasks moved to backlog successfully!');
+                // Clear the input fields
+                document.getElementById('task-form').reset();
+                // Optionally, refresh the task list or update the UI
+            } else {
+                alert('Error moving tasks to backlog.');
+            }
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
     });
+    
+    
 
 
 
@@ -240,6 +288,8 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const response = await fetch('/tasks/today');
             const tasks = await response.json();
+
+            console.log("Tasks fetched for today:", tasks); // Log the tasks fetched
             
             // Separate tasks into pending and closed lists
             const pendingTasks = tasks.filter(task => task.status === 'pending');
@@ -284,6 +334,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayTasks(tasks, elementId) {
         const taskList = document.getElementById(elementId);
         taskList.innerHTML = ''; // Clear existing tasks
+
+        console.log(`Displaying tasks in element: ${elementId}`, tasks); // Log the tasks being displayed
 
         if (tasks.length === 0) {
             // If there are no tasks, display a message or handle the empty state
@@ -608,11 +660,21 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Load task diary entries
     function loadEntries() {
+        const tasksList = document.getElementById('tasks-list');
+        console.log("Initial task list items:");
+        tasksList.querySelectorAll('li').forEach(taskItem => {
+            console.log(taskItem.innerHTML);
+        });
         fetch('/get-task-diary-entries')
         .then(response => response.json())
         .then(entries => {
+            console.log("Entries loaded from backend:", entries); 
+            if (entries.length === 0) {
+                console.log("No entries found in backend response."); // Add this line
+            }
             entriesContainer.innerHTML = ''; // Clear previous entries
             entries.forEach(entry => {
+                console.log("Processing entry:", entry);
                 const entryDiv = document.createElement('div');
                 entryDiv.classList.add('entry');
                 const entryDate = document.createElement('h3');
@@ -624,8 +686,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 entryDiv.appendChild(entryTasks);
                 entriesContainer.appendChild(entryDiv);
             });
+
+            console.log("Final task list items:");
+            tasksList.querySelectorAll('li').forEach(taskItem => {
+                console.log(taskItem.innerHTML);
+            });
         });
     }
+
 
     // Load entries on page load
     loadEntries();
