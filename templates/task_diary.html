@@ -16,6 +16,7 @@
             <li class="tab" data-tab="today">Today's Tasks</li>
             <li class="tab" data-tab="forgotten">Forgotten Tasks</li>
             <li class="tab" data-tab="tomorrow">Tomorrow's Tasks</li>
+            <li class="tab" data-tab="unified-inbox">Unified Inbox</li>
         </ul>
     </nav>
     
@@ -60,16 +61,29 @@
             <button id="move-tasks-button-tomorrow">Move to Closed List</button>
             <button id="undo-move-button-tomorrow">Undo Move</button>
         </div>
-        <div id="closed-tasks">
-            <h2>Closed Tasks</h2>
-            <ul id="selected-tasks-list"></ul>
-            <hr>
-            <ul id="non-selected-tasks-list"></ul>
+        <div id="unified-inbox" class="tab-content">
+            <h2>Unified Inbox</h2>
+            <button id="capture-button">Capture New Item</button>
+            <ul id="unified-inbox-list"></ul>
         </div>
         <div id="entries-container"></div>
     </main>
+
+    <!-- Capture Modal -->
+    <div id="capture-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Capture New Item</h2>
+            <form id="capture-form">
+                <label for="capture-description">Description:</label>
+                <input type="text" id="capture-description" name="description" required>
+                <button type="submit">Add to Inbox</button>
+            </form>
+        </div>
+    </div>
     
     <script src="{{ url_for('static', filename='task_diary.js') }}"></script>
     <script src="{{ url_for('static', filename='tabs.js') }}"></script>
+    <script src="{{ url_for('static', filename='unified_inbox.js') }}"></script>
 </body>
 </html>

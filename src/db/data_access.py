@@ -492,7 +492,61 @@ def move_task_to_time_entries(conn, backlog_id, date, start_time, end_time):
         return False
 
 
+# Unified Inbox Functions
 
+def insert_unified_inbox_item(conn, description):
+    """
+    Insert a new item into the unified_inbox table
+    :param conn: Database connection object
+    :param description: Text description of the item
+    :return: id of the inserted entry
+    """
+    sql = ''' INSERT INTO unified_inbox(description)
+              VALUES(?) '''
+    cur = conn.cursor()
+    cur.execute(sql, (description,))
+    conn.commit()
+    return cur.lastrowid
+
+def fetch_unified_inbox_items(conn):
+    """
+    Fetch all items from the unified_inbox table
+    :param conn: Database connection object
+    :return: a list of dictionaries containing all unified inbox items
+    """
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM unified_inbox")
+    rows = cur.fetchall()
+    items = [{'id': row[0], 'description': row[1], 'created_at': row[2]} for row in rows]
+    return items
+
+def update_unified_inbox_item(conn, item_id, description):
+    """
+    Update the description of an item in the unified_inbox table
+    :param conn: Database connection object
+    :param item_id: ID of the item
+    :param description: New description of the item
+    :return: None
+    """
+    sql = ''' UPDATE unified_inbox
+              SET description = ?
+              WHERE id = ? '''
+    cur = conn.cursor()
+    cur.execute(sql, (description, item_id))
+    conn.commit()
+
+def delete_unified_inbox_item(conn, item_id):
+    """
+    Delete an item from the unified_inbox table
+    :param conn: Database connection object
+    :param item_id: ID of the item
+    :return: None
+    """
+    sql = ''' DELETE FROM unified_inbox
+              WHERE id = ? '''
+    cur = conn.cursor()
+    cur.execute(sql, (item_id,))
+    conn.commit()
 
 
 

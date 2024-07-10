@@ -6,7 +6,8 @@ module.exports = {
         task_diary: './src/components/task_diary.js',
         todays_tasks: './src/components/todays_tasks.js',
         tabs: './src/components/tabs.js',
-        backlog: './src/components/backlog.js'
+        backlog: './src/components/backlog.js',
+        unified_inbox: './src/components/unified_inbox.js'
     },
     output: {
         filename: '[name].js',

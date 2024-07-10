@@ -74,6 +74,11 @@ def main():
                                         date_added TEXT NOT NULL
                                     );"""
     
+    sql_create_unified_inbox_table = """ CREATE TABLE IF NOT EXISTS unified_inbox (
+                                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                            description TEXT NOT NULL
+                                        ); """
+    
     # Create a database connection
     conn = create_connection(database)
 
@@ -98,6 +103,10 @@ def main():
         # Create backlog table
         create_table(conn, sql_create_backlog_table)
         print("Backlog table created successfully.")
+
+        # Create unified inbox table
+        create_table(conn, sql_create_unified_inbox_table)
+        print("Unified Inbox table created successfully.")
 
         conn.close()
     else:

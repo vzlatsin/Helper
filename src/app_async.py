@@ -14,7 +14,8 @@ from .db.data_access import fetch_dividends_from_db, fetch_all_trades, insert_di
 from .db.data_access import fetch_task_diary_entries, fetch_time_entries, fetch_tasks_for_date, mark_tasks_as_selected
 from .db.data_access import validate_pending_status, revert_task_statuses, fetch_forgotten_tasks
 from .db.data_access import insert_backlog_entry, fetch_backlog_entries, move_task_to_backlog, move_task_to_time_entries
-from .db.data_access import add_task_to_backlog
+
+from .db.data_access import add_task_to_backlog, delete_unified_inbox_item, update_unified_inbox_item, fetch_unified_inbox_items, insert_unified_inbox_item
 from src.file_operations import write_transactions_to_file
 from src.trade_processing import generate_description_for_trade, filter_and_organize_trades
 from flask import request
@@ -436,7 +437,96 @@ def create_async_app(config):
 
 
 
-    
+    # Unified Inbox Endpoints
+
+    @app.route('/unified-inbox', methods=['GET'])
+    def get_unified_inbox_items():
+        app.logger.info("Received request to fetch all items from the Unified Inbox.")
+        try:
+            conn = create_connection(app.config['db_path'])
+            if conn:
+                items = fetch_unified_inbox_items(conn)
+                conn.close()
+                app.logger.info(f"Fetched {len(items)} items from the Unified Inbox.")
+                return jsonify(items), 200
+            else:
+                app.logger.error("Database connection failed.")
+                return jsonify({"error": "Database connection failed"}), 500
+        except Exception as e:
+            app.logger.error(f"Error fetching items from the Unified Inbox: {str(e)}")
+            return jsonify({"error": str(e)}), 500
+
+    @app.route('/unified-inbox', methods=['POST'])
+    def add_unified_inbox_item():
+        app.logger.info("Received request to add item to unified inbox")
+        try:
+            data = request.json
+            description = data.get('description')
+            
+            app.logger.debug(f"Received data: {data}")
+
+            if not description:
+                app.logger.error("Description is required")
+                return jsonify({"error": "Description is required"}), 400
+
+            conn = create_connection(app.config['db_path'])
+            if conn:
+                item_id = insert_unified_inbox_item(conn, description)
+                conn.close()
+                app.logger.info(f"Item added to unified inbox with id: {item_id}")
+                return jsonify({"id": item_id, "description": description}), 201
+            else:
+                app.logger.error("Database connection failed")
+                return jsonify({"error": "Database connection failed"}), 500
+        except Exception as e:
+            app.logger.error(f"Error adding item to inbox: {str(e)}")
+            return jsonify({"error": str(e)}), 500
+
+
+    @app.route('/unified-inbox/<int:item_id>', methods=['PUT'])
+    def update_unified_inbox_item_route(item_id):
+        app.logger.info(f"Received request to update item with ID: {item_id}")
+        try:
+            data = request.json
+            description = data.get('description')
+            if not description:
+                app.logger.warning("No description provided in the request.")
+                return jsonify({"error": "Description is required"}), 400
+
+            conn = create_connection(app.config['db_path'])
+            if conn:
+                update_unified_inbox_item(conn, item_id, description)
+                conn.close()
+                app.logger.info(f"Successfully updated item with ID: {item_id} to new description: '{description}'")
+                return jsonify({"id": item_id, "description": description}), 200
+            else:
+                app.logger.error("Database connection failed.")
+                return jsonify({"error": "Database connection failed"}), 500
+        except Exception as e:
+            app.logger.error(f"Error updating item in the Unified Inbox: {str(e)}")
+            return jsonify({"error": str(e)}), 500
+
+    @app.route('/unified-inbox/<int:item_id>', methods=['DELETE'])
+    def delete_unified_inbox_item_route(item_id):
+        app.logger.info(f"Received request to delete item with ID: {item_id}")
+        try:
+            conn = create_connection(app.config['db_path'])
+            if conn:
+                delete_unified_inbox_item(conn, item_id)
+                conn.close()
+                app.logger.info(f"Successfully deleted item with ID: {item_id}")
+                return jsonify({"message": "Item deleted"}), 200
+            else:
+                app.logger.error("Database connection failed.")
+                return jsonify({"error": "Database connection failed"}), 500
+        except Exception as e:
+            app.logger.error(f"Error deleting item from the Unified Inbox: {str(e)}")
+            return jsonify({"error": str(e)}), 500
+
+        
+
+
+
     @app.route('/select-tasks', methods=['GET', 'POST'])
     def select_tasks():
         sample_backlog = [
