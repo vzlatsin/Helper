@@ -1,4 +1,4 @@
-# Unified Inbox and Capture Modal Design Document
+### Unified Inbox and Capture Modal Design Document
 
 ### 1. Introduction
 
@@ -10,7 +10,155 @@ To add a Unified Inbox and Capture Modal feature to the existing Task Diary appl
 - Implement a Capture Modal for quick task input.
 - Ensure seamless integration with existing features.
 
-### 2. Features and Requirements
+### 2. Existing Application Overview
+
+**HTML Structure**:
+- The main HTML template is `task_diary.html`.
+- Existing tabs include Add Tasks, Today’s Tasks, Forgotten Tasks, and Tomorrow’s Tasks.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Diary</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Task Diary</h1>
+    </header>
+    <nav>
+        <ul class="tabs">
+            <li class="tab" data-tab="add-tasks">Add Tasks</li>
+            <li class="tab" data-tab="today">Today's Tasks</li>
+            <li class="tab" data-tab="forgotten">Forgotten Tasks</li>
+            <li class="tab" data-tab="tomorrow">Tomorrow's Tasks</li>
+        </ul>
+    </nav>
+    <main>
+        <div id="add-tasks" class="tab-content active">
+            <!-- Content for adding tasks -->
+        </div>
+        <div id="today" class="tab-content">
+            <!-- Content for today's tasks -->
+        </div>
+        <div id="forgotten" class="tab-content">
+            <!-- Content for forgotten tasks -->
+        </div>
+        <div id="tomorrow" class="tab-content">
+            <!-- Content for tomorrow's tasks -->
+        </div>
+    </main>
+    <script src="{{ url_for('static', filename='task_diary.js') }}"></script>
+    <script src="{{ url_for('static', filename='tabs.js') }}"></script>
+</body>
+</html>
+```
+
+**JavaScript Structure**:
+- The primary JavaScript file is `task_diary.js`.
+- It contains logic for handling tasks and tab interactions.
+
+```javascript
+document.addEventListener('DOMContentLoaded', function () {
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(item => item.classList.remove('active'));
+            tab.classList.add('active');
+
+            const tabContent = document.querySelector(`#${tab.dataset.tab}`);
+            tabContents.forEach(content => content.classList.remove('active'));
+            tabContent.classList.add('active');
+        });
+    });
+});
+```
+
+**Backend Code Structure**:
+- The main backend application file is `app_async.py`.
+- Key routes include:
+  - `/task_diary` for rendering the task diary.
+  - `/get-task-diary-entries` for fetching task entries.
+  - `/time-entry` for handling time entries.
+  - `/tasks` for handling various task-related endpoints.
+
+```python
+from flask import Flask, request, jsonify, render_template
+
+app = Flask(__name__)
+
+@app.route('/task_diary')
+def task_diary():
+    return render_template('task_diary.html')
+
+@app.route('/get-task-diary-entries', methods=['GET'])
+def get_task_diary_entries():
+    # Logic to fetch task diary entries
+    pass
+
+@app.route('/time-entry', methods=['POST'])
+def handle_time_entry():
+    data = request.json
+    # Logic to handle time entries
+    pass
+
+@app.route('/tasks', methods=['GET'])
+def get_tasks_for_date():
+    date = request.args.get('date')
+    # Logic to fetch tasks for a specific date
+    pass
+```
+
+**Database Structure**:
+- Existing tables include `time_entries`, `task_diary`, and `backlog`.
+- `init_db.py` is used to initialize the database.
+
+```python
+import sqlite3
+import os
+
+def create_connection(db_file):
+    conn = None
+    try:
+        conn = sqlite3.connect(db_file)
+    except sqlite3.Error as e:
+        print(e)
+    return conn
+
+def create_table(conn, create_table_sql):
+    try:
+        c = conn.cursor()
+        c.execute(create_table_sql)
+    except sqlite3.Error as e:
+        print(e)
+
+def main():
+    database = os.path.join(os.getcwd(), "database.db")
+
+    sql_create_time_entries_table = """ CREATE TABLE IF NOT EXISTS time_entries (
+                                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                        date TEXT NOT NULL,
+                                        start_time TEXT,
+                                        end_time TEXT,
+                                        task_description TEXT NOT NULL,
+                                        status TEXT DEFAULT 'pending'
+                                    ); """
+
+    conn = create_connection(database)
+    if conn is not None:
+        create_table(conn, sql_create_time_entries_table)
+        conn.close()
+
+if __name__ == '__main__':
+    main()
+```
+
+### 3. Features and Requirements
 
 **Unified Inbox Tab**:
 - Display a list of captured items from various sources.
@@ -25,7 +173,7 @@ To add a Unified Inbox and Capture Modal feature to the existing Task Diary appl
 - Ensure the new tab and modal integrate smoothly with the existing tabs and task management features.
 - Maintain user-friendly navigation and interaction.
 
-### 3. User Stories
+### 4. User Stories
 
 **User Story 1: Capturing an App Development Idea**
 - As a user, I want to quickly capture an idea for app development so that I can refer to it later.
@@ -43,7 +191,7 @@ To add a Unified Inbox and Capture Modal feature to the existing Task Diary appl
 - As a user, I want to capture a Teams message from a colleague so that I can follow up on it later.
 - **Example**: "Teams message from John: Review the new feature specs."
 
-### 4. User Interface Design
+### 5. User Interface Design
 
 **Main Page Layout**:
 - **Header**: Displays the title "Task Diary" and the current date.
@@ -61,7 +209,7 @@ To add a Unified Inbox and Capture Modal feature to the existing Task Diary appl
   - **Description Input**: Text field for entering the task or idea description.
   - **Submit Button**: Adds the new item to the Unified Inbox.
 
-### 5. Workflow and Interaction
+### 6. Workflow and Interaction
 
 **Morning Routine**:
 1. **Review Closed List for Today**: Check tasks planned for today.
@@ -77,7 +225,7 @@ To add a Unified Inbox and Capture Modal feature to the existing Task Diary appl
 2. **Reflect on Completed Tasks**: Review the closed list and note any quick wins.
 3. **Plan for Tomorrow**: Set tasks for the next day, incorporating tasks captured during the day.
 
-### 6. Backend Design
+### 7. Backend Design
 
 **Database Changes**:
 - **Unified Inbox Table**: Create a new table in `init_db.py` to store captured items.
@@ -102,10 +250,12 @@ To add a Unified Inbox and Capture Modal feature to the existing Task Diary appl
    - **Response**: Status and updated item details.
 
 4. **DELETE /unified-inbox/:id**
+
+
    - **Description**: Delete an item from the Unified Inbox.
    - **Response**: Status and deleted item details.
 
-### 7. Data Access Layer Changes
+### 8. Data Access Layer Changes
 
 To support the new Unified Inbox feature, the `data_access.py` file will need to be updated to include new functions for managing the Unified Inbox.
 
@@ -131,7 +281,7 @@ To support the new Unified Inbox feature, the `data_access.py` file will need to
    - **Description**: Deletes an item from the `unified_inbox` table.
    - **Parameters**: `conn` (Database connection), `item_id` (ID of the item)
 
-### 8. Technical Design
+### 9. Technical Design
 
 **HTML Changes**:
 - Add a new tab for the Unified Inbox.
@@ -149,7 +299,7 @@ To support the new Unified Inbox feature, the `data_access.py` file will need to
 - Implement the new API endpoints in the backend.
 - Update the database schema to include the Unified Inbox table.
 
-### 9. Implementation Plan
+### 10. Implementation Plan
 
 **Step 1: Update HTML**: Add the Unified Inbox tab and section, Capture Modal structure.
 **Step 2: Create CSS Styles**: Style the new tab and modal.
@@ -158,7 +308,7 @@ To support the new Unified Inbox feature, the `data_access.py` file will need to
 **Step 5: Integration and Testing**: Integrate new features, perform testing.
 **Step 6: Documentation and Deployment**: Document new features, deploy the updated application.
 
-### 10. Risks and Mitigations
+### 11. Risks and Mitigations
 
 **Potential Risks**:
 - Integration Issues.
@@ -168,7 +318,7 @@ To support the new Unified Inbox feature, the `data_access.py` file will need to
 - Thorough Testing.
 - User Training.
 
-### 11. Conclusion
+### 12. Conclusion
 
 The Unified Inbox and Capture Modal feature will enhance the Task Diary application by providing a streamlined way to capture and organize tasks, ideas, and notes.
 
