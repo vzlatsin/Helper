@@ -509,16 +509,15 @@ def insert_unified_inbox_item(conn, description):
     return cur.lastrowid
 
 def fetch_unified_inbox_items(conn):
-    """
-    Fetch all items from the unified_inbox table
-    :param conn: Database connection object
-    :return: a list of dictionaries containing all unified inbox items
-    """
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM unified_inbox")
-    rows = cur.fetchall()
-    items = [{'id': row[0], 'description': row[1], 'created_at': row[2]} for row in rows]
-    return items
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT id, description FROM unified_inbox")
+        rows = cur.fetchall()
+        return [{"id": row[0], "description": row[1]} for row in rows]
+    except Exception as e:
+        print(f"Error fetching items from the Unified Inbox: {str(e)}")
+        return []
+
 
 def update_unified_inbox_item(conn, item_id, description):
     """

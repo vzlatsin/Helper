@@ -66,6 +66,7 @@ nav ul li a {
     padding: 0.5rem 1rem;
     text-decoration: none;
     border-radius: 5px;
+    transition: background 0.3s ease;
 }
 
 .btn:hover {
@@ -138,27 +139,34 @@ footer {
     display: block;
 }
 
-
 /* Modal styles */
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    display: none;
+    position: fixed;
+    z-index: 1;
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0, 0, 0); /* Fallback color */
-    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
 .modal-content {
     background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
+    margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .close-button {
@@ -173,4 +181,55 @@ footer {
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+/* Button styling */
+button {
+    background: #007bff;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+button:focus {
+    outline: none;
+    box-shadow: 0 0 3px 2px rgba(0, 123, 255, 0.5);
+}
+
+/* List styling */
+#unified-inbox-list {
+    list-style: none;
+    padding: 0;
+}
+
+#unified-inbox-list li {
+    background: #fff;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+#unified-inbox-list li:hover {
+    transform: scale(1.02);
+}
+
+
+/* Styles for the Font Awesome icons */
+.fa-pencil-alt, .fa-times {
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.fa-pencil-alt:hover, .fa-times:hover {
+    color: red; /* Change color on hover if desired */
 }
